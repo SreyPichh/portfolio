@@ -428,6 +428,290 @@
   }
   dialog?.addEventListener('close', () => { body.onclick = null; });
 
+  /* ---------- Where I've been: a hand-drawn map of Asia with a pin per place ----------
+     Edit the places here. lat / lon put the pin on the map (look a city up on any map site);
+     flag is the emoji, and code picks the drawn flag used where emoji flags don't show.
+     city, doing and year are optional: leave them '' and the card simply skips them. */
+  const PLACES = [
+    { name: 'Singapore', flag: '🇸🇬', code: 'sg', region: 'Southeast Asia', lat: 1.35, lon: 103.82, city: '', doing: '', year: '' },
+    { name: 'Thailand', flag: '🇹🇭', code: 'th', region: 'Southeast Asia', lat: 13.75, lon: 100.5, city: '', doing: '', year: '' },
+    { name: 'Malaysia', flag: '🇲🇾', code: 'my', region: 'Southeast Asia', lat: 3.6, lon: 101.6, city: '', doing: '', year: '' },
+    { name: 'Vietnam', flag: '🇻🇳', code: 'vn', region: 'Southeast Asia', lat: 21.03, lon: 105.85, city: '', doing: '', year: '' },
+    { name: 'Japan', flag: '🇯🇵', code: 'jp', region: 'East Asia', lat: 35.68, lon: 139.7, city: '', doing: '', year: '' },
+    { name: 'Philippines', flag: '🇵🇭', code: 'ph', region: 'Southeast Asia', lat: 14.6, lon: 121, city: '', doing: '', year: '' },
+    { name: 'India', flag: '🇮🇳', code: 'in', region: 'South Asia', lat: 28.6, lon: 77.2, city: '', doing: '', year: '' },
+  ];
+  const HOME = { label: document.body.dataset.home || 'Home', lat: 11.56, lon: 104.92 };
+
+  // Flags: the real emoji where the device can show them (Mac, iPhone, Android), and small
+  // drawn flags elsewhere (Windows shows flag emoji as two letters, like "JP").
+  const canShowFlagEmoji = (() => {
+    try {
+      const c = document.createElement('canvas'); c.width = c.height = 24;
+      const x = c.getContext('2d'); x.textBaseline = 'top'; x.font = '20px sans-serif'; x.fillText('🇯🇵', 0, 0);
+      const d = x.getImageData(0, 0, 24, 24).data;
+      for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 100 && d[i] > 150 && d[i + 1] < 90 && d[i + 2] < 90) return true;  // found Japan's red sun
+    } catch (e) {}
+    return false;
+  })();
+  const star = (cx, cy, r, fill) => {
+    let d = '';
+    for (let k = 0; k < 10; k++) {
+      const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * .42 : r;
+      d += (k ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(2) + ' ' + (cy + rr * Math.sin(a)).toFixed(2);
+    }
+    return `<path d="${d}Z" fill="${fill}"/>`;
+  };
+  const FLAG_ART = {  // drawn on a 30 x 20 grid
+    sg: '<rect width="30" height="10" fill="#EF3340"/><rect y="10" width="30" height="10" fill="#fff"/><circle cx="7" cy="5" r="3.4" fill="#fff"/><circle cx="8.5" cy="5" r="3.2" fill="#EF3340"/>'
+      + [[11, 2.6], [13.2, 4.2], [12.4, 6.8], [9.6, 6.8], [8.8, 4.2]].map(([x, y]) => star(x, y, .9, '#fff')).join(''),
+    th: '<rect width="30" height="20" fill="#A51931"/><rect y="3.33" width="30" height="13.34" fill="#F4F5F8"/><rect y="6.67" width="30" height="6.66" fill="#2D2A4A"/>',
+    my: Array.from({ length: 14 }, (_, k) => `<rect y="${(k * 20 / 14).toFixed(2)}" width="30" height="${(20 / 14).toFixed(2)}" fill="${k % 2 ? '#fff' : '#CC0001'}"/>`).join('')
+      + '<rect width="15" height="11.43" fill="#010066"/><circle cx="5.6" cy="5.7" r="3.6" fill="#FFCC00"/><circle cx="6.8" cy="5.7" r="3" fill="#010066"/>' + star(10.8, 5.7, 2.4, '#FFCC00'),
+    vn: '<rect width="30" height="20" fill="#DA251D"/>' + star(15, 10.4, 6.2, '#FFFF00'),
+    kh: '<rect width="30" height="20" fill="#032EA1"/><rect y="5" width="30" height="10" fill="#E00025"/>'
+      + '<path d="M8.6 14 H21.4 V13 H20.4 V11.2 H19.6 V9.4 L18.9 8.1 L18.2 9.4 V10.4 H16.6 V8.2 L15 5.6 L13.4 8.2 V10.4 H11.8 V9.4 L11.1 8.1 L10.4 9.4 V11.2 H9.6 V13 H8.6Z" fill="#fff"/>',
+    jp: '<rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#BC002D"/>',
+    ph: '<rect width="30" height="10" fill="#0038A8"/><rect y="10" width="30" height="10" fill="#CE1126"/><path d="M0 0 L17.3 10 L0 20Z" fill="#fff"/>'
+      + '<circle cx="5.8" cy="10" r="2.1" fill="#FCD116"/>' + [[1.9, 2.8], [1.9, 17.2], [14, 10]].map(([x, y]) => star(x, y, 1, '#FCD116')).join(''),
+    in: '<rect width="30" height="6.67" fill="#FF9933"/><rect y="6.67" width="30" height="6.66" fill="#fff"/><rect y="13.33" width="30" height="6.67" fill="#138808"/>'
+      + '<circle cx="15" cy="10" r="2.7" fill="none" stroke="#000080" stroke-width=".5"/>'
+      + `<path d="${Array.from({ length: 12 }, (_, k) => { const a = k * Math.PI / 12; return `M${(15 - 2.6 * Math.cos(a)).toFixed(2)} ${(10 - 2.6 * Math.sin(a)).toFixed(2)} L${(15 + 2.6 * Math.cos(a)).toFixed(2)} ${(10 + 2.6 * Math.sin(a)).toFixed(2)}`; }).join(' ')}" stroke="#000080" stroke-width=".3"/>`,
+  };
+  const flagOf = (p) => {
+    if (canShowFlagEmoji && p.flag) return `<span class="tm-flag" aria-hidden="true">${p.flag}</span>`;
+    if (FLAG_ART[p.code]) return `<svg class="tm-flag drawn" viewBox="0 0 30 20" aria-hidden="true">${FLAG_ART[p.code]}</svg>`;
+    return '';
+  };
+  const PIN_COLOURS = ['#D9584A', '#3A57C4', '#6E9E5A', '#D6A23A', '#9A7BD0', '#2E9C9A', '#E07AA0'];
+
+  // the drawing: longitude 66–148 and latitude 42 to -6 squeezed into a 600 x 300 sheet
+  const MAP_W = 600, MAP_H = 300;
+  const proj = (lat, lon) => [(lon - 66) / 82 * MAP_W, (42 - lat) / 48 * MAP_H];
+  // simplified coastlines (lon, lat), drawn by hand: mainland Asia with India, Indochina and the
+  // Malay peninsula, then the islands
+  const LAND = [
+    [[66,42],[123,42],[121.5,38],[119,35],[121.8,31],[120,27],[117,23.5],[113,22],[110,21],[108.6,21.6],[106.6,20.2],[105.8,18.6],
+     [107,16.5],[108.8,15],[109.3,12],[108.6,10.9],[106.8,10.3],[105,8.6],[104.8,9.6],[104.5,10.4],[104.3,10.5],[104.15,10.55],[103.9,10.48],[103.6,10.5],[103.5,10.62],[103.6,10.85],[103.3,11.0],[103.15,11.3],[103.0,11.4],[102.9,11.65],[102.6,12.0],[102.3,12.2],[101.6,12.6],[100.9,12.7],[100.3,13.5],
+     [99.9,12.5],[99.2,10.2],[100.3,8.4],[101.3,6.9],[102.3,6.2],[103.4,4.5],[103.5,2.6],[104.2,1.4],[103.5,1.25],[101.3,2.8],[100.4,4.8],
+     [100.1,6.5],[98.5,8],[98.3,10],[98.6,13],[97.7,16.5],[94.5,16],[94.2,19.5],[92.3,21.5],[90,21.8],[88.5,21.6],[87,21],[86.5,20],
+     [85,19.3],[82.3,16.6],[80.3,15.5],[80.2,13],[79.8,10.3],[78.2,8.4],[77.5,8.1],[76.3,9.8],[75,12.5],[74,15.5],[73,19],[72.8,21],
+     [70.3,21],[68.8,22.5],[66,25]],
+    [[95.3,5.6],[97.5,5.2],[100.4,2.2],[104,-1],[106,-6],[104,-6.5],[102,-4],[100.3,-1],[98.7,1.7]],                                  // Sumatra
+    [[109.6,1.9],[110.5,1.6],[113,3.2],[115.4,5],[116.8,6.9],[119.2,5.2],[118,4.3],[117.8,1],[116.5,-1.5],[116,-4],[114.6,-4],[111,-3],[110.2,-1.7],[109,0.5]], // Borneo
+    [[120.6,18.5],[122.2,18.5],[122,16.3],[121.6,14.3],[124,12.6],[123.9,13.8],[121.8,14.2],[120.6,14.4],[119.8,16.3]],             // Luzon
+    [[122.5,11.8],[124,11.3],[125,10.2],[123.5,10],[122.3,10.6]],                                                                     // Visayas
+    [[122,8],[123.5,8.7],[125.4,9.8],[126.6,7.2],[125.4,5.7],[124,6.5],[122.2,7]],                                                    // Mindanao
+    [[117.2,8.4],[119.5,10.6],[119.7,11.3],[117.3,8.8]],                                                                               // Palawan
+    [[120.3,22.6],[121.5,25.2],[121.9,24.8],[120.7,22]],                                                                               // Taiwan
+    [[108.7,19.2],[110,20.1],[111,19.6],[109.6,18.2]],                                                                                 // Hainan
+    [[79.8,9.6],[80.2,9.8],[81.8,7.5],[81.2,6.2],[80,6],[79.8,8]],                                                                     // Sri Lanka
+    [[126.1,35],[126.5,37.7],[125,40],[124.5,42],[130.5,42],[129.4,40],[128.4,38.3],[129.4,36],[129.2,35.2],[127,34.6]],              // Korea
+    [[130.9,34],[132.5,35.4],[135.3,35.7],[136.8,37.3],[139.5,38.2],[140,40.8],[141.4,41.3],[141.5,40],[141,38.3],[140.9,36.9],[140.8,35.6],
+     [139.8,35],[138.8,34.6],[137,34.6],[135.2,33.8],[133.2,34.3],[131,33.9]],                                                         // Honshu
+    [[129.7,33.7],[131,33.9],[131.8,32],[130.6,31],[129.8,32.7]],                                                                      // Kyushu
+    [[132.4,33.2],[134.3,34.2],[134.7,33.8],[133,32.8]],                                                                               // Shikoku
+    [[139.9,41.5],[141.2,41.8],[143.2,42],[141.5,42],[140.3,42]],                                                                       // Hokkaido's tip
+  ];
+  const pathOf = (pts) => {
+    // soften the corners: a curve through the midpoints of each edge
+    const p = pts.map(([lon, lat]) => proj(lat, lon));
+    const mid = p.map(([x, y], i) => { const [x2, y2] = p[(i + 1) % p.length]; return [(x + x2) / 2, (y + y2) / 2]; });
+    let d = `M${mid[mid.length - 1][0].toFixed(1)} ${mid[mid.length - 1][1].toFixed(1)}`;
+    p.forEach(([x, y], i) => { d += ` Q${x.toFixed(1)} ${y.toFixed(1)} ${mid[i][0].toFixed(1)} ${mid[i][1].toFixed(1)}`; });
+    return d + 'Z';
+  };
+
+  /* ---------- Around Cambodia: the places at home, shown when the map zooms in on Cambodia ----------
+     lat / lon put each pin on the map; area is a short note on where it is. */
+  const KH_PLACES = [
+    { name: 'Siem Reap', area: 'Northwest · Angkor', lat: 13.36, lon: 103.86 },
+    { name: 'Kampot', area: 'South coast', lat: 10.61, lon: 104.18 },
+    { name: 'Kep', area: 'South coast', lat: 10.45, lon: 104.36 },
+    { name: 'Koh Rong', area: 'Island · Gulf of Thailand', lat: 10.72, lon: 103.24 },
+    { name: 'Battambang', area: 'Northwest', lat: 13.1, lon: 103.2 },
+    { name: 'Pursat', area: 'West · Tonle Sap', lat: 12.54, lon: 103.92 },
+    { name: 'Kratie', area: 'Northeast · on the Mekong', lat: 12.49, lon: 106.02 },
+    { name: 'Sihanoukville', area: 'South coast', lat: 10.63, lon: 103.52 },
+    { name: 'Kampong Thom', area: 'Central', lat: 12.71, lon: 104.89 },
+    { name: 'Prey Veng', area: 'Southeast', lat: 11.48, lon: 105.33 },
+    { name: 'Svay Rieng', area: 'Southeast', lat: 11.09, lon: 105.8 },
+    { name: 'Kandal', area: 'Around Phnom Penh', lat: 11.2, lon: 105.0 },
+    { name: 'Takeo', area: 'South', lat: 10.99, lon: 104.79 },
+    { name: 'Kampong Speu', area: 'Central west', lat: 11.45, lon: 104.52 },
+    { name: 'Banteay Meanchey', area: 'Northwest', lat: 13.59, lon: 102.97 },
+    { name: 'Mondulkiri', area: 'Northeast highlands', lat: 12.45, lon: 107.19 },
+  ];
+  // Cambodia drawn by hand (lon, lat): the border, the Tonle Sap lake, the Mekong and its rivers, Koh Rong
+  const KH_BORDER = [[102.36,13.56],[102.75,13.95],[103.1,14.3],[103.6,14.42],[104.3,14.38],[105.0,14.33],[105.25,14.35],[105.6,14.15],[106.0,14.36],
+    [106.5,14.55],[107.0,14.45],[107.55,14.6],[107.5,14.0],[107.6,13.4],[107.48,12.7],[107.6,12.3],[107.2,11.95],[106.8,11.65],[106.45,11.7],[106.25,11.25],
+    [106.0,10.95],[105.85,11.15],[105.6,11.0],[105.2,10.9],[104.95,10.6],[104.5,10.42],[104.3,10.5],[104.15,10.55],[103.9,10.48],[103.6,10.5],
+    [103.5,10.62],[103.6,10.85],[103.3,11.0],[103.15,11.3],[103.0,11.4],[102.92,11.65],[102.8,12.0],[102.7,12.5],[102.5,12.75],[102.6,13.2]];
+  const KH_LAKE = [[103.66,13.12],[103.98,13.1],[104.3,12.78],[104.46,12.46],[104.26,12.5],[103.92,12.84],[103.66,13.02]];
+  const KH_MEKONG = [[105.85,14.4],[105.88,13.95],[105.97,13.52],[106.05,13.0],[106.02,12.49],[105.75,12.2],[105.46,11.99],[105.15,11.78],[104.93,11.57],[105.05,11.2],[105.15,10.85],[105.3,10.5]];
+  const KH_TONLE_SAP_RIVER = [[104.46,12.46],[104.68,12.1],[104.85,11.8],[104.93,11.57]];
+  const KH_KOH_RONG = [[103.17,10.66],[103.22,10.8],[103.31,10.77],[103.27,10.66]];
+  // the camera: the whole sheet, and the close-up on Cambodia (same 2:1 shape)
+  const VIEW_ASIA = [0, 0, 600, 300], VIEW_KH = [249, 163.5, 72, 36];
+  const KH_PIN = VIEW_KH[2] / 600 * 1.05;   // keeps the close-up pins the same size on screen
+
+  function travelMap() {
+    const [hx, hy] = proj(HOME.lat, HOME.lon);
+    const pts = PLACES.map((p) => proj(p.lat, p.lon));
+    const line = (arr) => 'M' + arr.map(([lon, lat]) => proj(lat, lon).map((v) => v.toFixed(2)).join(' ')).join(' L');
+    // flight paths: an arc from home out to each place
+    const arc = ([x, y]) => {
+      const dx = x - hx, dy = y - hy, len = Math.hypot(dx, dy) || 1, bend = Math.min(60, len * .28);
+      const cx = (hx + x) / 2 + dy / len * bend * (dx > 0 ? -1 : 1), cy = (hy + y) / 2 - Math.abs(dx / len) * bend;
+      return { d: `M${hx.toFixed(1)} ${hy.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`, mid: [(hx + 2 * cx + x) / 4, (hy + 2 * cy + y) / 4], ang: Math.atan2(y - hy, x - hx) * 180 / Math.PI };
+    };
+    const arcs = pts.map(arc);
+    let far = 0;
+    pts.forEach(([x, y], i) => { if (Math.hypot(x - hx, y - hy) > Math.hypot(pts[far][0] - hx, pts[far][1] - hy)) far = i; });
+    const pinShape = (c, n, key) => `<g class="tm-pin" data-place="${key}"><ellipse cx="0" cy="1" rx="5.4" ry="1.9" fill="#000" opacity=".18"/>
+        <g class="tm-pin-in"><path d="M0 0 C-2.4 -4.6 -8.4 -7.8 -8.4 -14.6 A8.4 8.4 0 1 1 8.4 -14.6 C8.4 -7.8 2.4 -4.6 0 0Z" fill="${c}" stroke="#FFFDF7" stroke-width="1"/>
+        <circle cx="0" cy="-14.6" r="5.4" fill="#FFFDF7"/><text x="0" y="-11.6" text-anchor="middle" class="tm-num" fill="${c}">${n}</text></g></g>`;
+    const pin = ([x, y], i) => `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})">${pinShape(PIN_COLOURS[i % PIN_COLOURS.length], i + 1, i)}</g>`;
+    const khPin = (p, i) => {
+      const [x, y] = proj(p.lat, p.lon);
+      return `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${KH_PIN.toFixed(4)})">${pinShape(PIN_COLOURS[i % PIN_COLOURS.length], i + 1, 'k' + i)}</g>`;
+    };
+    const lw = HOME.label.length * 6.6 + 18;
+    const homeMark = (labelBelow) => `
+          <ellipse cx="0" cy="1" rx="7" ry="2.4" fill="#000" opacity=".18"/>
+          <path d="M-7.6 -1 V-10.4 L0 -17 L7.6 -10.4 V-1Z" fill="#FFFDF7" stroke="#2A2F3A" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M-9.4 -9.6 L0 -18 L9.4 -9.6" fill="none" stroke="#D9584A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="-2.2" y="-7" width="4.4" height="6" rx=".8" fill="#D6A23A"/>
+          ${labelBelow ? `<rect x="-${(lw / 2).toFixed(1)}" y="5" width="${lw.toFixed(1)}" height="16" rx="8" fill="#2A2F3A"/><text x="0" y="16" text-anchor="middle" class="tm-home-label">${HOME.label}</text>` : ''}`;
+    const t = (lon, lat, cls, txt) => { const [x, y] = proj(lat, lon); return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" class="${cls}" text-anchor="middle">${txt}</text>`; };
+    return `
+      <svg class="tm-map" viewBox="${VIEW_ASIA.join(' ')}" role="img" aria-label="A hand-drawn map of Asia with home in ${HOME.label} and ${PLACES.length} pinned places: ${PLACES.map((p) => p.name).join(', ')}">
+        <defs>
+          <linearGradient id="tmSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6E8F1"/><stop offset="1" stop-color="#BCD5E4"/></linearGradient>
+          <pattern id="tmWaves" width="44" height="24" patternUnits="userSpaceOnUse"><path d="M4 12 q4 -4 8 0 t8 0" stroke="#9FBDD3" stroke-width="1.1" fill="none" opacity=".6"/></pattern>
+          <pattern id="tmWavesSm" width="5.2" height="2.8" patternUnits="userSpaceOnUse"><path d="M.5 1.4 q.5 -.5 1 0 t1 0" stroke="#9FBDD3" stroke-width=".13" fill="none" opacity=".7"/></pattern>
+        </defs>
+        <rect width="${MAP_W}" height="${MAP_H}" fill="url(#tmSea)"/>
+        <rect class="tm-asia-only" width="${MAP_W}" height="${MAP_H}" fill="url(#tmWaves)"/>
+        <rect class="tm-kh-only" x="${VIEW_KH[0]}" y="${VIEW_KH[1]}" width="${VIEW_KH[2]}" height="${VIEW_KH[3]}" fill="url(#tmWavesSm)"/>
+        <g fill="#E3E8C9" stroke="#9FB384" stroke-width="1.2" stroke-linejoin="round">${LAND.map((l) => `<path d="${pathOf(l)}" vector-effect="non-scaling-stroke"/>`).join('')}</g>
+        <!-- Cambodia: always picked out in a warmer tone; lake, rivers and names appear up close -->
+        <path d="${pathOf(KH_BORDER)}" fill="#F1E4C3" stroke="#B6905A" stroke-width="1.1" vector-effect="non-scaling-stroke"/>
+        <g class="tm-kh-only">
+          <path d="${line(KH_MEKONG)}" fill="none" stroke="#9EC3DA" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          <path d="${line(KH_TONLE_SAP_RIVER)}" fill="none" stroke="#9EC3DA" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+          <path d="${pathOf(KH_LAKE)}" fill="#BCD5E4" stroke="#9EC3DA" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          <path d="${pathOf(KH_KOH_RONG)}" fill="#F1E4C3" stroke="#B6905A" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          ${t(101.6, 13.6, 'tm-country-label', 'THAILAND')}${t(106.3, 14.95, 'tm-country-label', 'LAOS')}${t(107.4, 11.1, 'tm-country-label', 'VIETNAM')}
+          ${t(102.45, 10.55, 'tm-sea-label', 'Gulf of Thailand')}${t(104.05, 12.92, 'tm-water-label', 'Tonle Sap')}${t(105.62, 13.3, 'tm-water-label', 'Mekong')}
+          ${t(104.6, 13.95, 'tm-kh-label', 'CAMBODIA')}
+        </g>
+        <g class="tm-asia-only tm-deco">
+          <g fill="#C9D3A6" opacity=".8"><circle cx="150" cy="120" r="7"/><circle cx="162" cy="128" r="5"/><circle cx="214" cy="96" r="6"/><circle cx="110" cy="60" r="6"/></g>
+          <g fill="#D6CBA6" stroke="#B0A27A" stroke-width=".9"><path d="M140 52 l10 -17 l10 17Z M156 52 l8 -13 l8 13Z M178 48 l9 -15 l9 15Z"/></g>
+          <g fill="#FFFFFF" opacity=".85"><path d="M146.4 41.6 l3.6 -6.6 l3.6 6.6 l-1.8 -1.2 l-1.8 1.3 l-1.8 -1.3Z M183.6 40.4 l3.4 -5.8 l3.4 5.8 l-1.7 -1.1 l-1.7 1.2 l-1.7 -1.2Z"/></g>
+          <path d="M200 0 V300 M400 0 V300" stroke="#8C7A5A" stroke-width="1" opacity=".1"/>
+          <path d="M0 150 H600" stroke="#FFFFFF" stroke-width="1.4" opacity=".28"/>
+        </g>
+        <g class="tm-asia-only">
+          <g class="tm-routes" fill="none" stroke="#3A57C4" stroke-width="1.6" stroke-dasharray="2 6" stroke-linecap="round" opacity=".7">${arcs.map((a, i) => `<path class="tm-route" data-place="${i}" d="${a.d}"/>`).join('')}</g>
+          <g class="tm-plane" transform="translate(${arcs[far].mid[0].toFixed(1)} ${arcs[far].mid[1].toFixed(1)}) rotate(${arcs[far].ang.toFixed(0)})">
+            <path d="M-9 -4.5 L11 0 L-9 4.5 L-5.5 0Z" fill="#FFFDF7" stroke="#2A2F3A" stroke-width="1.1" stroke-linejoin="round"/><path d="M-5.5 0 L11 0 L-7 2.8Z" fill="#E4E9F8"/>
+          </g>
+          ${pts.map(pin).join('')}
+          <g class="tm-home" data-zoom="kh" tabindex="0" role="button" aria-label="Home, ${HOME.label}: zoom in on Cambodia" transform="translate(${hx.toFixed(1)} ${hy.toFixed(1)})">
+            <circle r="22" cy="-6" fill="transparent"/>${homeMark(true)}
+            <circle class="tm-home-ring" r="13" cy="-9" fill="none" stroke="#D9584A" stroke-width="1.4"/>
+          </g>
+          <g transform="translate(562 262)">
+            <circle r="20" fill="#FFFDF7" opacity=".85" stroke="#8C7A5A" stroke-width="1"/>
+            <path d="M0 -15 L3.6 0 L0 15 L-3.6 0Z" fill="#2A2F3A"/><path d="M0 -15 L3.6 0 L-3.6 0Z" fill="#D9584A"/>
+            <text x="0" y="-23" text-anchor="middle" class="tm-n">N</text>
+          </g>
+        </g>
+        <g class="tm-kh-only">
+          <g transform="translate(${hx.toFixed(2)} ${hy.toFixed(2)}) scale(${KH_PIN.toFixed(4)})">${homeMark(false)}</g>
+          ${KH_PLACES.map(khPin).join('')}
+        </g>
+      </svg>`;
+  }
+
+  function placesPanel() {
+    const card = (p, i, key, sub) => `
+      <li class="tm-card" data-place="${key}" tabindex="0" style="--pin:${PIN_COLOURS[i % PIN_COLOURS.length]}">
+        <span class="tm-badge">${i + 1}</span>
+        ${p.year ? `<span class="tm-year mono">${p.year}</span>` : ''}
+        <b>${p.flag !== undefined ? flagOf(p) : ''}${p.city ? `${p.city}, ` : ''}${p.name}</b>
+        <span class="mono tm-country">${sub}</span>
+        ${p.doing ? `<p>${p.doing}</p>` : ''}
+      </li>`;
+    const kh = { flag: '🇰🇭', code: 'kh' };
+    return `<p class="lead">Travel is one of my favourite things. Most trips I take with my friends, and sometimes I go solo, for a slower trip of my own. I've explored a lot around Cambodia, and these are the places I've been abroad so far, flying out from home in ${HOME.label}.</p>
+      <div class="tm" id="tm">
+        <div class="tm-frame">
+          ${travelMap()}
+          <div class="tm-zoombar">
+            <button class="tm-back" type="button" data-zoom="asia">← Back to Asia</button>
+            <span class="tm-zoomtitle">${flagOf(kh)}Around Cambodia · ${KH_PLACES.length} places</span>
+          </div>
+        </div>
+        <ol class="tm-cards tm-asia-cards">${PLACES.map((p, i) => card(p, i, i, p.region)).join('')}
+          <li class="tm-card tm-home-card" data-zoom="kh" tabindex="0" role="button" style="--pin:#D9584A">
+            <span class="tm-badge">⌂</span>
+            <b>${flagOf(kh)}Around Cambodia</b>
+            <span class="mono tm-country">${KH_PLACES.length} places · zoom in</span>
+          </li>
+        </ol>
+        <ol class="tm-cards tm-kh-cards">${KH_PLACES.map((p, i) => card(p, i, 'k' + i, p.area)).join('')}</ol>
+      </div>
+      <p class="mono tm-hint">Point at a place to find it on the map · tap home to zoom into Cambodia</p>`;
+  }
+
+  // Zooming: the map's camera glides between all of Asia and Cambodia
+  let tmAnim = 0;
+  function zoomMap(toKh) {
+    const tm = document.getElementById('tm'), svg = tm?.querySelector('.tm-map');
+    if (!svg || tm.classList.contains('kh') === toKh) return;
+    tm.classList.toggle('kh', toKh);
+    if (!svg.dataset.asiaLabel) svg.dataset.asiaLabel = svg.getAttribute('aria-label');
+    svg.setAttribute('aria-label', toKh ? `A close-up map of Cambodia with ${KH_PLACES.length} pinned places: ${KH_PLACES.map((p) => p.name).join(', ')}` : svg.dataset.asiaLabel);
+    const from = svg.getAttribute('viewBox').split(' ').map(Number), to = toKh ? VIEW_KH : VIEW_ASIA;
+    cancelAnimationFrame(tmAnim);
+    if (reduceMotion) { svg.setAttribute('viewBox', to.join(' ')); return; }
+    const t0 = performance.now() + 160, ms = 1000;   // a short pause first, while the markers fade out
+    // zoom in a "log" way so the speed feels even at every scale
+    const lerpBox = (k) => {
+      const s0 = from[2], s1 = to[2], s = s0 * Math.pow(s1 / s0, k), f = (s0 - s) / (s0 - s1 || 1);
+      return [from[0] + (to[0] - from[0]) * f, from[1] + (to[1] - from[1]) * f, s, s / 2];
+    };
+    const step = (now) => {
+      const k = Math.max(0, Math.min(1, (now - t0) / ms)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      svg.setAttribute('viewBox', lerpBox(e).map((v) => v.toFixed(3)).join(' '));
+      if (k < 1) tmAnim = requestAnimationFrame(step);
+    };
+    tmAnim = requestAnimationFrame(step);
+    (toKh ? tm.querySelector('.tm-back') : tm.querySelector('.tm-home'))?.focus({ preventScroll: true });
+  }
+  dialog?.addEventListener('click', (e) => {
+    const z = e.target.closest('[data-zoom]');
+    if (z && body.querySelector('.tm-map')) zoomMap(z.dataset.zoom === 'kh');
+  });
+  dialog?.addEventListener('keydown', (e) => {
+    const z = e.target.closest('[data-zoom]');
+    if (z && (e.key === 'Enter' || e.key === ' ') && z.tagName !== 'BUTTON') { e.preventDefault(); zoomMap(z.dataset.zoom === 'kh'); }
+  });
+
+  // pointing at a card lights up its pin and flight path, and the other way round
+  const lightPlace = (i) => body.querySelectorAll('[data-place]').forEach((n) => n.classList.toggle('hot', n.dataset.place === i));
+  dialog?.addEventListener('pointerover', (e) => {
+    const hit = e.target.closest('[data-place]');
+    if (hit && body.querySelector('.tm-map')) lightPlace(hit.dataset.place);
+  });
+  dialog?.addEventListener('focusin', (e) => {
+    const hit = e.target.closest('.tm-card');
+    if (hit) lightPlace(hit.dataset.place);
+  });
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -461,9 +745,7 @@
       `<p class="lead">[A short story about this bouquet: who gave it, and what the moment meant to you.]</p>
       <p class="quote">“[A line from the card that came with it.]”</p><p class="mono quote-by">[From whom] · [When]</p>
       <p>[What you learned from mentoring, teaching or working with them, in a sentence or two.]</p>`) },
-    map: { label: "Where I've been", open: () => panel('Pinned to the wall', "Where I've <em>been</em>",
-      `<p class="lead">[Places that shaped how you see things.]</p>
-      ${rows([['[City, Country]', '[What you were doing there]', '[Year]'], ['[City, Country]', '[What you were doing there]', '[Year]'], ['[City, Country]', '[What you were doing there]', '[Year]']])}`) },
+    map: { label: "Where I've been", open: () => panel('Pinned to the wall', "Where I've <em>been</em>", placesPanel()) },
     phone: { label: 'Say hello', open: () => panel('Ring ring', 'Say <em>hello</em>',
       `<p class="lead">I'm always happy to talk about new projects, ideas, or just say hi.</p>
       <div class="panel-actions"><a class="pill" href="mailto:${EMAIL}" data-copy="${EMAIL}">${EMAIL} <span aria-hidden="true">↗</span></a>
