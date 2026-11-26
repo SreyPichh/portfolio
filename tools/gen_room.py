@@ -230,6 +230,7 @@ defs.append('''
           <pattern id="airmailSm" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <rect width="6" height="6" fill="#FBF8F1"/><rect width="1.8" height="6" fill="#C8463A"/><rect x="3" width="1.8" height="6" fill="#3F5DAE"/>
           </pattern>
+          <linearGradient id="gPhoneScreen" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="#E9E3F7"/><stop offset=".55" stop-color="#DCE7F8"/><stop offset="1" stop-color="#F6E1E8"/></linearGradient>
           <!-- pages darken softly toward the spine -->
           <linearGradient id="gGutterL" x1="0" y1="0" x2="1" y2="0"><stop offset=".6" stop-color="#5A4A30" stop-opacity="0"/><stop offset="1" stop-color="#5A4A30" stop-opacity=".16"/></linearGradient>
           <linearGradient id="gGutterR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5A4A30" stop-opacity=".18"/><stop offset=".4" stop-color="#5A4A30" stop-opacity="0"/></linearGradient>
@@ -1232,6 +1233,84 @@ w(f'''          {poly([tl, tr, (1012, 588), (560, 588)], 'url(#gDeskTop)')}
           <rect x="560" y="587" width="452" height="2" fill="#fff" opacity=".6"/>
         </g>''' + waste_basket())
 
+# ------------------------------------------------------------------ mug and phone
+HEART = 'M0 3.2 C-3.6 0.4 -4.4 -2.2 -2.4 -3.2 C-1.2 -3.8 0 -2.8 0 -1.8 C0 -2.8 1.2 -3.8 2.4 -3.2 C4.4 -2.2 3.6 0.4 0 3.2Z'
+
+
+def mug():
+    """A speckled pink ceramic mug of latte (with a foam heart) on a cork coaster, steaming."""
+    rr = random.Random(5)
+    specks = ''.join(f'<circle cx="{rr.uniform(912.5, 942):.1f}" cy="{rr.uniform(556, 583):.1f}" r="{rr.uniform(.25, .5):.2f}"/>' for _ in range(26))
+    body = 'M910 552 V583 Q910 587.5 914.5 587.5 H939.5 Q944 587.5 944 583 V552Z'
+    return f'''
+        <!-- Mug: speckled pink glaze, latte with a foam heart, on a cork coaster -->
+        <g class="obj lift" id="o-mug" data-id="mug" tabindex="0" role="button" aria-label="Mug: what fuels me">
+          <rect x="904" y="514" width="58" height="80" fill="transparent"/>
+          <g class="steam" stroke="#B7BFCD" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75">
+            <path d="M921 544 C915 536 927 530 921 520"/><path d="M933 546 C927 536 939 530 933 518" class="s2"/>
+          </g>
+          <ellipse cx="928" cy="590.6" rx="24" ry="2.6" fill="#000" opacity=".12"/>
+          <ellipse cx="927" cy="589.2" rx="22" ry="3.4" fill="#B9874F"/>
+          <ellipse cx="927" cy="588" rx="22" ry="3.4" fill="#D8AD76"/>
+          <g fill="#A97A45" opacity=".5"><circle cx="910" cy="588.4" r=".5"/><circle cx="916" cy="586.6" r=".4"/><circle cx="941" cy="589.2" r=".5"/><circle cx="946" cy="587.4" r=".4"/><circle cx="935" cy="590" r=".4"/></g>
+          <path fill-rule="evenodd" d="M943 556.4 C962.4 556.4 962.4 581.6 943 581.6Z M943 562 C954.8 562 954.8 576 943 576Z" fill="#E79BB1"/>
+          <path d="M945 557.8 C957.6 558.6 959.6 570 956 576" stroke="#FBD3DD" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".8"/>
+          <path d="{body}" fill="url(#gMug)"/>
+          <g fill="#B5677E" opacity=".35">{specks}</g>
+          <path d="M910.3 584.3 H943.7 Q943.4 587.5 939.5 587.5 H914.5 Q910.6 587.5 910.3 584.3Z" fill="#EBDCCB"/>
+          <rect x="913.4" y="557" width="1.7" height="23" rx=".85" fill="#FFFFFF" opacity=".45"/>
+          <path d="{HEART}" transform="translate(927 569.6) scale(1.35)" fill="#FFFFFF" opacity=".92"/>
+          <ellipse cx="927" cy="552" rx="17" ry="3.7" fill="#FDE4EB"/>
+          <ellipse cx="927" cy="552.3" rx="15.4" ry="2.9" fill="#E39DB1"/>
+          <ellipse cx="927" cy="553" rx="14.2" ry="2.3" fill="#8F6040"/>
+          <ellipse cx="927" cy="553" rx="12.4" ry="1.8" fill="#C08B62"/>
+          <path d="{HEART}" transform="translate(927 553.1) scale(1.15 .36)" fill="#F7E8D4"/>
+        </g>'''
+
+
+def phone():
+    """A phone on an oak stand, open on a little chat: a new message, bubbles, someone typing."""
+    w = 'fill="#FFFFFF"'
+    return f'''
+        <!-- Phone on an oak stand, open on a "say hello" chat -->
+        <g class="obj lift" id="o-phone" data-id="phone" tabindex="0" role="button" aria-label="Phone: say hello">
+          <rect x="954" y="518" width="50" height="74" fill="transparent"/>
+          <ellipse cx="980" cy="589.6" rx="26" ry="2.2" fill="#000" opacity=".12"/>
+          <path d="M957 583.4 H1001 Q1003.4 583.4 1003.4 585.6 V587.2 H954.6 V585.6 Q954.6 583.4 957 583.4Z" fill="url(#gOakF)"/>
+          <rect x="954.6" y="587.2" width="48.8" height="1.8" rx=".6" fill="#C6A97F"/>
+          <g transform="rotate(-12 980 584)">
+            <rect x="965.2" y="539" width="1.2" height="4.4" rx=".5" fill="#1E2129"/><rect x="965.2" y="546" width="1.2" height="6.6" rx=".5" fill="#1E2129"/>
+            <rect x="993.6" y="542" width="1.2" height="8.8" rx=".5" fill="#1E2129"/>
+            <rect x="966" y="528" width="28" height="56" rx="5.6" fill="#2F3340"/>
+            <rect x="966.4" y="528.4" width="27.2" height="55.2" rx="5.3" fill="none" stroke="#5A6072" stroke-width=".6"/>
+            <rect x="967.6" y="529.6" width="24.8" height="52.8" rx="4.3" fill="url(#gPhoneScreen)"/>
+            <rect x="976.6" y="531.2" width="6.8" height="2.1" rx="1.05" fill="#1E2129"/>
+            <path d="M970 532.3 h3.6" stroke="#2A2F3A" stroke-width=".8" stroke-linecap="round"/>
+            <rect x="986.6" y="531.6" width="3.2" height="1.4" rx=".4" fill="none" stroke="#2A2F3A" stroke-width=".45"/><rect x="987" y="532" width="2" height=".6" fill="#2A2F3A"/>
+            <rect x="969.2" y="535.2" width="21.6" height="6.2" rx="2.2" {w} opacity=".95"/>
+            <circle cx="972.4" cy="538.3" r="1.7" fill="#F2AFC1"/><path d="M971.4 538.6 q1 .9 2 0" stroke="#FFFFFF" stroke-width=".4" fill="none"/>
+            <path d="M975 537.3 h8" stroke="#2A2F3A" stroke-width=".75" stroke-linecap="round" opacity=".75"/>
+            <path d="M975 539.5 h12.4" stroke="#2A2F3A" stroke-width=".55" stroke-linecap="round" opacity=".35"/>
+            <circle class="ping" cx="990" cy="535.6" r="1.5" fill="#E2707A"/>
+            <rect x="969.6" y="545" width="13.4" height="5.4" rx="2.7" {w}/>
+            <path d="M971.6 547.7 h9" stroke="#2A2F3A" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+            <rect x="976.4" y="552.6" width="14" height="5.4" rx="2.7" fill="#3A57C4"/>
+            <path d="M978.4 555.3 h10" stroke="#FFFFFF" stroke-width=".6" stroke-linecap="round" opacity=".85"/>
+            <rect x="969.6" y="560.2" width="10.4" height="5.4" rx="2.7" {w}/>
+            <path d="M971.6 562.9 h6" stroke="#2A2F3A" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+            <rect x="969.6" y="567.6" width="9" height="4.4" rx="2.2" {w}/>
+            <g class="typing" fill="#9AA1AE"><circle cx="971.9" cy="569.8" r=".6"/><circle cx="974.1" cy="569.8" r=".6"/><circle cx="976.3" cy="569.8" r=".6"/></g>
+            <rect x="969.4" y="575" width="21.2" height="4.2" rx="2.1" {w} opacity=".9"/>
+            <path d="M971.4 577.1 h8" stroke="#2A2F3A" stroke-width=".5" stroke-linecap="round" opacity=".3"/>
+            <circle cx="988.7" cy="577.1" r="1.6" fill="#3A57C4"/><path d="M988 577.1 h1.4 M988.9 576.4 l.6 .7 -.6 .7" stroke="#FFFFFF" stroke-width=".4" fill="none" stroke-linecap="round"/>
+            <rect x="976.4" y="580.6" width="7.2" height=".8" rx=".4" fill="#2A2F3A" opacity=".5"/>
+            <path d="M968 530 L980 530 L968 552Z" fill="#FFFFFF" opacity=".12"/>
+            <rect x="963.2" y="579.6" width="33.6" height="5.4" rx="1.2" fill="url(#gOakF)"/>
+            <rect x="963.2" y="579.6" width="33.6" height="1" rx=".5" fill="#FFF6E4" opacity=".8"/>
+          </g>
+        </g>'''
+
+
 # ------------------------------------------------------------------ sketchbook
 def pencil(x, y, angle, length=64):
     """A yellow hexagonal pencil lying on the desk: eraser, metal band, body, sharpened wood, graphite."""
@@ -1346,22 +1425,22 @@ def monitor_screen():
         '<circle cx="724.5" cy="460.6" r="1.5" fill="#E2707A"/><circle cx="729.5" cy="460.6" r="1.5" fill="#F2C66B"/><circle cx="734.5" cy="460.6" r="1.5" fill="#8FBF7A"/>',
         '<rect x="770" y="458.4" width="60" height="4.6" rx="2.3" fill="#FFFDF9"/>',
         '<circle cx="773.6" cy="460.7" r=".9" fill="#8FBF7A"/><path d="M776.5 460.7 h22" stroke="#2A2F3A" stroke-width=".8" opacity=".35" stroke-linecap="round"/>',
-        # left: the page heading, a line of copy and a button
-        '<path d="M725 472 h5" stroke="#3A57C4" stroke-width=".8"/><path d="M732 472 h16" stroke="#3A57C4" stroke-width=".8" opacity=".45" stroke-linecap="round"/>',
-        '<text x="724.6" y="484.5" class="svg-screen sm">Selected</text>',
-        '<text x="724.6" y="496" class="svg-screen sm"><tspan font-style="italic" fill="#3A57C4">work</tspan></text>',
-        '<rect class="cursor-blink" x="747.6" y="488" width="1" height="9" fill="#3A57C4"/>',
-        '<path d="M725 502.5 h34 M725 506 h27" stroke="#2A2F3A" stroke-width=".7" opacity=".28" stroke-linecap="round"/>',
-        '<rect x="724.6" y="512" width="30" height="7.4" rx="3.7" fill="#2A2F3A"/>',
-        '<path d="M728.6 515.7 h14" stroke="#FFFDF9" stroke-width=".8" opacity=".85" stroke-linecap="round"/><path d="M746 515.7 h4.4 M748.4 513.9 l2 1.8 -2 1.8" stroke="#FFFDF9" stroke-width=".7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
-        # right: three postcards, the first one featured
-        mini_postcard(836, 470, 38, 25, 4, 'gArtBlue', 'phone'),
-        mini_postcard(838, 503, 38, 25, -2.6, 'gArtSun', 'laptop'),
-        mini_postcard(768, 471, 60, 44, -3, 'gArtGreen', 'leaf', featured=True),
+        # the page heading on one line, swiped with a yellow highlighter, and a "View all" button
+        '<path d="M725 470.6 h5" stroke="#3A57C4" stroke-width=".8"/><path d="M732 470.6 h16" stroke="#3A57C4" stroke-width=".8" opacity=".45" stroke-linecap="round"/>',
+        '<path d="M722.4 476.6 C748 475.4 782 475 803.4 475.4 L804.2 487.6 C782 488 750 488.2 723.2 488.8Z" fill="#F7DD86" opacity=".92"/>',
+        '<path d="M723 486.6 C750 486 782 485.8 803.6 485.6" stroke="#EFC95E" stroke-width="1.4" fill="none" opacity=".7" stroke-linecap="round"/>',
+        '<text x="725.2" y="486.2" class="svg-screen lg">Selected <tspan font-style="italic" fill="#3A57C4">work</tspan></text>',
+        '<rect class="cursor-blink" x="800.6" y="475.4" width="1.1" height="12.4" fill="#3A57C4"/>',
+        '<rect x="846" y="477.4" width="30" height="7.4" rx="3.7" fill="#2A2F3A"/>',
+        '<path d="M850 481.1 h14" stroke="#FFFDF9" stroke-width=".8" opacity=".85" stroke-linecap="round"/><path d="M867.4 481.1 h4.4 M869.8 479.3 l2 1.8 -2 1.8" stroke="#FFFDF9" stroke-width=".7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+        # three postcards in a row underneath, the first one featured
+        mini_postcard(785, 495, 40, 27, 3, 'gArtBlue', 'phone'),
+        mini_postcard(834, 494, 40, 27, -3, 'gArtSun', 'laptop'),
+        mini_postcard(727, 493, 50, 35, -2.5, 'gArtGreen', 'leaf', featured=True),
         # the cursor, about to open the featured project
-        '<g transform="translate(806.5 499) scale(.4)"><path d="M3 2 L3 24 L9 18 L13 27 L17 25 L13 16 L21 16 Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/></g>',
-        '<rect x="813" y="509.6" width="16" height="6" rx="3" fill="#2A2F3A"/>',
-        '<text x="815.6" y="514" class="svg-screen tiny">Open ↗</text>',
+        '<g transform="translate(757 508) scale(.4)"><path d="M3 2 L3 24 L9 18 L13 27 L17 25 L13 16 L21 16 Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/></g>',
+        '<rect x="763.4" y="518.4" width="16" height="6" rx="3" fill="#2A2F3A"/>',
+        '<text x="766" y="522.8" class="svg-screen tiny">Open ↗</text>',
         # dock
         '<rect x="772" y="538" width="56" height="7.6" rx="3.8" fill="#FFFFFF" opacity=".6"/>',
         ''.join(f'<rect x="{777 + i * 8:.1f}" y="539.5" width="4.6" height="4.6" rx="1.3" fill="{c}"/>' for i, c in enumerate(['#E2707A', '#8EA9E0', '#9FC48A', '#F2C66B', '#BEB2F0', '#2A2F3A'])),
@@ -1428,33 +1507,7 @@ w('''          <ellipse cx="891" cy="584" rx="8" ry="3.6" fill="#F8F6F1"/>
           <path d="M891 581 V584" stroke="#D3CEC4" stroke-width="1"/>
         </g>
 
-        <!-- Mug -->
-        <g class="obj lift" id="o-mug" data-id="mug" tabindex="0" role="button" aria-label="Mug: what fuels me">
-          <rect x="904" y="514" width="52" height="76" fill="transparent"/>
-          <g class="steam" stroke="#9AA3B5" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7">
-            <path d="M920 544 C914 536 926 530 920 520"/><path d="M934 546 C928 536 940 530 934 518" class="s2"/>
-          </g>
-          <path d="M944 560 C960 560 960 580 944 580" stroke="#E7A2B6" stroke-width="5" fill="none"/>
-          <path d="M910 552 H944 V582 C944 585 941 587 938 587 H916 C913 587 910 585 910 582Z" fill="url(#gMug)"/>
-          <ellipse cx="927" cy="552" rx="17" ry="3.6" fill="#FBDDE5"/>
-          <ellipse cx="927" cy="552.6" rx="14" ry="2.6" fill="#7A563F"/>
-          <path d="M927 576 C921 571 920 566 924 565 C926 565 927 567 927 567 C927 567 928 565 930 565 C934 566 933 571 927 576Z" fill="#fff" opacity=".9"/>
-        </g>
-
-        <!-- Phone on a stand -->
-        <g class="obj lift" id="o-phone" data-id="phone" tabindex="0" role="button" aria-label="Phone: say hello">
-          <rect x="956" y="520" width="46" height="70" fill="transparent"/>
-          <path d="M962 586 L974 556 L998 586Z" fill="url(#gOakF)"/>
-          <rect x="960" y="584" width="40" height="3" rx="1.5" fill="#CDB38C"/>
-          <g transform="rotate(-12 980 584)">
-            <rect x="966" y="530" width="28" height="54" rx="6" fill="#2F3340"/>
-            <rect x="968.5" y="533" width="23" height="48" rx="4" fill="#CFE6FF"/>
-            <rect x="976" y="534.5" width="8" height="2.4" rx="1.2" fill="#2F3340"/>
-            <rect x="972" y="544" width="15" height="9" rx="3" fill="#fff"/>
-            <rect x="974" y="557" width="13" height="7" rx="3" fill="#B9CCF1"/>
-            <circle class="ping" cx="989" cy="532" r="4" fill="#E2707A"/>
-          </g>
-        </g>''')
+''' + mug() + phone())
 
 w('</g>')
 # ------------------------------------------------------------------ chair (in front of the desk)

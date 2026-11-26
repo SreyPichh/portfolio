@@ -25,12 +25,12 @@
   /* ---------- The six tunes: key (MIDI root), tempo, and a four-bar chord loop ---------- */
   const Q = { maj7: [0, 4, 7, 11], maj9: [0, 4, 7, 11, 14], m7: [0, 3, 7, 10], m9: [0, 3, 7, 10, 14], dom9: [0, 4, 10, 14], m11: [0, 3, 10, 14, 17] };
   const SONGS = [
-    { root: 53, bpm: 74, seed: 11, prog: [[2, 'm9'], [7, 'dom9'], [0, 'maj9'], [9, 'm7']] },   // F: ii V I vi
-    { root: 50, bpm: 80, seed: 23, prog: [[0, 'maj7'], [9, 'm9'], [5, 'maj9'], [4, 'm7']] },   // D
-    { root: 48, bpm: 70, seed: 37, prog: [[9, 'm9'], [5, 'maj7'], [0, 'maj9'], [7, 'dom9']] }, // C
-    { root: 51, bpm: 68, seed: 41, prog: [[0, 'maj9'], [5, 'maj7'], [3, 'm11'], [7, 'm7']] },  // Eb, slow and dreamy
-    { root: 45, bpm: 84, seed: 59, prog: [[0, 'm9'], [5, 'm9'], [10, 'maj7'], [3, 'maj9']] },  // A minor
-    { root: 55, bpm: 76, seed: 67, prog: [[5, 'maj9'], [4, 'm7'], [2, 'm9'], [0, 'maj7']] },   // G
+    { root: 53, bpm: 70, seed: 11, prog: [[2, 'm9'], [7, 'dom9'], [0, 'maj9'], [9, 'm7']] },   // F: ii V I vi
+    { root: 50, bpm: 74, seed: 23, prog: [[0, 'maj7'], [9, 'm9'], [5, 'maj9'], [4, 'm7']] },   // D
+    { root: 48, bpm: 66, seed: 37, prog: [[9, 'm9'], [5, 'maj7'], [0, 'maj9'], [7, 'dom9']] }, // C
+    { root: 51, bpm: 64, seed: 41, prog: [[0, 'maj9'], [5, 'maj7'], [3, 'm11'], [7, 'm7']] },  // Eb, slow and dreamy
+    { root: 45, bpm: 76, seed: 59, prog: [[0, 'm9'], [5, 'm9'], [10, 'maj7'], [3, 'maj9']] },  // A minor
+    { root: 55, bpm: 70, seed: 67, prog: [[5, 'maj9'], [4, 'm7'], [2, 'm9'], [0, 'maj7']] },   // G
   ];
   const PENTA = [0, 2, 4, 7, 9];
 
@@ -43,20 +43,40 @@
 
   try { enabled = localStorage.getItem('sound') === 'on'; } catch (e) {}
 
+  // the "sound" of a small warm room: a few seconds of fading, softened noise
+  function roomImpulse(seconds) {
+    const rate = ctx.sampleRate, len = Math.floor(rate * seconds);
+    const buf = ctx.createBuffer(2, len, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      let smooth = 0;
+      for (let i = 0; i < len; i++) {
+        smooth += ((Math.random() * 2 - 1) - smooth) * .35;   // take the hiss off the tail
+        d[i] = smooth * Math.pow(1 - i / len, 3.2) * (i < rate * .012 ? i / (rate * .012) : 1);
+      }
+    }
+    return buf;
+  }
+
   function setup() {
     if (ctx) return;
     ctx = new AC();
     const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -18; comp.ratio.value = 3;
+    comp.threshold.value = -4; comp.ratio.value = 12; comp.knee.value = 4; comp.attack.value = .003; comp.release.value = .25;  // only a safety net: a squashing compressor (with its automatic make-up gain) made the beat pump
     master = ctx.createGain(); master.gain.value = 0;
     master.connect(comp).connect(ctx.destination);
     meter = ctx.createAnalyser(); meter.fftSize = 1024;
     comp.connect(meter);
 
     // music: everything goes through a warm low-pass, which is most of the lo-fi feel
-    lofi = ctx.createBiquadFilter(); lofi.type = 'lowpass'; lofi.frequency.value = 2400; lofi.Q.value = .6;
+    lofi = ctx.createBiquadFilter(); lofi.type = 'lowpass'; lofi.frequency.value = 1500; lofi.Q.value = .3;
     music = ctx.createGain(); music.gain.value = 0;
     music.connect(lofi).connect(master);
+    // a soft room reverb under the music, so it blends instead of sounding dry and close
+    const verb = ctx.createConvolver();
+    verb.buffer = roomImpulse(2.6);
+    const wet = ctx.createGain(); wet.gain.value = .32;
+    lofi.connect(verb).connect(wet).connect(master);
     amb = ctx.createGain(); amb.gain.value = .9;
     amb.connect(master);
 
@@ -76,12 +96,12 @@
     crackle = ctx.createBuffer(1, len, ctx.sampleRate);
     const c = crackle.getChannelData(0);
     for (let i = 0; i < len; i++) c[i] = (Math.random() * 2 - 1) * .012;
-    for (let k = 0; k < 90; k++) {
-      const at = Math.floor(Math.random() * (len - 200)), amp = (Math.random() ** 3) * .6 + .05;
-      for (let j = 0; j < 60; j++) c[at + j] += (Math.random() * 2 - 1) * amp * Math.exp(-j / 8);
+    for (let k = 0; k < 45; k++) {
+      const at = Math.floor(Math.random() * (len - 200)), amp = (Math.random() ** 3) * .25 + .03;
+      for (let j = 0; j < 60; j++) c[at + j] += (Math.random() * 2 - 1) * amp * Math.exp(-j / 6);
     }
     crackleGain = ctx.createGain(); crackleGain.gain.value = 0;
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+    const hp = ctx.createBiquadFilter(); hp.type = 'bandpass'; hp.frequency.value = 2200; hp.Q.value = .5;
     crackleGain.connect(hp).connect(master);
     const src = ctx.createBufferSource(); src.buffer = crackle; src.loop = true; src.connect(crackleGain); src.start();
   }
@@ -93,6 +113,10 @@
   }
 
   function env(g, t, peak, attack, decay, sustain, release, end) {
+    // start silent right away: a gain node is at full volume until told otherwise, and the
+    // oscillator may start a moment before the envelope does (the notes of a chord roll in)
+    g.gain.value = 0.0001;
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(peak, t + attack);
     g.gain.exponentialRampToValueAtTime(Math.max(peak * sustain, 0.0001), t + attack + decay);
@@ -104,10 +128,10 @@
     notes.forEach((m, n) => {
       const f = mtof(m);
       const g = ctx.createGain(); g.connect(music);
-      env(g, t + n * .012, .055 * vel, .012, 1.4, .35, .5, t + dur);
-      [['sine', 1, 1], ['triangle', 2, .18]].forEach(([type, mul, lvl]) => {
+      env(g, t + n * .026, .04 * vel, .05, 1.8, .42, .9, t + dur);
+      [['sine', 1, 1], ['sine', 2, .06]].forEach(([type, mul, lvl]) => {
         const o = ctx.createOscillator(); o.type = type; o.frequency.value = f * mul;
-        o.detune.value = (Math.random() - .5) * 8;
+        o.detune.value = (Math.random() - .5) * 5;
         wobble(o);
         const og = ctx.createGain(); og.gain.value = lvl;
         o.connect(og).connect(g); o.start(t); o.stop(t + dur + .6);
@@ -116,27 +140,27 @@
   }
 
   function bass(m, t, dur) {
-    const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = mtof(m);
-    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 520;
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = mtof(m);
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380;
     const g = ctx.createGain();
-    env(g, t, .22, .015, .3, .55, .12, t + dur);
+    env(g, t + .02, .14, .07, .4, .6, .25, t + dur);
     o.connect(f).connect(g).connect(music); o.start(t); o.stop(t + dur + .2);
   }
 
   function lead(m, t, dur) {
-    const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = mtof(m);
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = mtof(m);
     wobble(o);
-    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1800;
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1400;
     const g = ctx.createGain();
-    env(g, t, .06, .04, .5, .4, .3, t + dur);
+    env(g, t, .04, .09, .6, .45, .5, t + dur);
     o.connect(f).connect(g).connect(music); o.start(t); o.stop(t + dur + .4);
   }
 
   function kick(t) {
     const o = ctx.createOscillator(); o.type = 'sine';
-    o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(42, t + .14);
+    o.frequency.setValueAtTime(82, t); o.frequency.exponentialRampToValueAtTime(40, t + .16);
     const g = ctx.createGain();
-    g.gain.setValueAtTime(.3, t); g.gain.exponentialRampToValueAtTime(.001, t + .32);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.13, t + .012); g.gain.exponentialRampToValueAtTime(.001, t + .36);
     o.connect(g).connect(music); o.start(t); o.stop(t + .35);
   }
 
@@ -160,8 +184,8 @@
     if (pos === 5 && rand() < .55) keys(Q[quality].slice(1).map((iv) => root + iv + (root + iv > 72 ? -12 : 0)), t, beat * .9, .7);
     if (pos === 4) bass(root - 12 - (root - 12 > 47 ? 12 : 0) + (rand() < .3 ? 7 : 0), t, beat * .9);
     if (pos === 0 || (pos === 5 && rand() < .6)) kick(t);
-    if (pos === 2 || pos === 6) hiss(t + .012, 'bandpass', 1900, .8, .16, .2);          // snare, laid back
-    hiss(t, 'highpass', 7200, .6, pos % 2 ? .035 : .055, .05);                          // hats
+    if (pos === 2 || pos === 6) hiss(t + .015, 'bandpass', 1300, .5, .055, .32);        // a soft brushed snare, laid back
+    if (pos % 2 === 0) hiss(t, 'bandpass', 5200, .7, .012, .07);                       // a faint shaker on the beat
     // a sparse little melody from the pentatonic scale, different every bar but the same every play
     if (pos % 2 === 0 && rand() < .32) {
       const m = song.root + 24 + PENTA[Math.floor(rand() * PENTA.length)] + (rand() < .25 ? 12 : 0);
@@ -187,7 +211,7 @@
     music.gain.cancelScheduledValues(ctx.currentTime);
     crackleGain.gain.cancelScheduledValues(ctx.currentTime);
     music.gain.setTargetAtTime(1, ctx.currentTime, .25);
-    crackleGain.gain.setTargetAtTime(.35, ctx.currentTime, .3);
+    crackleGain.gain.setTargetAtTime(.16, ctx.currentTime, .3);
     timer = setInterval(scheduler, 25);
     scheduler();
   }
@@ -244,7 +268,7 @@
     setup();
     if (ctx.state === 'suspended') ctx.resume();
     master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(enabled ? .5 : 0, ctx.currentTime, .2);
+    master.gain.setTargetAtTime(enabled ? .95 : 0, ctx.currentTime, .2);
     if (enabled && wantsMusic) startMusic(); else stopMusic();
     if (!birdTimer) birdSong();
     if (!cricketTimer) crickets();
