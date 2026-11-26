@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250">
+  <!-- Sreypich, drawn as simple black line art to match the couple portrait in the room:
+       long straight hair parted in the middle, a smile, a white collared shirt under a knit vest,
+       a pearl necklace and a bracelet, and a peace sign. -->
+  <rect width="200" height="250" fill="#FFFFFF"/>
+  <g stroke="#111111" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- long hair behind her shoulders -->
+    <path d="M54 92 C50 60 70 34 100 34 C130 34 150 60 146 92 C150 130 150 180 156 250 H44 C50 180 50 130 54 92Z" fill="#111111"/>
+    <!-- shoulders: short white sleeves, then the knit vest -->
+    <path d="M34 250 C34 206 46 182 70 172 L130 172 C154 182 166 206 166 250Z" fill="#FFFFFF"/>
+    <path d="M56 250 C56 214 60 192 72 176 L128 176 C140 192 144 214 144 250Z" fill="#111111"/>
+    <path d="M76 176 L100 222 L124 176Z" fill="#FFFFFF"/>
+    <!-- the shirt collar -->
+    <path d="M87 166 L100 190 L80 197 L73 176Z M113 166 L100 190 L120 197 L127 176Z" fill="#FFFFFF"/>
+    <!-- neck -->
+    <path d="M87 136 V168 C93 174 107 174 113 168 V136" fill="#FFFFFF"/>
+    <!-- face -->
+    <path d="M66 96 C66 66 82 52 100 52 C118 52 134 66 134 96 C134 124 120 146 100 146 C80 146 66 124 66 96Z" fill="#FFFFFF"/>
+  </g>
+  <!-- the knit rib along the vest's V -->
+  <path d="M72 180 L100 228 L128 180" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linejoin="round"/>
+  <!-- a string of pearls -->
+  <g fill="#FFFFFF" stroke="#111111" stroke-width="1.8">
+    <circle cx="88" cy="171" r="2.6"/><circle cx="93.4" cy="175" r="2.6"/><circle cx="100" cy="176.6" r="2.6"/><circle cx="106.6" cy="175" r="2.6"/><circle cx="112" cy="171" r="2.6"/>
+  </g>
+  <!-- hair over the forehead, parted in the middle, falling either side of her face -->
+  <path d="M100 40 C80 40 64 56 62 84 C60 112 62 140 58 172 C66 160 70 132 72 106 C74 84 84 66 100 58 C116 66 126 84 128 106 C130 132 134 160 142 172 C138 140 140 112 138 84 C136 56 120 40 100 40Z" fill="#111111" stroke="#111111" stroke-width="4.6" stroke-linejoin="round"/>
+  <path d="M100 42 V58" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- face: brows, eyes, nose, a smile -->
+  <g fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 84 C84 81 90 81 93 83 M107 83 C110 81 116 81 120 84" stroke-width="3.6"/>
+    <path d="M98 98 C96 106 96 110 100 112 C102 112.6 104 112 105 111" stroke-width="3"/>
+    <path d="M86 121 C94 129 106 129 114 121" stroke-width="3.6"/>
+    <path d="M89 122 C96 125 104 125 111 122" stroke-width="2"/>
+  </g>
+  <ellipse cx="86.5" cy="94" rx="3.4" ry="4.4" fill="#111111"/>
+  <ellipse cx="113.5" cy="94" rx="3.4" ry="4.4" fill="#111111"/>
+  <!-- her raised arm and the peace sign -->
+  <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M44 176 L49 250" stroke="#111111" stroke-width="15"/>
+    <path d="M44 176 L49 250" stroke="#FFFFFF" stroke-width="7"/>
+    <path d="M37 150 L31 124 M47 150 L48 121" stroke="#111111" stroke-width="12"/>
+    <path d="M37 150 L31 124 M47 150 L48 121" stroke="#FFFFFF" stroke-width="5"/>
+  </g>
+  <path d="M29 165 C27 155 31 148 40 146 L51 146 C58 148 60 157 58 166 C56 176 48 181 39 179 C33 178 30 172 29 165Z" fill="#FFFFFF" stroke="#111111" stroke-width="4.4" stroke-linejoin="round"/>
+  <path d="M35 156 C41 155 47 156 52 158 M36 164 C42 163 48 164 53 166" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M38 196 C42 198.4 50 198.4 55 196" fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round"/>
+</svg>

@@ -789,6 +789,43 @@
       <div class="certs">${CERTS.map(cert).join('')}</div>`;
   }
 
+  /* ---------- After hours: the things I love outside work ----------
+     Each card can open another panel in the room with open: 'name'. */
+  const HOBBIES = [
+    { title: 'Travel', text: 'Trips with friends, and sometimes solo. Seven countries so far, and sixteen places around Cambodia.',
+      colour: '#CFE0F6', ink: '#3A57C4', open: 'map', go: 'See the map',
+      icon: '<path d="M8 30 L40 14 L44 18 L28 30 L36 40 L32 42 L22 34 L12 38Z" fill="#fff"/><path d="M24 14 L30 12 L34 20" fill="none"/>' },
+    { title: 'Listening to music', text: 'I listen to all kinds of music. A favourite is wave to earth, especially their song “love.”',
+      colour: '#F6D3DD', ink: '#C2477A', open: 'record', go: 'Play the record',
+      icon: '<path d="M18 34 V14 L38 10 V30" fill="none"/><ellipse cx="14" cy="34" rx="5" ry="4" fill="#fff"/><ellipse cx="34" cy="30" rx="5" ry="4" fill="#fff"/>' },
+    { title: 'Learning Japanese', text: 'Passed the JLPT at level N4 in 2025, and still going: a little every day.',
+      colour: '#F6E3B0', ink: '#B5482F', open: 'certificate', go: 'See the certificate',
+      icon: '<circle cx="24" cy="24" r="16" fill="#fff"/><text x="24" y="31" text-anchor="middle" font-size="19" font-family="Hiragino Sans, Yu Gothic, Noto Sans JP, sans-serif" stroke="none" fill="currentColor">あ</text>' },
+    { title: 'Watching movies', text: 'Winding down at the end of the day with a good film.',
+      colour: '#DCE9CF', ink: '#4F7A3A', go: '',
+      icon: '<rect x="8" y="18" width="32" height="22" rx="2" fill="#fff"/><path d="M8 18 L38 9 L40 15 L10 24Z" fill="#fff"/><path d="M17 15.5 L21 21 M26 12.8 L30 18.3"/><path d="M14 18 L18 24 M24 18 L28 24"/>' },
+  ];
+
+  function hobbiesPanel() {
+    const card = (h) => {
+      const tag = h.open ? 'button type="button"' : 'div';
+      const close = h.open ? 'button' : 'div';
+      return `<${tag} class="hob${h.open ? ' opens' : ''}"${h.open ? ` data-open="${h.open}"` : ''} style="--bg:${h.colour};--hob-ink:${h.ink}">
+          <svg class="hob-icon" viewBox="0 0 48 48" aria-hidden="true"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${h.icon}</g></svg>
+          <b>${h.title}</b>
+          <span>${h.text}</span>
+          ${h.go ? `<i class="mono">${h.go} →</i>` : ''}
+        </${close}>`;
+    };
+    return `<p class="lead">When the laptop closes, you'll find me planning the next trip, learning a little more Japanese, or winding down with music and a good film.</p>
+      <div class="hobs">${HOBBIES.map(card).join('')}</div>
+      <div class="hob-story">
+        <p class="mono hob-story-head">A fun fact · music</p>
+        <p class="hand">I love BTS: their music, and the message they share about learning to love yourself. I find it really inspiring. I've been a fan since 2020, though I haven't been to one of their concerts yet.</p>
+      </div>
+      <p class="hob-guitar"><span class="mono">And the guitar?</span> I don't play an instrument, not yet. I taught myself a little piano for a short while, and I'm planning to buy a guitar one day and learn.</p>`;
+  }
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -847,10 +884,7 @@
         }
       },
       open: () => panel('On the record player', 'On <em>repeat</em>', deckHTML()) },
-    guitar: { label: 'After hours', open: () => panel('Leaning on the wall', 'After <em>hours</em>',
-      `<p class="lead">[What you do when you're not working: a hobby, a craft, a sport.]</p>
-      ${chips(['[Guitar]', '[Hiking]', '[Film photos]', '[Baking]'])}
-      <p>[One small story about it. Why you love it, or what it taught you about your work.]</p>`) },
+    guitar: { label: 'After hours', open: () => panel('Leaning on the wall', 'After <em>hours</em>', hobbiesPanel()) },
     mug: { label: 'Fuel', open: () => panel('The pink mug', '<em>Fuel</em>',
       `<p class="lead">Currently powered by [your coffee or tea order].</p>
       ${rows([['Fun fact', '[Something surprising about you.]', '01'], ['Fun fact', '[Something you are weirdly good at.]', '02']])}`) },
@@ -1094,7 +1128,7 @@
     if (e.target === dialog || e.target.closest('[data-close]')) { dialog.close(); return; }
     if (e.target.closest('[data-award-off]')) { setAward(false); dialog.close(); say('Award light off'); return; }
     const go = e.target.closest('[data-open]');
-    if (go && THINGS[go.dataset.open]?.open) { openPanel(THINGS[go.dataset.open].open()); return; }
+    if (go && THINGS[go.dataset.open]?.open) { openPanel(THINGS[go.dataset.open].open()); if (go.dataset.open === 'record') startDeck(); return; }
     const link = e.target.closest('a[href^="#"]');
     if (link && link.getAttribute('href').length > 1) dialog.close();
   });

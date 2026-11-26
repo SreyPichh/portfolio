@@ -1046,13 +1046,19 @@ w(f'''        <g class="plant-up c-plant" style="--o:191px 606px; --t:5.2s; --dl
 w('''
         <g class="c-sm">''' + flatbook(224, 630, 70, 16, '#EFA2B5') + flatbook(228, 614, 62, 14, '#FFFDF7') + '</g>')
 # --- row 3 right: books + photo frame
-s = ''.join(book(x, 630, wd, h, c) for x, wd, h, c in [(318, 15, 74, '#A3CB8B'), (334, 13, 82, '#F4EEE2'), (348, 17, 70, '#8BA6E2'), (366, 12, 78, '#E58C8C'), (379, 15, 66, '#BEB2F0'), (395, 13, 74, '#F4D772')])
+s = ''.join(book(x, 630, wd, h, c) for x, wd, h, c in [(318, 15, 74, '#A3CB8B'), (334, 13, 82, '#F4EEE2'), (348, 17, 70, '#8BA6E2'), (366, 12, 78, '#E58C8C'), (379, 15, 66, '#BEB2F0')])
 w(f'''        <g class="c-sm">{s}</g>
-        <g class="c-sm" transform="rotate(-4 432 630)">
-          <rect x="414" y="588" width="34" height="42" rx="2" fill="#FFFFFF"/>
-          <rect x="419" y="593" width="24" height="30" fill="#CFE0F3"/>
-          <circle cx="431" cy="604" r="5" fill="#F4D772"/>
-          <path d="M419 623 L428 612 L435 618 L443 608 V623Z" fill="#A9C49B"/>
+        <!-- a rounded walnut frame with a cream mat, holding a line-art portrait of Sreypich -->
+        <g class="c-sm" transform="rotate(-3 422 630)">
+          <rect x="397.6" y="569.6" width="52" height="61" rx="9" fill="#000" opacity=".14"/>
+          <rect x="396" y="568" width="52" height="61" rx="9" fill="url(#gWalnut)"/>
+          <rect x="397" y="569" width="50" height="59" rx="8.2" fill="none" stroke="#E2A56E" stroke-width="1" opacity=".55"/>
+          <rect x="400.6" y="572.6" width="42.8" height="51.8" rx="5.4" fill="#5E3519" opacity=".45"/>
+          <rect x="401.4" y="573.4" width="41.2" height="50.2" rx="5" fill="#F4EEDF"/>
+          <rect x="409.4" y="583.4" width="25.2" height="31.4" fill="#E3DACA"/>
+          <rect x="410.2" y="584.2" width="23.6" height="29.8" fill="#FFFFFF"/>
+          <image href="assets/me-lineart.svg" x="410.2" y="584.2" width="23.6" height="29.8" preserveAspectRatio="xMidYMid slice"/>
+          <path d="M401.4 578 Q401.4 573.4 406 573.4 H438" stroke="#FFFFFF" stroke-width=".8" fill="none" opacity=".7"/>
         </g>''')
 # --- row 4 (bottom): books on the left, a little glow-in-the-dark figure collection on the right
 s4 = ''.join(book(x, 746, wd, h, c) for x, wd, h, c in [(166, 15, 76, '#E58C8C'), (182, 13, 84, '#F4EEE2'), (196, 17, 72, '#8BA6E2'), (214, 12, 80, '#A3CB8B'), (227, 16, 70, '#F4D772'), (244, 14, 78, '#BEB2F0')])
