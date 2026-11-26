@@ -1,0 +1,44 @@
+---
+title: Page not found — {{site.name}}
+description: This page wandered off. Head back to the office.
+nav: none
+sitemap: no
+---
+<main class="subpage">
+  <!-- ============ 404: shown for any address that doesn't exist ============ -->
+  <section class="lost scene">
+    <div class="sky"></div>
+    <div class="clouds" aria-hidden="true">
+      <svg class="cloud c1"><use href="#cloud"/></svg>
+      <svg class="cloud c3"><use href="#cloud"/></svg>
+    </div>
+
+    <div class="lost-copy">
+      <!-- a paper plane that looped off course -->
+      <svg class="lost-plane" viewBox="0 0 320 120" aria-hidden="true">
+        <path d="M8 96 C60 100 92 70 84 46 C76 22 44 34 56 58 C68 82 130 84 176 60 C206 44 230 34 262 36" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round"/>
+        <g transform="translate(262 36) rotate(-8)">
+          <path d="M0 -16 L48 0 L0 16 L10 0Z" fill="#FFFDF7" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M10 0 L48 0 L6 9Z" fill="#E4E9F8" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/>
+        </g>
+      </svg>
+
+      <p class="mono kicker">Error 404 · page not found</p>
+      <h1 class="display">This page <em>wandered off</em>.</h1>
+      <p class="lede">The link may be old, or there might be a typo in the address. Everything else is right where I left it.</p>
+      <a class="pill big" href="index.html">Back to the office <span aria-hidden="true">↗</span></a>
+      <nav class="lost-links mono" aria-label="Or try">
+        <a href="about.html">About</a><a href="work.html">Work</a><a href="notes.html">Notes</a><a href="contact.html">Say hello</a>
+      </nav>
+    </div>
+
+    <svg class="land" viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path d="M0 300 C200 270 420 262 640 280 C860 298 1100 250 1440 270 L1440 500 L0 500Z" fill="url(#gMount)" opacity=".8"/>
+      <g filter="url(#rough)">
+        <path d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
+        <path d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
+        <g class="flowers wide"></g>
+      </g>
+    </svg>
+  </section>
+</main>

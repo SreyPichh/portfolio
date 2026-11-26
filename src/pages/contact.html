@@ -1,0 +1,115 @@
+---
+title: Say hello — {{site.name}}
+description: What's next, and how to reach me.
+nav: contact
+---
+<main class="subpage">
+  <!-- ============ CHAPTER 05 / EPILOGUE ============ -->
+  <section id="ch5" class="end scene" data-chapter>
+    <div class="sky dusk"></div>
+    <div class="clouds" aria-hidden="true">
+      <svg class="cloud c1"><use href="#cloud"/></svg>
+      <svg class="cloud c3"><use href="#cloud"/></svg>
+    </div>
+
+    <div class="end-copy">
+      <p class="mono kicker reveal">Chapter five · what's next</p>
+      <h2 class="display reveal">Let's write the <span class="select">next chapter<i class="cursor" aria-hidden="true"></i></span> together.</h2>
+      <p class="lede reveal">[Where you're headed: the kind of work, teams or problems you want next. Say if you're open to freelance, full-time or a coffee chat.]</p>
+    </div>
+
+    <!-- the writing set: a letter to fill in, and the envelope it goes in -->
+    <div class="writing-set">
+      <form class="letter reveal" id="letter" novalidate>
+        <span class="letter-clip" aria-hidden="true"></span>
+        <p class="letter-date mono"><span>{{site.city}}</span> · <span id="today">today</span></p>
+        <p class="hand letter-dear">Dear {{site.name}},</p>
+
+        <fieldset class="reasons">
+          <legend class="hand">I'd love to talk about…</legend>
+          <label><input type="radio" name="why" value="a full-time role" checked><span>a full-time role</span></label>
+          <label><input type="radio" name="why" value="a freelance project"><span>a freelance project</span></label>
+          <label><input type="radio" name="why" value="a coffee chat"><span>a coffee chat</span></label>
+          <label><input type="radio" name="why" value="just saying hi"><span>just saying hi</span></label>
+        </fieldset>
+
+        <label class="sr-only" for="letter-msg">Your note</label>
+        <textarea id="letter-msg" class="hand letter-lines" rows="4" placeholder="Tell me a little about it…"></textarea>
+
+        <div class="letter-sign">
+          <span class="hand">Warmly,</span>
+          <label class="sr-only" for="letter-from">Your name</label>
+          <input id="letter-from" class="hand" type="text" autocomplete="name" placeholder="your name">
+        </div>
+
+        <div class="letter-foot">
+          <button class="pill big" type="submit">Post it <span aria-hidden="true">↗</span></button>
+          <p class="mono">opens your email app with this note ready to send</p>
+        </div>
+      </form>
+
+      <div class="post-side">
+        <div class="envelope reveal">
+          <div class="env-stamp" aria-hidden="true">
+            <svg class="env-stamp-in" viewBox="0 0 60 70">
+              <rect width="60" height="70" fill="#F4E3B0"/>
+              <circle cx="42" cy="20" r="9" fill="#FFF6DA"/>
+              <path d="M0 50 C14 40 30 42 60 46 V70 H0Z" fill="#A6CC88"/>
+              <path d="M0 58 C20 52 40 56 60 60 V70 H0Z" fill="#7FAF62"/>
+              <path d="M16 52 C10 42 11 30 16 18 C21 30 22 42 16 52Z" fill="#5A8C55"/>
+              <text x="54" y="66" text-anchor="end" font-family="Instrument Serif, serif" font-style="italic" font-size="9" fill="#2E2A26">1c</text>
+            </svg>
+          </div>
+          <svg class="env-postmark" viewBox="0 0 150 80" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="1.6">
+              <circle cx="110" cy="40" r="30"/><circle cx="110" cy="40" r="24" stroke-width=".8"/>
+              <path d="M2 26 q9 -6 18 0 t18 0 t18 0 t18 0 M2 40 q9 -6 18 0 t18 0 t18 0 t18 0 M2 54 q9 -6 18 0 t18 0 t18 0 t18 0"/>
+            </g>
+            <text x="110" y="36" text-anchor="middle" class="pm-small">OPEN FOR</text>
+            <text x="110" y="51" text-anchor="middle" class="pm-year">work</text>
+          </svg>
+
+          <p class="env-label mono">Par avion · to</p>
+          <p class="env-name">{{site.name}}</p>
+          <a class="env-addr" id="email" href="mailto:{{site.email}}" data-copy="{{site.email}}">
+            <span>{{site.email}}</span><i class="mono">copy</i>
+          </a>
+          <p class="env-line">{{site.city}}, {{site.country}}</p>
+          <p class="env-status mono"><span class="dot" aria-hidden="true"></span>{{site.availability}}</p>
+        </div>
+
+        <p class="hand reply-note reveal">I usually write back within two days ✿</p>
+
+        <nav class="elsewhere reveal" aria-label="Elsewhere">
+          <p class="mono">Or find me elsewhere</p>
+          <ul class="stamps">
+            <li><a class="stamp-link" href="{{site.socials.linkedin}}" style="--art:#CFE0F6;--r:-4deg"><span class="stamp-in"><b>in</b><span class="mono">LinkedIn</span></span></a></li>
+            <li><a class="stamp-link" href="{{site.socials.instagram}}" style="--art:#F6D3DD;--r:3deg"><span class="stamp-in"><b>ig</b><span class="mono">Instagram</span></span></a></li>
+            <li><a class="stamp-link" href="{{site.socials.readcv}}" style="--art:#DCE9CF;--r:-2deg"><span class="stamp-in"><b>cv</b><span class="mono">Read.cv</span></span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <svg class="land" viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path d="M0 300 C200 270 420 262 640 280 C860 298 1100 250 1440 270 L1440 500 L0 500Z" fill="url(#gMount)" opacity=".8"/>
+      <g filter="url(#rough)">
+        <path d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
+        <path d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
+        <path d="M720 502 C680 470 780 440 730 410 C700 392 730 382 722 374" stroke="var(--path)" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <g transform="translate(716 372)">
+          <path d="M6 -24 H52 M10 -24 V0 M48 -24 V0" stroke="var(--figure)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <rect x="16" y="-48" width="28" height="22" rx="3" fill="#FFFDF7" stroke="var(--figure)" stroke-width="1.6"/>
+          <rect x="20" y="-44" width="20" height="14" rx="2" class="screen"/>
+        </g>
+        <use href="#sitter" x="684" y="318" width="48" height="56"/>
+        <g class="flowers wide"></g>
+      </g>
+    </svg>
+
+    <footer class="foot mono">
+      <span>© <span id="yr">2026</span> {{site.name}} · drawn by hand, built with care</span>
+      <a href="index.html">back to the office ↑</a>
+    </footer>
+  </section>
+</main>

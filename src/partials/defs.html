@@ -1,0 +1,47 @@
+<!-- Shared drawings -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.2"/>
+    </filter>
+    <filter id="puff" x="-10%" y="-20%" width="120%" height="140%">
+      <feGaussianBlur stdDeviation="1.6"/>
+    </filter>
+
+    <linearGradient id="gMount" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color:var(--mount-1)"/><stop offset="1" style="stop-color:var(--mount-2)"/>
+    </linearGradient>
+    <linearGradient id="gBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color:var(--hb-1)"/><stop offset=".6" style="stop-color:var(--hb-2)"/>
+    </linearGradient>
+    <linearGradient id="gMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color:var(--hm-1)"/><stop offset=".6" style="stop-color:var(--hm-2)"/>
+    </linearGradient>
+    <linearGradient id="gFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color:var(--hf-1)"/><stop offset=".7" style="stop-color:var(--hf-2)"/>
+    </linearGradient>
+
+    <symbol id="cloud" viewBox="0 0 200 90">
+      <g filter="url(#puff)">
+        <ellipse cx="102" cy="66" rx="84" ry="16" fill="var(--cloud-shade)"/>
+        <circle cx="62" cy="52" r="26" fill="var(--cloud)"/>
+        <circle cx="98" cy="38" r="34" fill="var(--cloud)"/>
+        <circle cx="138" cy="50" r="27" fill="var(--cloud)"/>
+        <ellipse cx="100" cy="60" rx="82" ry="15" fill="var(--cloud)"/>
+      </g>
+    </symbol>
+    <symbol id="cypress" viewBox="-24 -160 48 175" overflow="visible">
+      <path d="M0 0 C-20 -40 -18 -96 0 -156 C18 -96 20 -40 0 0Z" fill="var(--tree)"/>
+      <path d="M0 -150 C10 -96 12 -40 0 0 C14 -40 16 -96 0 -156Z" fill="var(--tree-2)" opacity=".55"/>
+      <path d="M0 0 V10" stroke="var(--tree-2)" stroke-width="3"/>
+    </symbol>
+    <symbol id="sitter" viewBox="-24 -54 48 56" overflow="visible">
+      <path d="M-13 0 V-22 M9 0 V-15 M-13 -15 H11 M-13 -22 V-40" stroke="var(--figure)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M-6 -17 H11 V0" stroke="var(--figure)" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="-11" y="-37" width="13" height="21" rx="4" fill="#FFFDF7" stroke="var(--figure)" stroke-width="1.6"/>
+      <path d="M-11 -31 H2 M-11 -25 H2 M-11 -20 H2" stroke="var(--figure)" stroke-width="1.2"/>
+      <circle cx="-4" cy="-44" r="6.5" fill="var(--figure)"/>
+    </symbol>
+  </defs>
+</svg>

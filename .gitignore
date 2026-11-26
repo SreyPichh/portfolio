@@ -1,0 +1,11 @@
+# the built site: the host makes its own from src/
+dist/
+
+# reference images: not yours to publish, keep them local
+inspo/
+
+# editor, OS and tool clutter
+.DS_Store
+.claude/
+__pycache__/
+*.pyc

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  {{page.base}}
+  <link rel="canonical" href="{{page.url}}">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#FAF7F0">
+
+  <!-- how the link looks when it's shared -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{site.name}}">
+  <meta property="og:title" content="{{page.title}}">
+  <meta property="og:description" content="{{page.description}}">
+  <meta property="og:url" content="{{page.url}}">
+  <meta property="og:image" content="{{site.url}}/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v={{build}}">
+  <script>
+    // Restore the time of day before first paint so there's no flash.
+    (function () {
+      var t = null;
+      try { t = parseFloat(localStorage.getItem('daytime')); } catch (e) {}
+      if (isNaN(t) || t === null) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 1 : 0.35;
+      window.__daytime = t;
+      document.documentElement.setAttribute('data-theme', t > 0.85 ? 'night' : 'day');
+      document.documentElement.classList.add('js');
+    })();
+  </script>
+</head>
+<body data-email="{{site.email}}" data-resume="{{site.resume}}">
+{{> defs}}
+<!-- soft cursor ring (fine pointers only) -->
+<div class="ring" aria-hidden="true"></div>
+<div class="toast mono" role="status" aria-live="polite"></div>
+
+{{> topbar}}
+
+{{content}}
+<script src="script.js?v={{build}}"></script>
+</body>
+</html>

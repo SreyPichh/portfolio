@@ -1,0 +1,25 @@
+{
+  "_read_me": "Your details, in one place. Change them here, then run: python3 tools/build.py",
+
+  "name": "Your Name",
+  "monogram": "Yn",
+  "role": "[your role]",
+  "city": "[City]",
+  "country": "[Country]",
+  "availability": "[Taking on new work from Month]",
+
+  "email": "hello@yourname.com",
+  "resume": "",
+
+  "socials": {
+    "linkedin": "#",
+    "instagram": "#",
+    "readcv": "#"
+  },
+
+  "_url_note": "The address the site will live at, with no slash at the end. Used for link previews and the sitemap.",
+  "url": "https://yourname.com",
+
+  "_basePath_note": "Leave as / unless the site lives in a sub-folder, e.g. /portfolio/ on GitHub Pages project sites.",
+  "basePath": "/"
+}

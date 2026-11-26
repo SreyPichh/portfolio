@@ -1,0 +1,8 @@
+# Netlify: connect the repository and it builds with these settings.
+# Cloudflare Pages and Vercel: use the same build command and output folder in their dashboard.
+[build]
+  command = "python3 tools/build.py"
+  publish = "dist"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"

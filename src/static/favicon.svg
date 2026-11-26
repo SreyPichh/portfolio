@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- the office monitor: cream tile, dark bezel, blue chin -->
+  <rect width="64" height="64" rx="14" fill="#FAF7F0"/>
+  <rect x="8" y="12" width="48" height="32" rx="4" fill="#2A2F3A"/>
+  <rect x="11.5" y="15.5" width="41" height="22" rx="1.5" fill="#CFE6FF"/>
+  <circle cx="42" cy="22" r="4" fill="#FFF1C4"/>
+  <path d="M11.5 33 C20 28.5 30 29.5 52.5 32 V37.5 H11.5Z" fill="#A6CC88"/>
+  <path d="M8 38 H56 V40 A4 4 0 0 1 52 44 H12 A4 4 0 0 1 8 40Z" fill="#3A57C4"/>
+  <path d="M28 44 H36 L38 51 H26Z" fill="#2A2F3A"/>
+  <rect x="20" y="50" width="24" height="3.5" rx="1.75" fill="#2A2F3A"/>
+</svg>
