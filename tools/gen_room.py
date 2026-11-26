@@ -13,7 +13,19 @@ import os, re, sys
 
 EX, EY = 600, 470          # eye point (vanishing point)
 out = []
-def w(s): out.append(s)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from monstera import leaf as _monstera_leaf, KINDS as _MKINDS
+def _monstera_defs():
+    """One outline, shaded half and vein set per leaf kind: #mleaf-mature, #mshade-mature, #mveins-mature..."""
+    out = []
+    for k in _MKINDS:
+        whole, shade, rib, sides = _monstera_leaf(k)
+        out.append(f'<path id="mleaf-{k}" fill-rule="evenodd" d="{whole}"/>')
+        out.append(f'<path id="mshade-{k}" fill-rule="evenodd" d="{shade}"/>')
+        out.append(f'<g id="mveins-{k}" fill="none" stroke-linecap="round"><path d="{rib}" stroke="#C8EBA0" stroke-width="2.6" stroke-opacity=".85"/>'
+                   f'<path d="{sides}" stroke="#C8EBA0" stroke-width="1.3" stroke-opacity=".5"/></g>')
+    return '\n          '.join(out)
+def w(s): out.append(s.replace('@@WINDOWVIEW@@', '              ' + window_view()) if '@@WINDOWVIEW@@' in s else s)
 
 def lerp(a, b, k): return a + (b - a) * k
 def back(x, y, k):          # point pushed back in depth toward the vanishing point
@@ -38,6 +50,15 @@ defs = [
  '''<linearGradient id="gWin" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" style="stop-color:var(--sky-1)"/><stop offset=".55" style="stop-color:var(--sky-2)"/><stop offset="1" style="stop-color:var(--sky-3)"/>
           </linearGradient>
+          <!-- the lake mirrors the sky: horizon colours at the far shore, deeper blue up close -->
+          <linearGradient id="gLake" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color:var(--sky-3)"/><stop offset=".45" style="stop-color:var(--sky-2)"/><stop offset="1" style="stop-color:var(--sky-1)"/>
+          </linearGradient>
+          <!-- warm haze that sits on the horizon -->
+          <linearGradient id="gHaze" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color:var(--glow)" stop-opacity="0"/><stop offset=".62" style="stop-color:var(--glow)" stop-opacity=".7"/><stop offset="1" style="stop-color:var(--glow)" stop-opacity="0"/>
+          </linearGradient>
+          <clipPath id="winFields"><path d="M560 368 C640 348 720 350 790 362 C850 372 920 358 1000 354 V440 H560Z"/></clipPath>
           <radialGradient id="gSun" cx=".4" cy=".35" r=".7">
             <stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" style="stop-color:var(--sun)"/><stop offset="1" style="stop-color:var(--sun-edge)"/>
           </radialGradient>
@@ -192,9 +213,8 @@ defs.append('''
             <feTurbulence type="fractalNoise" baseFrequency=".011 .09" numOctaves="3" seed="5" stitchTiles="stitch"/>
             <feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/>
           </filter>
-          <!-- monstera leaf with deep splits and holes, base at 0,0 -->
-          <path id="mleaf" fill-rule="evenodd" d="M0.0 4.0 L-1.7 4.7 L-3.5 5.3 L-5.2 5.9 L-7.0 6.4 L-8.8 6.8 L-10.7 7.2 L-12.5 7.6 L-14.4 7.9 L-16.3 8.1 L-18.2 8.3 L-20.1 8.5 L-22.0 8.5 L-23.9 8.6 L-25.9 8.5 L-27.8 8.5 L-29.7 8.3 L-31.6 8.1 L-33.6 7.9 L-35.5 7.6 L-37.4 7.3 L-38.3 7.1 L-9.0 25.0 L-47.0 4.6 L-48.6 4.0 L-50.5 3.3 L-52.2 2.5 L-54.0 1.6 L-55.8 0.8 L-57.5 -0.2 L-59.1 -1.2 L-60.8 -2.3 L-62.4 -3.4 L-64.0 -4.6 L-65.5 -5.8 L-67.0 -7.1 L-68.5 -8.4 L-69.9 -9.8 L-71.3 -11.3 L-72.6 -12.8 L-73.0 -13.3 L-9.0 1.2 L-78.1 -20.6 L-78.4 -21.1 L-79.4 -23.0 L-80.3 -24.9 L-81.2 -26.8 L-82.0 -28.8 L-82.7 -30.9 L-83.4 -33.0 L-84.0 -35.2 L-84.5 -37.4 L-85.0 -39.7 L-85.3 -42.1 L-85.6 -44.5 L-85.8 -46.9 L-86.0 -49.4 L-86.0 -51.2 L-9.0 -38.7 L-85.6 -60.2 L-85.5 -61.7 L-85.1 -64.1 L-84.8 -66.4 L-84.3 -68.7 L-83.9 -70.9 L-83.3 -73.1 L-82.7 -75.3 L-82.0 -77.4 L-81.3 -79.6 L-80.5 -81.6 L-79.6 -83.7 L-78.7 -85.7 L-77.8 -87.6 L-77.4 -88.3 L-9.0 -76.0 L-72.8 -96.0 L-72.2 -96.9 L-70.9 -98.6 L-69.6 -100.3 L-68.3 -102.0 L-66.9 -103.6 L-65.4 -105.2 L-63.9 -106.8 L-62.4 -108.3 L-60.9 -109.8 L-59.2 -111.2 L-57.6 -112.7 L-55.9 -114.0 L-54.2 -115.4 L-52.5 -116.6 L-52.3 -116.8 L-7.0 -104.0 L-44.7 -121.6 L-43.2 -122.5 L-41.3 -123.6 L-39.3 -124.6 L-37.3 -125.5 L-35.3 -126.5 L-33.2 -127.4 L-31.2 -128.2 L-29.1 -129.0 L-27.0 -129.8 L-24.8 -130.5 L-22.7 -131.2 L-20.5 -131.9 L-18.3 -132.5 L-16.1 -133.0 L-13.9 -133.5 L-11.6 -134.0 L-9.4 -134.5 L-7.1 -134.9 L-4.9 -135.2 L-2.6 -135.5 L-0.3 -135.8 L2.0 -136.0 L0.3 -135.8 L2.6 -135.5 L4.9 -135.2 L7.1 -134.9 L9.4 -134.5 L11.6 -134.0 L13.9 -133.5 L16.1 -133.0 L18.3 -132.5 L20.5 -131.9 L22.7 -131.2 L24.8 -130.5 L27.0 -129.8 L29.1 -129.0 L31.2 -128.2 L33.2 -127.4 L35.3 -126.5 L37.3 -125.5 L37.9 -125.2 L7.0 -108.1 L45.8 -121.0 L47.0 -120.3 L48.8 -119.1 L50.7 -117.9 L52.5 -116.6 L54.2 -115.4 L55.9 -114.0 L57.6 -112.7 L59.2 -111.2 L60.9 -109.8 L62.4 -108.3 L63.9 -106.8 L65.4 -105.2 L66.5 -104.0 L9.0 -84.7 L72.1 -97.0 L72.2 -96.9 L73.4 -95.1 L74.6 -93.3 L75.7 -91.4 L76.7 -89.5 L77.8 -87.6 L78.7 -85.7 L79.6 -83.7 L80.5 -81.6 L81.3 -79.6 L82.0 -77.4 L82.7 -75.3 L83.3 -73.1 L83.9 -70.9 L84.0 -70.3 L9.0 -49.1 L85.5 -61.4 L85.7 -59.3 L85.9 -56.9 L86.0 -54.5 L86.0 -52.0 L86.0 -49.4 L85.8 -46.9 L85.6 -44.5 L85.3 -42.1 L85.0 -39.7 L84.5 -37.4 L84.0 -35.2 L83.4 -33.0 L82.7 -30.9 L82.4 -29.9 L9.0 -8.0 L78.7 -21.7 L78.4 -21.1 L77.3 -19.3 L76.2 -17.6 L75.1 -15.9 L73.8 -14.3 L72.6 -12.8 L71.3 -11.3 L69.9 -9.8 L68.5 -8.4 L67.0 -7.1 L65.5 -5.8 L64.0 -4.6 L62.4 -3.4 L60.8 -2.3 L59.1 -1.2 L57.5 -0.2 L56.3 0.4 L9.0 21.2 L48.1 4.2 L46.8 4.7 L45.0 5.3 L43.1 5.9 L41.2 6.4 L39.3 6.9 L37.4 7.3 L35.5 7.6 L33.6 7.9 L31.6 8.1 L29.7 8.3 L27.8 8.5 L25.9 8.5 L23.9 8.6 L22.0 8.5 L20.1 8.5 L18.2 8.3 L16.3 8.1 L14.4 7.9 L12.5 7.6 L10.7 7.2 L8.8 6.8 L7.0 6.4 L5.2 5.9 L3.5 5.3 L1.7 4.7 L-0.0 4.0Z M-17.4 -39.5 L-16.4 -37.2 L-15.9 -35.1 L-16.0 -33.4 L-16.8 -32.4 L-18.0 -32.2 L-19.5 -33.0 L-21.2 -34.5 L-22.6 -36.5 L-23.6 -38.8 L-24.1 -40.9 L-24.0 -42.6 L-23.2 -43.6 L-22.0 -43.8 L-20.5 -43.0 L-18.8 -41.5Z M-19.7 -73.9 L-18.3 -71.9 L-17.4 -69.8 L-17.3 -68.1 L-17.8 -67.0 L-19.0 -66.7 L-20.7 -67.1 L-22.5 -68.3 L-24.3 -70.1 L-25.7 -72.1 L-26.6 -74.2 L-26.7 -75.9 L-26.2 -77.0 L-25.0 -77.3 L-23.3 -76.9 L-21.5 -75.7Z M22.6 -52.5 L21.2 -50.5 L19.5 -49.0 L18.0 -48.2 L16.8 -48.4 L16.0 -49.4 L15.9 -51.1 L16.4 -53.2 L17.4 -55.5 L18.8 -57.5 L20.5 -59.0 L22.0 -59.8 L23.2 -59.6 L24.0 -58.6 L24.1 -56.9 L23.6 -54.8Z M19.4 -88.2 L17.7 -86.3 L15.8 -85.1 L14.2 -84.6 L13.0 -84.9 L12.4 -86.0 L12.5 -87.7 L13.3 -89.7 L14.6 -91.8 L16.3 -93.7 L18.2 -94.9 L19.8 -95.4 L21.0 -95.1 L21.6 -94.0 L21.5 -92.3 L20.7 -90.3Z"/>
-          <g id="mveins" fill="none" stroke-linecap="round"><path d="M0 4 C1 -40 -1 -90 1 -132" stroke="#C8EBA0" stroke-width="2.6" stroke-opacity=".85"/><path d="M-4.0 25.7 Q-15.0 6.4 -26.0 10.4 M-4.0 13.9 Q-29.5 -4.6 -55.1 -0.6 M-4.0 -19.9 Q-39.8 -37.4 -75.6 -33.4 M-4.0 -60.0 Q-39.3 -76.6 -74.6 -72.6 M-4.0 -93.6 Q-30.6 -109.3 -57.1 -105.3 M-4.0 -116.7 Q-14.6 -131.4 -25.1 -127.4 M4.0 25.0 Q17.3 5.9 30.5 9.9 M4.0 7.2 Q33.1 -11.0 62.2 -7.0 M4.0 -30.2 Q40.6 -47.5 77.1 -43.5 M4.0 -69.9 Q37.7 -86.2 71.4 -82.2 M4.0 -99.8 Q27.6 -115.3 51.1 -111.3 M4.0 -118.1 Q12.9 -132.7 21.9 -128.7" stroke="#C8EBA0" stroke-width="1.3" stroke-opacity=".5"/></g>
+          <!-- monstera leaves (drawn by tools/monstera.py): heart-shaped, the stalk joins at the notch at 0,0 and the tip points up -->
+          @@MONSTERA@@
           <g id="pleaf">
             <path d="M0 0 C-12 1 -19 -9 -18 -21 C-17 -33 -9 -42 2 -51 C11 -42 18 -33 18 -21 C19 -9 12 1 0 0Z"/>
             <path d="M-3 -6 C-7 -18 -7 -30 -2 -42 M5 -10 C8 -20 8 -28 5 -38 M-9 -14 C-11 -20 -10 -26 -8 -30" stroke="#E4F29C" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".55"/>
@@ -345,6 +365,93 @@ w('''        <!-- contact shadows on the floor -->
           <ellipse cx="1122" cy="802" rx="54" ry="5.5" opacity=".36" filter="url(#edge1)"/>
           <path d="M1164 800 L1250 790 L1262 802 L1172 808Z" opacity=".12" filter="url(#edge1)"/>
         </g>''')
+# ------------------------------------------------------------------ the view outside
+def window_view():
+    """The landscape through the window. Every colour comes from the time-of-day palette
+    (CSS variables set by script.js), so dawn, day, golden hour and night all repaint it."""
+    mix = lambda a, b, pa: f'color-mix(in srgb, {a} {pa}%, {b})'
+    v = []
+    # haze along the horizon, then clouds and birds
+    v.append('<rect x="560" y="196" width="440" height="140" fill="url(#gHaze)"/>')
+    v.append('<use class="wcloud w1" href="#cloud" x="560" y="140" width="120" height="54"/>')
+    v.append('<use class="wcloud w2" href="#cloud" x="560" y="206" width="86" height="40"/>')
+    v.append('<use class="wcloud w3" href="#cloud" x="560" y="170" width="64" height="30" opacity=".85"/>')
+    bird = lambda x, y, k: f'<path d="M{x - 4 * k:.1f} {y:.1f} q{2 * k:.1f} {-2.4 * k:.1f} {4 * k:.1f} 0 q{2 * k:.1f} {-2.4 * k:.1f} {4 * k:.1f} 0"/>'
+    v.append(f'<g class="win-birds" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke:{mix("var(--tree-2)", "var(--sky-1)", 70)}" stroke-width="1.3">'
+             + bird(690, 196, 1.1) + bird(704, 188, .9) + bird(716, 199, .75) + '</g>')
+
+    # far mountains: pale with distance, snow on the two tallest peaks, the right-hand faces in shade
+    ridge = [(560, 300), (598, 278), (622, 288), (664, 252), (694, 272), (722, 262), (760, 230), (802, 268), (830, 258), (872, 240), (912, 268), (946, 256), (1000, 282)]
+    v.append(f'<path d="M{" L".join(f"{x} {y}" for x, y in ridge)} V336 H560Z" style="fill:{mix("var(--mount-1)", "var(--sky-2)", 62)}"/>')
+    for i in range(1, len(ridge) - 1):
+        (px, py), (rx, ry) = ridge[i], ridge[i + 1]
+        if py < ridge[i - 1][1] and py < ry:  # a peak: shade its right face
+            base_x = px + (rx - px) * .3
+            v.append(f'<path d="M{px} {py} L{rx} {ry} L{base_x + (rx - px) * .45:.1f} 318 L{base_x:.1f} 318Z" fill="#26304E" opacity=".08"/>')
+    for (px, py) in [(760, 230), (872, 240)]:
+        i = ridge.index((px, py))
+        l, r = ridge[i - 1], ridge[i + 1]
+
+        def along(q, d):  # a point d units down the slope toward q
+            dx, dy = q[0] - px, q[1] - py
+            return px + dx * d / dy, py + d
+        (lx, ly), (rx, ry) = along(l, 13), along(r, 12)
+        v.append(f'<path d="M{px} {py} L{rx:.1f} {ry:.1f} L{px + 6:.1f} {py + 8:.1f} L{px + 2:.1f} {py + 14:.1f} L{px - 3:.1f} {py + 9:.1f} L{lx:.1f} {ly:.1f}Z" style="fill:var(--cloud)" opacity=".92"/>')
+        v.append(f'<path d="M{px} {py} L{rx:.1f} {ry:.1f} L{px + 6:.1f} {py + 8:.1f} L{px + 2:.1f} {py + 14:.1f}Z" style="fill:var(--cloud-shade)" opacity=".9"/>')
+
+    # nearer mountains
+    v.append('<path d="M560 314 C584 304 606 294 636 298 L672 280 L704 294 L740 286 C768 292 792 302 820 298 L856 278 L890 292 L928 284 L1000 302 V340 H560Z" fill="url(#gMount)"/>')
+    v.append('<path d="M672 280 L704 294 L700 318 L682 318Z M856 278 L890 292 L884 318 L866 318Z" fill="#26304E" opacity=".07"/>')
+
+    # the lake, with ripples and a soft glint of light
+    v.append('<path d="M560 318 C640 314 760 316 860 318 C920 319 960 316 1000 318 V350 H560Z" fill="url(#gLake)"/>')
+    v.append('<path d="M560 318 C640 314 760 316 860 318 C920 319 960 316 1000 318" fill="none" style="stroke:var(--mount-2)" stroke-width="1.2" opacity=".8"/>')
+    v.append('<ellipse cx="790" cy="327" rx="46" ry="2.2" style="fill:var(--glow)" opacity=".75"/>')
+    ripples = [(712, 323, 18), (748, 330, 26), (806, 334, 22), (842, 326, 14), (872, 331, 20), (770, 337, 30), (906, 338, 16), (690, 334, 12)]
+    v.append('<g stroke="#fff" stroke-linecap="round" stroke-width="1" opacity=".55">' + ''.join(f'<path d="M{x} {y} h{w}"/>' for x, y, w in ripples) + '</g>')
+
+    # back hills framing the lake: a cottage on the left bank, cypresses on the right
+    v.append('<path d="M560 316 C600 304 652 306 690 320 C722 332 762 344 822 346 C880 348 940 330 1000 322 V440 H560Z" fill="url(#gBack)"/>')
+    for x, y, h in [(846, 346, 30), (858, 345, 40), (871, 344, 28), (883, 342, 36), (896, 340, 26)]:
+        v.append(f'<use href="#cypress" x="{x - h * .14:.1f}" y="{y - h * .92:.1f}" width="{h * .28:.1f}" height="{h:.1f}"/>')
+    # the cottage (its window glows at night)
+    wall, roof = mix('#FFF7E8', 'var(--hb-1)', 58), mix('#D9785A', 'var(--hb-2)', 62)
+    v.append('<g class="cottage">'
+             f'<path d="M682 306 V297 H686 V303Z" style="fill:{mix("#B98E73", "var(--hb-2)", 60)}"/>'
+             f'<rect x="660" y="306" width="26" height="15" style="fill:{wall}"/>'
+             f'<path d="M656 307 L673 294 L690 307Z" style="fill:{roof}"/>'
+             '<path d="M673 294 L690 307 L686 307 L673 297Z" fill="#000" opacity=".12"/>'
+             f'<rect x="665" y="311" width="5" height="5" style="fill:{mix("#7E93A6", "var(--hb-2)", 55)}"/>'
+             # dusk falls over the cottage; then its lit window shows through
+             '<path d="M656 307 L673 294 L690 307 H686 V321 H660 V307Z" fill="#1C2246" style="opacity:calc(var(--dark, 0) * .55)"/>'
+             '<rect x="665" y="311" width="5" height="5" fill="#FFD27A" style="opacity:var(--dark, 0)"/>'
+             f'<rect x="676" y="312" width="5" height="9" style="fill:{mix("#8A6448", "var(--hb-2)", 60)}"/>'
+             '<g class="smoke" style="fill:var(--cloud)"><circle cx="684" cy="292" r="2.2"/><circle cx="687" cy="286" r="2.8"/><circle cx="691" cy="279" r="3.4"/></g>'
+             '</g>')
+
+    # middle fields: soft stripes of crops and a golden patch, with a hedge of round trees
+    v.append('<path d="M560 368 C640 348 720 350 790 362 C850 372 920 358 1000 354 V440 H560Z" fill="url(#gMid)"/>')
+    v.append(f'<path d="M818 386 C858 374 928 366 1000 362 V394 C930 396 868 402 824 404 C814 398 812 391 818 386Z" clip-path="url(#winFields)" style="fill:{mix("#F1D58A", "var(--hm-1)", 45)}; opacity:calc(1 - var(--dark, 0) * .7)"/>')
+    stripes = ''.join(f'<path d="M560 {372 + k * 9} C640 {352 + k * 9} 720 {354 + k * 9} 790 {366 + k * 9} C850 {376 + k * 9} 920 {362 + k * 9} 1000 {358 + k * 9}"/>' for k in range(1, 8))
+    v.append(f'<g clip-path="url(#winFields)" fill="none" stroke="#fff" stroke-width="2" opacity=".14">{stripes}</g>')
+    for x, y, r in [(726, 352, 6.5), (738, 353, 5), (748, 355, 6), (760, 357, 4.6)]:
+        v.append(f'<circle cx="{x}" cy="{y}" r="{r}" style="fill:var(--tree)"/>'
+                 f'<path d="M{x} {y - r} a{r} {r} 0 0 1 0 {2 * r} a{r * .7:.1f} {r} 0 0 0 0 {-2 * r}Z" style="fill:var(--tree-2)" opacity=".5"/>')
+
+    # front meadow: a winding path, two round trees and scattered flowers
+    v.append('<path d="M560 398 C640 382 720 382 800 392 C860 399 930 394 1000 390 V440 H560Z" fill="url(#gFront)"/>')
+    v.append('<path d="M796 442 C792 426 828 418 812 406 C802 399 790 396 784 391 L789 390 C799 394 816 398 828 405 C852 420 822 428 838 442Z" style="fill:var(--path)" opacity=".95"/>')
+    for x, y, r in [(700, 370, 15), (726, 381, 9.5)]:
+        v.append(f'<path d="M{x} {y + r * .4:.1f} V{y + r * 1.35:.1f}" style="stroke:var(--tree-2)" stroke-width="{r * .22:.1f}" stroke-linecap="round"/>')
+        v.append(f'<circle cx="{x}" cy="{y}" r="{r}" style="fill:var(--tree)"/>')
+        v.append(f'<path d="M{x} {y - r} a{r} {r} 0 0 1 0 {2 * r} a{r * .78:.1f} {r} 0 0 0 0 {-2 * r}Z" style="fill:var(--tree-2)" opacity=".55"/>')
+        v.append(f'<circle cx="{x - r * .38:.1f}" cy="{y - r * .38:.1f}" r="{r * .3:.1f}" fill="#fff" opacity=".14"/>')
+    flowers = [(668, 404, 'petal'), (676, 410, 'butter'), (690, 406, 'daisy'), (744, 402, 'petal'), (756, 410, 'daisy'), (770, 404, 'butter'),
+               (850, 404, 'lilac'), (862, 410, 'daisy'), (876, 402, 'petal'), (890, 408, 'butter'), (712, 414, 'lilac'), (900, 416, 'daisy')]
+    v.append('<g>' + ''.join(f'<circle cx="{x}" cy="{y}" r="1.7" style="fill:{mix(f"var(--{c})", "var(--hf-2)", 75)}"/>' for x, y, c in flowers) + '</g>')
+    return '\n              '.join(v)
+
+
 # ------------------------------------------------------------------ window
 w('''
         <!-- ===== Window ===== -->
@@ -361,16 +468,7 @@ w('''
                 <circle r="58" fill="url(#gHalo)"/>
                 <circle r="19" fill="url(#gSun)" mask="url(#bite)"/>
               </g>
-              <use class="wcloud w1" href="#cloud" x="560" y="140" width="120" height="54"/>
-              <use class="wcloud w2" href="#cloud" x="560" y="226" width="86" height="40"/>
-              <path d="M560 330 C620 300 680 292 730 306 C770 318 800 284 850 280 C900 276 940 300 1000 296 V440 H560Z" fill="url(#gMount)"/>
-              <path d="M560 362 C660 330 760 344 820 354 C880 364 930 338 1000 336 V440 H560Z" fill="url(#gBack)"/>
-              <use href="#cypress" x="870" y="292" width="16" height="58"/>
-              <use href="#cypress" x="888" y="302" width="13" height="48"/>
-              <path d="M560 390 C680 370 780 380 860 392 C920 400 960 386 1000 384 V440 H560Z" fill="url(#gMid)"/>
-              <path d="M686 384 V368" stroke="var(--tree-2)" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="686" cy="360" r="13" fill="var(--tree)"/>
-              <path d="M560 412 C700 400 840 402 1000 412 V440 H560Z" fill="url(#gFront)"/>
+@@WINDOWVIEW@@
             </g>
             <path d="M652 122 H700 L640 236 H632 V160Z M716 122 H732 L656 266 H648Z" fill="#fff" opacity=".18"/>
             <rect x="632" y="122" width="296" height="12" fill="url(#gAOdown)"/>
@@ -1171,28 +1269,40 @@ w('</g>')
 # ------------------------------------------------------------------ monstera
 w('<g transform="translate(0 22)">')
 PX, PY = 1122, 680   # where the stems leave the pot
-leaves = [  # leaf base x, y, rotation, scale x, scale y, gradient
-    (1172, 500, 16, .6, .62, 'gMonA'),
-    (1138, 528, 8, .56, .6, 'gMonB'),
-    (1198, 568, 54, .54, .58, 'gMonC'),
-    (1078, 592, -48, .56, .6, 'gMonA'),
-    (1120, 562, -6, .4, .44, 'gMonB'),
-    (1154, 604, 26, .5, .54, 'gMonB'),
-    (1096, 630, -24, .46, .5, 'gMonC'),
+# Like a real monstera: long stalks fan up out of the pot, and each leaf hangs from the top of
+# its stalk by the notch, tip pointing down and out. Big split leaves at the back, two leaves
+# seen edge-on at the sides (a very narrow scale x), small young leaves in front.
+# The lighter half of every leaf faces the window on the left.
+MON = {'A': ('#3E7B44', '#23502A'), 'B': ('#4A8A4D', '#2C5F32'), 'C': ('#356D3C', '#1D4524')}
+leaves = [  # stalk top x, y, rotation (0 = tip up, 180 = hanging straight down), scale x, scale y, kind, colour
+    (1094, 482, -146, .5, .5, 'mature', 'A'),
+    (1158, 470, 152, .5, .52, 'split', 'B'),
+    (1074, 548, -120, .16, .42, 'young', 'C'),
+    (1192, 556, 122, .17, .44, 'young', 'A'),
+    (1080, 566, -158, .4, .4, 'mature', 'B'),
+    (1140, 540, 168, .42, .44, 'split', 'A'),
+    (1170, 600, 146, .3, .32, 'young', 'B'),
+    (1104, 612, -164, .24, .26, 'young', 'C'),
 ]
 w('''
         <!-- Monstera: tall, dark leaves in a concrete planter -->
         <g class="obj plant" id="o-plant" data-id="plant" tabindex="0" role="button" aria-label="Monstera: water the plant">
           <g class="leaves">''')
-for i, (x, y, r, sx, sy, g) in enumerate(leaves):
-    c1x, c1y = PX + (x - PX) * .15, PY - (PY - y) * .45
-    c2x, c2y = x - (x - PX) * .15, y + (PY - y) * .3
+for i, (x, y, r, sx, sy, kind, col) in enumerate(leaves):
+    light, dark = MON[col]
+    bx = PX + (x - PX) * .08                      # stalks leave the soil a little apart
+    c1x, c1y = bx + (x - PX) * .1, PY - (PY - y) * .5
+    c2x, c2y = x - (x - PX) * .12, y + (PY - y) * .28
+    sw = 1.8 + 3.2 * max(sx, sy)                  # bigger leaves, thicker stalks
+    # turn the leaf over when it hangs, so its lighter half stays on the window side
+    mx = -sx if math.cos(math.radians(r)) < 0 else sx
     w(f'''            <g class="lf" style="--t:{4.6 + i * .45:.2f}s; --dl:-{(i * 1.3) % 4:.1f}s">
-              <path d="M{PX} {PY} C{c1x:.0f} {c1y:.0f} {c2x:.0f} {c2y:.0f} {x} {y}" stroke="#2F5A30" stroke-width="3.6" fill="none" stroke-linecap="round"/>
-              <path d="M{PX - 1} {PY - 2} C{c1x - 1:.0f} {c1y:.0f} {c2x - 1:.0f} {c2y:.0f} {x - 1} {y}" stroke="#6E9C5E" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".8"/>
-              <g transform="translate({x} {y}) rotate({r}) scale({sx} {sy})">
-                <use href="#mleaf" fill="url(#{g})"/>
-                <use href="#mveins" opacity=".75"/>
+              <path d="M{bx:.0f} {PY} C{c1x:.0f} {c1y:.0f} {c2x:.0f} {c2y:.0f} {x} {y}" stroke="#2F5A30" stroke-width="{sw:.1f}" fill="none" stroke-linecap="round"/>
+              <path d="M{bx - 1:.0f} {PY - 2} C{c1x - 1:.0f} {c1y:.0f} {c2x - 1:.0f} {c2y:.0f} {x - 1} {y}" stroke="#6E9C5E" stroke-width="{sw * .3:.1f}" fill="none" stroke-linecap="round" opacity=".8"/>
+              <g transform="translate({x} {y}) rotate({r}) scale({mx} {sy})">
+                <use href="#mleaf-{kind}" fill="{light}"/>
+                <use href="#mshade-{kind}" fill="{dark}"/>
+                <use href="#mveins-{kind}" opacity="{.7 if kind != 'young' else .55}"/>
               </g>
             </g>''')
 specks = ''.join(f'<circle cx="{rnd.uniform(1070, 1156):.1f}" cy="{rnd.uniform(694, 772):.1f}" r="{rnd.uniform(.5, 1.2):.1f}"/>' for _ in range(22))
@@ -1327,6 +1437,7 @@ for i_, d_ in enumerate(defs):
 for k_, d_ in CEL.items():
     if k_ not in known: defs.append(d_)
 
+defs = [d_.replace('@@MONSTERA@@', _monstera_defs()) for d_ in defs]
 inner = '\n        <defs>\n          ' + '\n          '.join(defs) + '\n        </defs>\n\n        ' + '\n        '.join(out) + '\n      '
 
 p = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'pages', 'index.html')

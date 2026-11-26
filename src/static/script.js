@@ -117,6 +117,7 @@
     root.style.setProperty('--beam', (daytime < 0.88 ? Math.sin(Math.PI * daytime / 0.88) : 0).toFixed(3));
     root.style.setProperty('--stars', clamp((daytime - 0.78) / 0.15).toFixed(3));
     root.style.setProperty('--moon', clamp((daytime - 0.82) / 0.08).toFixed(3));
+    window.RoomSound?.setDaytime(daytime);
     const theme = daytime > 0.86 ? 'night' : 'day';
     if (root.getAttribute('data-theme') !== theme) root.setAttribute('data-theme', theme);
     setLamp();
@@ -197,7 +198,12 @@
      ========================================================= */
   const dialog = document.getElementById('story');
   const body = document.getElementById('story-body');
+  function reopenPanel() {
+    if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
+    else dialog.setAttribute('open', '');
+  }
   function openPanel(html) {
+    if (body.querySelector('.embed-frame')) { deckState.external = false; el('record')?.classList.remove('playing'); }  // the embedded player goes with the old panel
     body.innerHTML = html;
     if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
     else dialog.setAttribute('open', '');
@@ -212,6 +218,213 @@
   const RESUME = document.body.dataset.resume || '';
   const el = (id) => document.getElementById('o-' + id);
   const replay = (node, cls) => { node.classList.remove(cls); void node.getBoundingClientRect(); node.classList.add(cls); };
+
+  /* ---------- The playlist on the record player: edit these ----------
+     len is the track length (m:ss). The "Listen" button uses "playlist" in site.json. */
+  const PLAYLIST = {
+    title: 'Desk sessions', volume: 'Vol. 01',
+    sides: [
+      { name: 'Side A', tracks: [
+        { title: '[Song title]', artist: '[Artist]', len: '3:42', mood: '[Genre]', note: '[Why this one is on repeat, in one line.]' },
+        { title: '[Song title]', artist: '[Artist]', len: '4:05', mood: '[Genre]', note: '[What you are usually doing when it plays.]' },
+        { title: '[Song title]', artist: '[Artist]', len: '2:58', mood: '[Genre]', note: '[A memory it brings back.]' },
+      ] },
+      { name: 'Side B', tracks: [
+        { title: '[Song title]', artist: '[Artist]', len: '5:11', mood: '[Genre]', note: '[The one for deep focus.]' },
+        { title: '[Song title]', artist: '[Artist]', len: '3:27', mood: '[Genre]', note: '[The one for a slow Sunday.]' },
+        { title: '[Song title]', artist: '[Artist]', len: '4:33', mood: '[Genre]', note: '[The one you never skip.]' },
+      ] },
+    ],
+  };
+  const PLAYLIST_URL = document.body.dataset.playlist || '';
+  // A real playlist from site.json ("playlist"): a Spotify, YouTube or Apple Music link becomes
+  // that service's official player. Nothing loads from them until the visitor asks for it.
+  function embedFor(url) {
+    let u;
+    try { u = new URL(url); } catch (e) { return null; }
+    const host = u.hostname.replace(/^www\./, '');
+    if (host === 'open.spotify.com') {
+      const m = u.pathname.match(/\/(playlist|album|track|artist)\/([A-Za-z0-9]+)/);
+      if (m) return { name: 'Spotify', src: `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator`, kind: 'spotify' };
+    }
+    if (host === 'youtube.com' || host === 'music.youtube.com' || host === 'm.youtube.com') {
+      const list = u.searchParams.get('list');
+      if (list && /^[A-Za-z0-9_-]+$/.test(list)) return { name: 'YouTube', src: `https://www.youtube-nocookie.com/embed/videoseries?list=${list}`, kind: 'youtube' };
+    }
+    if (host === 'music.apple.com' && /^\/[a-z]{2}\/(playlist|album)\//.test(u.pathname)) {
+      return { name: 'Apple Music', src: `https://embed.music.apple.com${u.pathname}`, kind: 'apple' };
+    }
+    return null;
+  }
+  const EMBED = PLAYLIST_URL ? embedFor(PLAYLIST_URL) : null;
+  const TRACKS = PLAYLIST.sides.flatMap((side) => side.tracks);
+  const secs = (len) => { const [m, s2] = len.split(':').map(Number); return m * 60 + (s2 || 0); };
+  const mmss = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  const ICON = {
+    prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6v12M18 6l-8 6 8 6z"/></svg>',
+    next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 6v12M6 6l8 6-8 6z"/></svg>',
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13"/></svg>',
+  };
+  const eq = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
+
+  function deckHTML() {
+    let n = 0;
+    const sides = PLAYLIST.sides.map((side) => `
+      <div class="side">
+        <p class="mono side-name">${side.name}</p>
+        <ol class="tracks">${side.tracks.map((t) => { const i = n++; return `
+          <li><button class="track" type="button" data-track="${i}">
+            <span class="tn mono"><span class="num">${String(i + 1).padStart(2, '0')}</span>${eq}</span>
+            <span class="tt"><b>${t.title}</b><span>${t.artist}</span></span>
+            <span class="tg mono">${t.mood}</span>
+            <span class="tl mono">${t.len}</span>
+          </button></li>`; }).join('')}</ol>
+      </div>`).join('');
+    const listen = PLAYLIST_URL
+      ? `<a class="ghost" href="${PLAYLIST_URL}" target="_blank" rel="noopener">Open in ${EMBED ? EMBED.name : 'a new tab'} ↗</a>`
+      : `<a class="ghost" href="#" data-todo="Add your playlist link in site.json ✿">Listen to the playlist ↗</a>`;
+    const mine = EMBED ? `
+      <div class="deck-tabs" role="tablist" aria-label="What to play">
+        <button class="deck-tab" type="button" role="tab" id="tab-mine" aria-controls="pane-mine" aria-selected="true" data-tab="mine">My playlist</button>
+        <button class="deck-tab" type="button" role="tab" id="tab-radio" aria-controls="pane-radio" aria-selected="false" data-tab="radio">Room radio</button>
+      </div>
+      <div class="deck-pane" id="pane-mine" role="tabpanel" aria-labelledby="tab-mine">
+        <div class="embed-slot embed-${EMBED.kind}" id="embed-slot">${embedCover()}</div>
+      </div>` : '';
+    return `
+      <p class="lead">${EMBED ? 'Soft, calm and mostly instrumental: what plays while I work.' : "What's playing while I work. Pick a track."}</p>
+      ${mine}
+      <div class="deck-pane" id="pane-radio" role="tabpanel"${EMBED ? ' aria-labelledby="tab-radio" hidden' : ''}>
+      ${EMBED ? '<p class="radio-note">The room\'s own tunes: soft lo-fi made right here in your browser.</p>' : ''}
+      <div class="deck" id="deck">
+        <div class="sleeve" aria-hidden="true">
+          <div class="disc"><span class="disc-label"><i></i></span></div>
+          <div class="sleeve-art">
+            <span class="mono sleeve-vol">${PLAYLIST.volume}</span>
+            <b class="sleeve-title">${PLAYLIST.title.replace(/ (\S+)$/, ' <em>$1</em>')}</b>
+            <span class="sleeve-sun"></span><span class="sleeve-hill"></span><span class="sleeve-hill h2"></span>
+          </div>
+        </div>
+        <div class="np" aria-live="polite">
+          <p class="mono np-kicker">${eq}<span class="np-state">Now playing</span></p>
+          <p class="np-title"></p>
+          <p class="np-artist"></p>
+          <p class="np-note hand"></p>
+          <div class="bar" aria-hidden="true"><span class="bar-fill"></span></div>
+          <div class="times mono"><span class="t-now">0:00</span><span class="t-len">0:00</span></div>
+          <div class="controls">
+            <button class="ctl" type="button" data-deck="prev" aria-label="Previous track">${ICON.prev}</button>
+            <button class="ctl play" type="button" data-deck="play" aria-label="Pause">${ICON.pause}</button>
+            <button class="ctl" type="button" data-deck="next" aria-label="Next track">${ICON.next}</button>
+          </div>
+        </div>
+      </div>
+      <div class="sides">${sides}</div>
+      </div>
+      <div class="panel-actions">${listen}</div>`;
+  }
+  function embedCover() {
+    return `
+      <div class="embed-cover">
+        <div class="embed-sleeve" aria-hidden="true"><span class="embed-disc"></span><span class="embed-note">♪</span></div>
+        <div class="embed-copy">
+          <p class="mono embed-kicker">My playlist · ${EMBED.name}</p>
+          <p class="embed-title">Music I keep on <em>repeat</em></p>
+          <p class="embed-help">Plays through ${EMBED.name}'s own player${EMBED.kind === 'youtube' ? '' : '. Visitors hear previews unless they\'re signed in'}.</p>
+          <button class="pill embed-load" type="button" data-embed="load">Load the player <span aria-hidden="true">▶</span></button>
+        </div>
+      </div>`;
+  }
+
+  // The record keeps time whenever it's spinning, panel open or not, and moves on to the next
+  // track at the end. Playing and pausing also start and stop the music (sound.js).
+  const deckState = { i: 0, t: 0 };
+  const recordPlaying = () => !!el('record')?.classList.contains('playing');
+  function renderDeck() {
+    const deck = document.getElementById('deck');
+    if (!deck) return;
+    const q = (sel) => deck.querySelector(sel);
+    const tr = TRACKS[deckState.i], len = secs(tr.len), on = recordPlaying() && !deckState.external;
+    deck.classList.toggle('playing', on);
+    q('.np-title').textContent = tr.title;
+    q('.np-artist').textContent = tr.artist;
+    q('.np-note').textContent = tr.note;
+    q('.np-state').textContent = on ? 'Now playing' : 'Paused';
+    q('.t-now').textContent = mmss(deckState.t);
+    q('.t-len').textContent = tr.len;
+    q('.bar-fill').style.width = (100 * deckState.t / len).toFixed(2) + '%';
+    const play = q('[data-deck="play"]');
+    play.innerHTML = on ? ICON.pause : ICON.play;
+    play.setAttribute('aria-label', on ? 'Pause' : 'Play');
+    body.querySelectorAll('.track').forEach((b) => {
+      const cur = +b.dataset.track === deckState.i;
+      b.classList.toggle('current', cur);
+      if (cur) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+    body.querySelector('.sides')?.classList.toggle('playing', on);
+  }
+  function setRecord(on) {
+    if (on) unloadEmbed();  // the room radio takes over from the embedded player
+    deckState.external = false;
+    el('record')?.classList.toggle('playing', on);
+    if (on) window.RoomSound?.playMusic(deckState.i); else window.RoomSound?.pauseMusic();
+    renderDeck();
+  }
+  function loadEmbed() {
+    const slot = document.getElementById('embed-slot');
+    if (!slot || !EMBED) return;
+    const f = document.createElement('iframe');
+    f.className = 'embed-frame';
+    f.src = EMBED.src;
+    f.title = `My playlist on ${EMBED.name}`;
+    f.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    slot.replaceChildren(f);
+    slot.classList.add('loaded');
+    // the record keeps spinning, but the room radio goes quiet so the two never play at once
+    deckState.external = true;
+    window.RoomSound?.pauseMusic();
+    el('record')?.classList.add('playing');
+    renderDeck();
+    say(`Press play in the ${EMBED.name} player ♪`);
+  }
+  function unloadEmbed() {
+    const slot = document.getElementById('embed-slot');
+    if (slot?.classList.contains('loaded')) { slot.classList.remove('loaded'); slot.innerHTML = embedCover(); }
+  }
+  function showTab(name) {
+    body.querySelectorAll('.deck-tab').forEach((t) => t.setAttribute('aria-selected', t.dataset.tab === name ? 'true' : 'false'));
+    body.querySelectorAll('.deck-pane').forEach((p) => { p.hidden = p.id !== 'pane-' + name; });
+  }
+  function deckGo(i) {
+    deckState.i = (i + TRACKS.length) % TRACKS.length;
+    deckState.t = 0;
+    setRecord(true);
+  }
+  if (el('record')) setInterval(() => {
+    if (!recordPlaying() || deckState.external) return;
+    deckState.t += 1;
+    if (deckState.t >= secs(TRACKS[deckState.i].len)) deckGo(deckState.i + 1);
+    else renderDeck();
+  }, 1000);
+  function startDeck() {
+    if (!document.getElementById('deck')) return;
+    body.onclick = (e) => {
+      const tab = e.target.closest('.deck-tab');
+      if (tab) { showTab(tab.dataset.tab); return; }
+      if (e.target.closest('[data-embed="load"]')) { loadEmbed(); return; }
+      const tb = e.target.closest('.track');
+      if (tb) { deckGo(+tb.dataset.track); return; }
+      const c = e.target.closest('[data-deck]');
+      if (!c) return;
+      if (c.dataset.deck === 'prev') deckGo(deckState.t > 3 ? deckState.i : deckState.i - 1);  // like a real player: restart, then go back
+      if (c.dataset.deck === 'next') deckGo(deckState.i + 1);
+      if (c.dataset.deck === 'play') { const on = !(recordPlaying() && !deckState.external); setRecord(on); say(on ? 'Playing ♪' : 'Paused'); }
+    };
+    renderDeck();
+  }
+  dialog?.addEventListener('close', () => { body.onclick = null; });
 
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
@@ -258,13 +471,14 @@
       // first click drops the needle (the record spins, notes float up); next click opens the playlist
       act: () => {
         const r = el('record');
-        if (!r.classList.contains('playing')) { r.classList.add('playing'); say('Now playing ♪ click again for the playlist'); }
-        else openPanel(THINGS.record.open());
+        if (!r.classList.contains('playing')) { setRecord(true); say('Now playing ♪ click again for the playlist'); }
+        else {
+          if (document.getElementById('deck')) reopenPanel();  // still there from last time: keep the player as it is
+          else openPanel(THINGS.record.open());
+          startDeck();
+        }
       },
-      open: () => panel('On the record player', 'On <em>repeat</em>',
-      `<p class="lead">What's playing while I work.</p>
-      ${rows([['[Song]', '[Artist]', '[Genre]'], ['[Song]', '[Artist]', '[Genre]'], ['[Song]', '[Artist]', '[Genre]']])}
-      <div class="panel-actions"><button class="ghost" type="button" data-record-stop>Stop the record</button></div>`) },
+      open: () => panel('On the record player', 'On <em>repeat</em>', deckHTML()) },
     guitar: { label: 'After hours', open: () => panel('Leaning on the wall', 'After <em>hours</em>',
       `<p class="lead">[What you do when you're not working: a hobby, a craft, a sport.]</p>
       ${chips(['[Guitar]', '[Hiking]', '[Film photos]', '[Baking]'])}
@@ -510,7 +724,6 @@
   });
   dialog?.addEventListener('click', (e) => {
     if (e.target === dialog || e.target.closest('[data-close]')) { dialog.close(); return; }
-    if (e.target.closest('[data-record-stop]')) { el('record').classList.remove('playing'); dialog.close(); say('Record stopped'); return; }
     if (e.target.closest('[data-award-off]')) { setAward(false); dialog.close(); say('Award light off'); return; }
     const link = e.target.closest('a[href^="#"]');
     if (link && link.getAttribute('href').length > 1) dialog.close();
@@ -597,6 +810,26 @@
       ring.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
       requestAnimationFrame(loop);
     })();
+  }
+
+  /* ---------- Sound switch (home page) ---------- */
+  const soundBtn = document.getElementById('sound');
+  if (soundBtn) {
+    if (!window.RoomSound) soundBtn.hidden = true;  // very old browsers: no Web Audio
+    else {
+      const paint = () => {
+        const on = window.RoomSound.enabled;
+        soundBtn.classList.toggle('on', on);
+        soundBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        soundBtn.querySelector('.sound-label').textContent = on ? 'Sound on' : 'Sound off';
+      };
+      soundBtn.addEventListener('click', () => {
+        const on = window.RoomSound.toggle();
+        say(on ? (recordPlaying() ? 'Sound on ♪' : 'Sound on ♪ drop the needle on the record for music') : 'Sound off');
+      });
+      window.RoomSound.onChange(paint);
+      paint();
+    }
   }
 
   const yr = document.getElementById('yr');

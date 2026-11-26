@@ -227,6 +227,8 @@ def check():
     walk(site)
     if not site.get('resume'):
         todo.append('site.json  resume: empty (the "Download résumé" button shows a reminder instead)')
+    if not site.get('playlist'):
+        todo.append('site.json  playlist: empty (link to your Spotify or Apple Music playlist)')
     files = [os.path.join('src', 'pages', f) for f in sorted(os.listdir(os.path.join(SRC, 'pages'))) if f.endswith('.html')]
     files.append(os.path.join('src', 'static', 'script.js'))
     for rel in files:
