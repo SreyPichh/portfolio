@@ -436,7 +436,6 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 }
 
 /* ---------- Chapter 01: an open journal ---------- */
-.origin .chapter-head[data-num]::before { color: color-mix(in srgb, #B98A62 22%, transparent); }
 .journal {
   /* the pages are paper in every light, so they keep their own ink */
   --pg: #FBF8F1; --pg-edge: #EFE8DA; --pg-ink: #2E2A26; --pg-soft: #6F665C; --pg-dot: rgba(70, 55, 40, .13);
@@ -535,7 +534,6 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 
 /* lamps-on evening: the journal sits in warm lamplight */
 :root[data-theme="night"] .journal { --pg: #EEE6D6; --pg-edge: #DCD2BF; filter: brightness(.9); }
-:root[data-theme="night"] .origin .chapter-head[data-num]::before { color: color-mix(in srgb, #F5CD7A 16%, transparent); }
 
 @media (max-width: 860px) {
   .journal { grid-template-columns: 1fr; background: radial-gradient(var(--pg-dot) 1px, transparent 1.4px) 0 0 / 22px 22px, var(--pg); }
@@ -632,8 +630,6 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
     var(--paper-2);
 }
 :root[data-theme="night"] .work { background: radial-gradient(ellipse 60% 50% at 20% 10%, rgba(245, 205, 122, .07), transparent 70%), var(--paper-2); }
-.work .chapter-head[data-num]::before { color: color-mix(in srgb, #B98A62 22%, transparent); }
-:root[data-theme="night"] .work .chapter-head[data-num]::before { color: color-mix(in srgb, #F5CD7A 16%, transparent); }
 .work .chapter-head, .work-intro, .postcards, .work-hint { max-width: 1100px; margin-left: auto; margin-right: auto; }
 .work-intro { font-size: clamp(18px, 1.7vw, 21px); max-width: 32em; margin-top: -40px; margin-bottom: 64px; color: var(--ink-soft); text-wrap: balance; }
 
@@ -741,8 +737,6 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 .beats p { margin: 0; color: var(--ink-soft); text-wrap: balance; }
 
 /* ---------- Chapter 04: a cork board above the desk ---------- */
-.desk .chapter-head[data-num]::before { color: color-mix(in srgb, #B98A62 22%, transparent); }
-:root[data-theme="night"] .desk .chapter-head[data-num]::before { color: color-mix(in srgb, #F5CD7A 16%, transparent); }
 .board-hint { color: var(--accent); text-align: right; margin: -50px 0 18px; }
 
 /* walnut frame, like the bookshelf and desk */
@@ -771,7 +765,7 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 :root[data-theme="night"] .fairy-glow circle { animation-name: bulb-night; }
 @keyframes bulb-night { 50% { opacity: .6; } }
 
-.board { position: relative; height: 620px; }
+.board { position: relative; height: 760px; }
 .item {
   position: absolute; left: var(--x); top: var(--y); transform: rotate(var(--r, 0deg));
   width: 280px; cursor: grab; touch-action: none; user-select: none;
@@ -1427,3 +1421,74 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 .stamp-logo { width: 46px; height: 46px; display: block; border-radius: 11px; box-shadow: 0 2px 5px -1px rgba(42, 47, 58, .3); transition: transform .35s var(--ease); }
 .stamp-link:hover .stamp-logo, .stamp-link:focus-visible .stamp-logo { transform: scale(1.06) rotate(-3deg); }
 .stamp-in:has(.stamp-logo) .mono { font-size: 8.5px; }
+
+/* =========================================================
+   Where I studied: a framed diploma and certificate cards
+   ========================================================= */
+.diploma {
+  position: relative; margin: 6px 0 18px; padding: 12px; border-radius: 4px; color: #2E2A26;
+  background: #FBF6EA;
+  box-shadow: 0 1px 2px rgba(60, 40, 20, .12), 0 22px 40px -24px rgba(60, 40, 20, .5);
+}
+/* a double gold rule inside the paper's edge, with a faint glow in the middle */
+.dip-inner {
+  position: relative; display: grid; justify-items: center; text-align: center; gap: 2px; padding: 26px 24px 22px;
+  border: 1px solid #B08834;
+  box-shadow: inset 0 0 0 5px #FBF6EA, inset 0 0 0 6px #C9A24A;
+  background: radial-gradient(circle at 50% 40%, rgba(201, 162, 74, .1), transparent 60%);
+}
+.diploma::before {
+  content: ""; position: absolute; inset: 5px; border: 3px double #C9A24A; border-radius: 2px; pointer-events: none;
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 10px, rgba(0, 0, 0, .65) 10px 12px); mask: repeating-linear-gradient(90deg, #000 0 10px, rgba(0, 0, 0, .65) 10px 12px);
+}
+.diploma p { margin: 0 !important; }
+.dip-crest { width: 40px; height: 40px; margin-bottom: 6px; }
+.dip-kicker { font-size: 9px; color: #8C7350; letter-spacing: .22em; }
+.dip-name { font: italic 400 clamp(26px, 3.4vw, 34px)/1.1 var(--serif); color: #3A57C4; margin-top: 4px !important; }
+.dip-has { font: italic 400 15px/1.4 var(--serif); color: #6E6252; margin-top: 4px !important; }
+.dip-degree { font: 400 clamp(26px, 3.6vw, 36px)/1.05 var(--serif); letter-spacing: -.01em; margin-top: 2px !important; }
+.dip-field { font: italic 400 18px/1.3 var(--serif); color: #4E4538; }
+.dip-school { font-size: 10px; letter-spacing: .2em; color: #6E6252; margin-top: 10px !important; }
+.dip-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; width: 100%; margin-top: 22px; padding-right: 86px; }
+.dip-foot > span { display: grid; gap: 4px; justify-items: start; font: italic 400 16px var(--serif); text-align: left; }
+.dip-foot b.mono { font-size: 8.5px; color: #8C7350; font-style: normal; }
+.dip-sign i { display: block; width: 130px; height: 18px; border-bottom: 1px solid #8C7350;
+  background: no-repeat left bottom / 120px 18px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 18'%3E%3Cpath d='M4 14 C14 2 18 16 26 8 C32 2 34 14 42 10 C50 6 52 13 60 9 C70 4 76 12 86 7 C94 3 100 10 114 6' fill='none' stroke='%233A57C4' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.dip-seal { position: absolute; right: 22px; bottom: 6px; width: 74px; height: auto; transform: rotate(-8deg); filter: drop-shadow(0 3px 4px rgba(60, 40, 20, .3)); }
+.dip-note { margin: 0 0 22px !important; color: var(--ink-soft); text-align: center; font: italic 400 17px/1.5 var(--serif); }
+:root[data-theme="night"] .diploma { filter: brightness(.93); }
+
+.cert-head { margin: 0 0 12px !important; }
+.certs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cert-card {
+  all: unset; box-sizing: border-box; position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center;
+  padding: 14px 16px 14px 14px; border-radius: 10px; background: var(--paper-2); border: 1px solid var(--hair); color: var(--ink);
+  transition: transform .3s var(--ease), border-color .2s ease, box-shadow .3s var(--ease);
+}
+.cert-card.opens { cursor: pointer; }
+.cert-card.opens:hover, .cert-card.opens:focus-visible { transform: translateY(-3px); border-color: var(--c); box-shadow: 0 14px 26px -18px rgba(30, 30, 60, .45); }
+.cert-card:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.cert-seal {
+  display: grid; place-content: center; justify-items: center; width: 52px; height: 52px; border-radius: 50%;
+  border: 2px solid var(--c); color: var(--c); box-shadow: inset 0 0 0 3px var(--paper-2), inset 0 0 0 4px color-mix(in srgb, var(--c) 45%, transparent);
+  transform: rotate(-8deg); line-height: 1;
+}
+.cert-seal b { font: 600 11px var(--sans); }
+.cert-seal i { font: 700 14px var(--sans); font-style: normal; margin-top: 2px; }
+.cert-text { display: grid; gap: 3px; min-width: 0; padding-right: 30px; }
+.cert-text b { font: 400 18px/1.15 var(--serif); }
+.cert-text span { font-size: 13.5px; line-height: 1.4; color: var(--ink-soft); }
+.cert-year { position: absolute; top: 10px; right: 12px; font-size: 9px; color: var(--ink-soft); }
+.cert-go { position: absolute; bottom: 10px; right: 12px; font-size: 8.5px; color: var(--c); }
+@media (max-width: 620px) {
+  .certs { grid-template-columns: 1fr; }
+  .dip-inner { padding: 22px 14px 18px; }
+  .dip-foot { flex-direction: column; align-items: flex-start; padding-right: 70px; margin-top: 16px; }
+  .dip-seal { width: 60px; right: 14px; }
+  .dip-sign i { width: 110px; }
+}
+.cert-seal.big b { font-size: 24px; font-weight: 500; }
+/* the desk photo on the Notes cork board: a close-up of the home office */
+.ph-desk { aspect-ratio: 1; background: #F2EEE6; }
+.ph-desk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+:root[data-theme="night"] .ph-desk img { filter: brightness(.88); }

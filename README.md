@@ -40,7 +40,8 @@ stops and tells you which file and which word.
 - [ ] Check you have the right to use `src/static/assets/couple.png`.
 - [ ] Decide whether to cover the certificate numbers on `src/static/assets/n4-certificate.jpg`.
 - [ ] Remake the share picture once your name is in: run `python3 tools/make_images.py`
-      while `--serve` is running (needs Google Chrome).
+      while `--serve` is running (needs Google Chrome). The same command refreshes the desk photo
+      on the Notes page, which is a close-up of the office drawing, so run it after changing the room too.
 - [ ] Look at it in Safari, Firefox and on a real phone.
 
 `inspo/` is never published: it's listed in `.gitignore`, and the build only uses `src/`.

@@ -35,9 +35,10 @@ sitemap: no
     <svg class="land" viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
       <path d="M0 300 C200 270 420 262 640 280 C860 298 1100 250 1440 270 L1440 500 L0 500Z" fill="url(#gMount)" opacity=".8"/>
       <g filter="url(#rough)">
-        <path d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
-        <path d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
-        <g class="flowers wide"></g>
+        <path id="hill-mid" d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
+        <g class="flowers" data-on="hill-mid" data-count="70" data-depth="22"></g>
+        <path id="hill-front" d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
+        <g class="flowers" data-on="hill-front" data-count="130" data-depth="70"></g>
       </g>
     </svg>
   </section>

@@ -182,6 +182,28 @@
   const wide = document.querySelectorAll('.flowers.wide');
   if (wide[0]) bloom(wide[0], 140, 0, 1440, 505, 598);
   if (wide[1]) bloom(wide[1], 70, 0, 1440, 470, 498);
+  // flowers that follow a hill: <g class="flowers" data-on="hill-id" data-count="90" data-depth="40">
+  // scatters them in the grass just below that hill's top edge, whatever its shape
+  document.querySelectorAll('.flowers[data-on]').forEach((g) => {
+    const hill = document.getElementById(g.dataset.on);
+    if (!hill || !hill.getTotalLength) return;
+    const len = hill.getTotalLength(), top = [];
+    for (let i = 0; i <= 600; i++) {
+      const pt = hill.getPointAtLength(len * i / 600);
+      if (pt.y < 492) top.push(pt);        // the hill's outline, without its flat bottom
+    }
+    const n = +g.dataset.count || 80, depth = +g.dataset.depth || 40;
+    for (let i = 0; i < n; i++) {
+      const pt = top[Math.floor(rand() * top.length)], k = rand();
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', (pt.x + (rand() - .5) * 6).toFixed(1));
+      c.setAttribute('cy', (pt.y + 4 + k * depth).toFixed(1));
+      c.setAttribute('r', (1.2 + k * 1.8 + rand() * .8).toFixed(1));       // smaller up the slope, a touch bigger nearer
+      c.setAttribute('fill', petals[Math.floor(rand() * petals.length)]);
+      c.setAttribute('opacity', (0.7 + rand() * 0.3).toFixed(2));
+      g.appendChild(c);
+    }
+  });
 
   /* ---------- Toast ---------- */
   const toast = document.querySelector('.toast');
@@ -710,6 +732,63 @@
     if (hit) lightPlace(hit.dataset.place);
   });
 
+  /* ---------- Where I studied: a diploma, and certificates beside it ----------
+     Fill in your degree here. Each certificate can open another panel from the room with open: 'name'. */
+  const STUDY = {
+    degree: 'Software Engineering', field: '', school: 'Kirirom Institute of Technology', city: 'Kirirom, Cambodia',
+    yearsLabel: 'Graduated', years: '2019',
+    note: '[One line on what you loved studying, or what it taught you.]',
+  };
+  const CERTS = [
+    { title: 'Japanese-Language Proficiency Test', detail: 'Level N4 · The Japan Foundation & JEES', year: '2025', seal: ['日本語', 'N4'], colour: '#BC002D', open: 'certificate' },
+    { title: 'SAKURA Exchange Program in Science', detail: 'Japan Science and Technology Agency · Kyoto Institute of Technology', year: '2018', seal: ['桜', ''], big: true, colour: '#D6457E', open: 'sakura' },
+    { title: 'Bio Tech & IT Spring School', detail: 'Certificate of Completion · Kyoto Institute of Technology', year: '2018', seal: ['京', ''], big: true, colour: '#2C4A8C', open: 'kyoto' },
+  ];
+
+  function studyPanel() {
+    const crest = `<svg class="dip-crest" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M20 3 L35 9 V19 C35 28 28 34 20 37 C12 34 5 28 5 19 V9Z" fill="#F4EAD2" stroke="#9C7A3C" stroke-width="1.4"/>
+        <path d="M11 15 L20 11 L29 15 L20 19Z" fill="#3A57C4"/><path d="M14 16.6 V21 C17 23.4 23 23.4 26 21 V16.6" fill="none" stroke="#3A57C4" stroke-width="1.6"/>
+        <path d="M29 15 V22" stroke="#3A57C4" stroke-width="1.2"/><circle cx="29" cy="23" r="1.3" fill="#C9A24A"/>
+        <path d="M12 28 C16 30.4 24 30.4 28 28" fill="none" stroke="#9C7A3C" stroke-width="1"/></svg>`;
+    const seal = `<svg class="dip-seal" viewBox="0 0 80 96" aria-hidden="true">
+        <path d="M28 52 L20 92 L31 84 L36 95 L41 56Z M52 52 L60 92 L49 84 L44 95 L39 56Z" fill="#B23A48"/>
+        <path d="M28 52 L20 92 L31 84Z M52 52 L60 92 L49 84Z" fill="#8E2A37"/>
+        <g transform="translate(40 36)">${Array.from({ length: 24 }, (_, k) => `<path d="M0 -31 L4 -26 L-4 -26Z" transform="rotate(${k * 15})" fill="#C9A24A"/>`).join('')}
+          <circle r="27" fill="url(#dipGold)"/><circle r="21.5" fill="none" stroke="#FFF3C8" stroke-width="1" stroke-dasharray="1.6 1.6" opacity=".8"/>
+          <path d="M0 -12 L3.4 -4 L12 -3.6 L5.4 2 L7.6 10.4 L0 5.8 L-7.6 10.4 L-5.4 2 L-12 -3.6 L-3.4 -4Z" fill="#FFF3C8" opacity=".9"/></g>
+        <defs><radialGradient id="dipGold" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#F6DE8E"/><stop offset=".6" stop-color="#D6AE4E"/><stop offset="1" stop-color="#B08834"/></radialGradient></defs></svg>`;
+    const cert = (c) => {
+      const tag = c.open ? 'button type="button"' : 'div';
+      return `<${tag} class="cert-card${c.open ? ' opens' : ''}"${c.open ? ` data-open="${c.open}"` : ''} style="--c:${c.colour}">
+          <span class="cert-seal${c.big ? ' big' : ''}" aria-hidden="true"><b>${c.seal[0]}</b>${c.seal[1] ? `<i>${c.seal[1]}</i>` : ''}</span>
+          <span class="cert-text"><b>${c.title}</b><span>${c.detail}</span></span>
+          <span class="cert-year mono">${c.year}</span>
+          ${c.open ? '<span class="cert-go mono" aria-hidden="true">View ↗</span>' : ''}
+        </${c.open ? 'button' : 'div'}>`;
+    };
+    return `
+      <div class="diploma">
+        <div class="dip-inner">
+          ${crest}
+          <p class="mono dip-kicker">This certifies that</p>
+          <p class="dip-name">${document.body.dataset.name || ''}</p>
+          <p class="dip-has">has completed the degree of</p>
+          <p class="dip-degree">${STUDY.degree}</p>
+          ${STUDY.field ? `<p class="dip-field">${STUDY.field}</p>` : ''}
+          <p class="mono dip-school">${STUDY.school}</p>
+          <div class="dip-foot">
+            <span><b class="mono">${STUDY.yearsLabel || 'Years'}</b>${STUDY.years}</span>
+            <span class="dip-sign"><i></i><b class="mono">${STUDY.city}</b></span>
+          </div>
+        </div>
+        ${seal}
+      </div>
+      <p class="dip-note">${STUDY.note}</p>
+      <p class="mono kicker cert-head">Also certified</p>
+      <div class="certs">${CERTS.map(cert).join('')}</div>`;
+  }
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -720,8 +799,18 @@
     calendar: { label: 'Experience', open: () => panel('On the calendar', 'Experience',
       `${rows([['[Role] · [Company]', '[What you did there, in one line.]', '[2024 — now]'], ['[Role] · [Company]', '[What you did there, in one line.]', '[2022 — 24]'], ['[Role] · [Company]', '[What you did there, in one line.]', '[2020 — 22]']])}
       <div class="panel-actions">${RESUME ? `<a class="ghost" href="${RESUME}" target="_blank" rel="noopener">Download résumé (PDF)</a>` : `<a class="ghost" href="#" data-todo="Add your résumé link in site.json ✿">Download résumé (PDF)</a>`}</div>`) },
-    diploma: { label: 'Where I studied', open: () => panel('Framed on the shelf', 'Where I <em>studied</em>',
-      rows([['[Degree]', '[School, City]', '[Years]'], ['[Course or certificate]', '[Where]', '[Year]']])) },
+    diploma: { label: 'Where I studied', open: () => panel('Framed on the shelf', 'Where I <em>studied</em>', studyPanel()) },
+    // opened from its card in "Where I studied"
+    sakura: { label: 'SAKURA Science', open: () => panel('Kyoto, Japan · 2018', 'SAKURA <em>Science</em>',
+      `<p class="lead">In 2018 I joined the SAKURA Exchange Program in Science, a Japan-Asia youth exchange run by the Japan Science and Technology Agency. The course was hosted by the Kyoto Institute of Technology, from 27 February to 8 March.</p>
+      <figure class="cert-photo"><img src="assets/sakura-certificate.jpg" alt="Certificate of Achievement for Phan Sreypich: SAKURA Exchange Program in Science, Kyoto Institute of Technology, 8 March 2018" loading="lazy"></figure>
+      ${rows([['SAKURA Exchange Program in Science', 'Japan Science and Technology Agency · Kyoto Institute of Technology', '2018']])}
+      <div class="panel-actions"><button class="ghost" type="button" data-open="diploma">← Where I studied</button><button class="ghost" type="button" data-open="kyoto">Spring School certificate →</button></div>`) },
+    kyoto: { label: 'Spring School', open: () => panel('Kyoto, Japan · 2018', 'Spring <em>School</em>',
+      `<p class="lead">On the same stay in Kyoto, I completed the KIT Bio Tech &amp; IT Spring School 2018, a programme given by the Kyoto Institute of Technology. My certificate of completion is dated 7 March 2018.</p>
+      <figure class="cert-photo"><img src="assets/kyoto-spring-school.jpg" alt="Certificate of Completion for Sreypich Phan: KIT Bio Tech &amp; IT Spring School 2018, Kyoto Institute of Technology, 7 March 2018" loading="lazy"></figure>
+      ${rows([['KIT Bio Tech & IT Spring School 2018', 'Certificate of Completion · Kyoto Institute of Technology', '2018']])}
+      <div class="panel-actions"><button class="ghost" type="button" data-open="diploma">← Where I studied</button><button class="ghost" type="button" data-open="sakura">SAKURA Science certificate →</button></div>`) },
     certificate: { label: 'Japanese, level N4', open: () => panel('Framed on the wall', 'Japanese, <em>level N4</em>',
       `<p class="lead">[A line about learning Japanese: why you started, and what it opened up for you.]</p>
       <figure class="cert-photo"><img src="assets/n4-certificate.jpg" alt="Japanese-Language Proficiency Test certificate, level N4, January 2025" loading="lazy"></figure>
@@ -1004,6 +1093,8 @@
   dialog?.addEventListener('click', (e) => {
     if (e.target === dialog || e.target.closest('[data-close]')) { dialog.close(); return; }
     if (e.target.closest('[data-award-off]')) { setAward(false); dialog.close(); say('Award light off'); return; }
+    const go = e.target.closest('[data-open]');
+    if (go && THINGS[go.dataset.open]?.open) { openPanel(THINGS[go.dataset.open].open()); return; }
     const link = e.target.closest('a[href^="#"]');
     if (link && link.getAttribute('href').length > 1) dialog.close();
   });

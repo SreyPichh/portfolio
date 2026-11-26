@@ -13,7 +13,7 @@ nav: contact
     </div>
 
     <div class="end-copy">
-      <p class="mono kicker reveal">Chapter five · what's next</p>
+      <p class="mono kicker reveal">Say hello · what's next</p>
       <h2 class="display reveal">Let's write the <span class="select">next chapter<i class="cursor" aria-hidden="true"></i></span> together.</h2>
       <p class="lede reveal">I'm open to collaborations and freelance projects, rather than a full-time role. If you have an idea in IT or media, or you'd simply like to swap notes over coffee, I'd love to hear from you.</p>
     </div>
@@ -90,16 +90,33 @@ nav: contact
     <svg class="land" viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
       <path d="M0 300 C200 270 420 262 640 280 C860 298 1100 250 1440 270 L1440 500 L0 500Z" fill="url(#gMount)" opacity=".8"/>
       <g filter="url(#rough)">
-        <path d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
-        <path d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
+        <path id="hill-mid" d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
+        <g class="flowers" data-on="hill-mid" data-count="70" data-depth="22"></g>
+        <path id="hill-front" d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
         <path d="M720 502 C680 470 780 440 730 410 C700 392 730 382 722 374" stroke="var(--path)" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <!-- a round tree on the hilltop beside her -->
+        <path d="M652 376 V346" style="stroke:var(--tree-2)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="652" cy="330" r="22" style="fill:var(--tree)"/>
+        <path d="M652 308 a22 22 0 0 1 0 44 a16 22 0 0 0 0 -44Z" style="fill:var(--tree-2)" opacity=".5"/>
+        <circle cx="644" cy="322" r="6" fill="#FFFFFF" opacity=".14"/>
+        <use href="#cypress" x="802" y="318" width="14" height="52"/>
         <g transform="translate(716 372)">
           <path d="M6 -24 H52 M10 -24 V0 M48 -24 V0" stroke="var(--figure)" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <rect x="16" y="-48" width="28" height="22" rx="3" fill="#FFFDF7" stroke="var(--figure)" stroke-width="1.6"/>
-          <rect x="20" y="-44" width="20" height="14" rx="2" class="screen"/>
+          <rect x="11" y="-48" width="28" height="22" rx="3" fill="#FFFDF7" stroke="var(--figure)" stroke-width="1.6"/>
+          <rect x="15" y="-44" width="20" height="14" rx="2" class="screen"/>
+          <!-- a mug, steaming -->
+          <rect x="45" y="-31.4" width="6" height="7.4" rx="1.4" fill="#FFFDF7" stroke="var(--figure)" stroke-width="1.4"/>
+          <path d="M51 -29.6 C54 -29.6 54 -26.2 51 -26.2" stroke="var(--figure)" stroke-width="1.2" fill="none"/>
+          <g class="steam" style="stroke:var(--figure)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".45"><path d="M47 -34 C45.6 -37 48.4 -39 47 -42"/><path d="M49.6 -34 C48.2 -37 51 -39 49.6 -43" class="s2"/></g>
+          <!-- the cat, asleep under the table -->
+          <g style="fill:var(--figure)">
+            <path d="M24 0 C23.4 -5.6 28 -8.6 34 -8.6 C39.6 -8.6 42.6 -5.4 41.6 0Z"/>
+            <path d="M21.6 -0.4 C20.8 -4.4 23 -6.6 25.6 -6.4 L25 -9 L27.4 -7.2 L29 -8.8 L29 -5.6 C29.8 -3.6 29 -1 27 0Z"/>
+          </g>
+          <path d="M41.4 -1.6 C46.4 -1.6 47.4 -5.6 44.6 -7.6" style="stroke:var(--figure)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         </g>
-        <use href="#sitter" x="684" y="318" width="48" height="56"/>
-        <g class="flowers wide"></g>
+        <use href="#sitter" x="684" y="316" width="48" height="58"/>
+        <g class="flowers" data-on="hill-front" data-count="130" data-depth="70"></g>
       </g>
     </svg>
 

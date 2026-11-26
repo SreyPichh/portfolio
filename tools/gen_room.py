@@ -231,6 +231,11 @@ defs.append('''
             <rect width="6" height="6" fill="#FBF8F1"/><rect width="1.8" height="6" fill="#C8463A"/><rect x="3" width="1.8" height="6" fill="#3F5DAE"/>
           </pattern>
           <linearGradient id="gPhoneScreen" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="#E9E3F7"/><stop offset=".55" stop-color="#DCE7F8"/><stop offset="1" stop-color="#F6E1E8"/></linearGradient>
+          <radialGradient id="gSoundHole" cx=".5" cy=".38" r=".62"><stop offset="0" stop-color="#4A2E1C"/><stop offset="1" stop-color="#1E120A"/></radialGradient>
+          <linearGradient id="gChrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F6F9"/><stop offset=".5" stop-color="#C4C9D1"/><stop offset="1" stop-color="#8F96A1"/></linearGradient>
+          <pattern id="kramaSm" width="3.2" height="3.2" patternUnits="userSpaceOnUse">
+            <rect width="3.2" height="3.2" fill="#FBF4EC"/><rect width="1.6" height="3.2" fill="#D3283A" opacity=".85"/><rect width="3.2" height="1.6" fill="#D3283A" opacity=".85"/>
+          </pattern>
           <!-- pages darken softly toward the spine -->
           <linearGradient id="gGutterL" x1="0" y1="0" x2="1" y2="0"><stop offset=".6" stop-color="#5A4A30" stop-opacity="0"/><stop offset="1" stop-color="#5A4A30" stop-opacity=".16"/></linearGradient>
           <linearGradient id="gGutterR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5A4A30" stop-opacity=".18"/><stop offset=".4" stop-color="#5A4A30" stop-opacity="0"/></linearGradient>
@@ -1103,25 +1108,89 @@ w(f'''        <g class="c-sm">
 
 w('</g>')
 # ------------------------------------------------------------------ guitar
-w('<g transform="translate(8 26)">')
-frets = ' '.join(f'M506 {y} H518' for y in range(470, 612, 16))
-w(f'''
+GUITAR_BODY = ('M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 '
+               'C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z')
+
+
+def guitar():
+    """An acoustic guitar leaning on the wall: spruce top with binding and grain, rosette, pickguard,
+    rosewood bridge, six strings over a fretted fingerboard, a headstock with six tuners, and a little
+    red-and-white krama tied at the headstock."""
+    nut, saddle = 452.5, 734.4
+    L = saddle - nut                                          # the scale length, nut to saddle
+    fret_y = [nut + L * (1 - 2 ** (-n / 12)) for n in range(1, 20)]
+    frets = ' '.join(f'M505.6 {y:.2f} H518.4' for y in fret_y)
+    between = lambda n: (fret_y[n - 2] + fret_y[n - 1]) / 2   # the middle of fret n's space
+    dots = ''.join(f'<circle cx="512" cy="{between(n):.2f}" r="1.25" fill="#F2E6CF"/>' for n in (3, 5, 7, 9))
+    dots += f'<circle cx="509.4" cy="{between(12):.2f}" r="1.15" fill="#F2E6CF"/><circle cx="514.6" cy="{between(12):.2f}" r="1.15" fill="#F2E6CF"/>'
+    # six strings: wider apart at the bridge than at the nut; bronze for the low ones, silver for the high
+    strings = ''
+    for i in range(6):
+        xn, xs = 507.4 + i * 1.84, 505.6 + i * 2.56
+        col, wid = ('#E5C68C', 1 - i * .09) if i < 3 else ('#F4F3EF', .74 - (i - 3) * .08)
+        post_y = 425 + (i % 3) * 9
+        post_x = 504.4 if i < 3 else 519.6
+        strings += (f'<path d="M{xs:.2f} {saddle} L{xn:.2f} {nut}" stroke="{col}" stroke-width="{wid:.2f}" opacity=".9"/>'
+                    f'<path d="M{xn:.2f} {nut} L{post_x} {post_y}" stroke="{col}" stroke-width="{wid * .8:.2f}" opacity=".75"/>')
+    grain = ' '.join(f'M{x} 600 V780' for x in range(476, 552, 5))
+    tuners = ''.join(f'<rect x="{x}" y="{y - 2}" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="{px}" cy="{y}" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/>'
+                     for y in (425, 434, 443) for x, px in ((495.6, 504.4), (523.4, 519.6)))
+    bridge_pins = ''.join(f'<circle cx="{506.2 + i * 2.4:.1f}" cy="738.4" r=".9" fill="#F3EBDD"/>' for i in range(6))
+    return f'''
         <!-- Guitar -->
         <g class="obj lift" id="o-guitar" data-id="guitar" tabindex="0" role="button" aria-label="Guitar: after hours">
+          <ellipse cx="520" cy="767" rx="44" ry="4.4" fill="#000" opacity=".14"/>
           <g transform="rotate(5 512 766)">
-            <path d="M503 420 H521 L523 452 H501Z" fill="#6B432A"/>
-            <g fill="#E9E4DA"><circle cx="499" cy="428" r="2.6"/><circle cx="499" cy="438" r="2.6"/><circle cx="525" cy="428" r="2.6"/><circle cx="525" cy="438" r="2.6"/></g>
-            <rect x="505" y="450" width="14" height="172" fill="url(#gNeck)"/>
-            <path d="{frets}" stroke="#E4D7C0" stroke-width="1" opacity=".8"/>
-            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="url(#gGuitar)"/>
-            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="none" stroke="#FFF1DC" stroke-width="2" opacity=".7"/>
-            <circle cx="512" cy="676" r="13" fill="none" stroke="#B9773F" stroke-width="3"/>
-            <circle cx="512" cy="676" r="10" fill="#3F2717"/>
-            <rect x="498" y="728" width="28" height="7" rx="2.5" fill="#5A3A26"/>
-            <path d="M509 430 V732 M512 430 V732 M515 430 V732" stroke="#FFFDF5" stroke-opacity=".75" stroke-width=".7"/>
+            <clipPath id="guitarTop"><path d="{GUITAR_BODY}"/></clipPath>
+            <!-- headstock, nut and tuners -->
+            <path d="M503 453 L501.4 422 Q501.2 416.6 505.6 416 Q512 414.6 518.4 416 Q522.8 416.6 522.6 422 L521 453Z" fill="#3E2617"/>
+            <path d="M505.6 418.4 Q512 417.2 518.4 418.4" stroke="#7A5236" stroke-width=".6" fill="none"/>
+            {tuners}
+            <rect x="505" y="451.4" width="14" height="2.2" rx=".6" fill="#F3EBDD"/>
+            <!-- neck and fingerboard, frets and dots -->
+            <rect x="504.6" y="453" width="14.8" height="170" fill="#6E4428"/>
+            <rect x="505.4" y="453" width="13.2" height="209" fill="#3B2416"/>
+            <path d="{frets}" stroke="#C9CDD4" stroke-width=".7"/>
+            {dots}
+            <!-- the body: its side shows a little, then the spruce top -->
+            <path d="{GUITAR_BODY}" transform="translate(3.4 1.4)" fill="#7A4628"/>
+            <path d="{GUITAR_BODY}" fill="url(#gGuitarTop)"/>
+            <g clip-path="url(#guitarTop)">
+              <path d="{grain}" stroke="#B9824B" stroke-width=".5" opacity=".22"/>
+              <path d="M484 640 C482 626 494 616 508 615" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round" opacity=".18"/>
+              <path d="M478 712 C476 698 486 690 492 686" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" opacity=".14"/>
+            </g>
+            <path d="{GUITAR_BODY}" fill="none" stroke="#FFF1DC" stroke-width="2.4"/>
+            <path d="{GUITAR_BODY}" transform="translate(512 690) scale(.972) translate(-512 -690)" fill="none" stroke="#9C6A40" stroke-width=".6" opacity=".7"/>
+            <!-- the fingerboard runs on over the top, then the rosette and sound hole -->
+            <rect x="505.4" y="612" width="13.2" height="50" fill="#3B2416"/>
+            <path d="M505.6 {fret_y[-3]:.2f} H518.4 M505.6 {fret_y[-2]:.2f} H518.4 M505.6 {fret_y[-1]:.2f} H518.4" stroke="#C9CDD4" stroke-width=".7"/>
+            <path d="M524 684 C536 682 544 692 540 704 C536 712 524 712 520 704 C518 698 518 690 524 684Z" fill="#5C3220" opacity=".9"/>
+            <path d="M526 688 l3 2 M531 694 l2.4 1.4 M524 698 l3 1.6 M532 702 l2 1" stroke="#9B5B34" stroke-width=".9" stroke-linecap="round" opacity=".7"/>
+            <circle cx="512" cy="676" r="15.4" fill="none" stroke="#6E4428" stroke-width="1.3"/>
+            <circle cx="512" cy="676" r="13.4" fill="none" stroke="#2F6A58" stroke-width="2.2" stroke-dasharray="1.3 1"/>
+            <circle cx="512" cy="676" r="13.4" fill="none" stroke="#EAD9B6" stroke-width="2.2" stroke-dasharray="1 1.3" stroke-dashoffset="1.3" opacity=".9"/>
+            <circle cx="512" cy="676" r="11.4" fill="none" stroke="#6E4428" stroke-width=".9"/>
+            <circle cx="512" cy="676" r="10" fill="url(#gSoundHole)"/>
+            <!-- bridge, saddle and pins -->
+            <path d="M494 733 Q494 730.6 497 730.6 H527 Q530 730.6 530 733 V739 Q530 741.4 527 741.4 H497 Q494 741.4 494 739Z" fill="#3E2516"/>
+            <rect x="503.6" y="733.4" width="16.8" height="1.6" rx=".6" fill="#F3EBDD"/>
+            {bridge_pins}
+            {strings}
+            <circle cx="512" cy="767.4" r="1.7" fill="#3E2516"/>
+            <!-- a little krama, red and white checks, tied at the headstock -->
+            <g transform="translate(512 457)">
+              <path d="M-1 0 C-6 -6 -12 -4 -11 1 C-10 5 -4 4 -1 1Z M1 0 C6 -6 12 -4 11 1 C10 5 4 4 1 1Z" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+              <path d="M-1.4 1.2 C-3 8 -5 14 -7 19 L-3.4 19.6 C-2 14 -.6 8 .2 1.6Z M1 1.2 C2.6 7 3.8 12 6 16.6 L9.2 15.4 C7 11 4.4 6.6 2.2 1Z" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+              <path d="M-7 19 L-6 20.6 M-5.4 19.3 L-4.6 20.9 M6 16.6 L6.6 18.3 M7.6 16 L8.4 17.6" stroke="#C8202F" stroke-width=".6" stroke-linecap="round"/>
+              <rect x="-2.4" y="-2" width="4.8" height="4.4" rx="1.4" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+            </g>
           </g>
-        </g>''')
+        </g>'''
 
+
+w('<g transform="translate(8 26)">')
+w(guitar())
 w('</g>')
 # ------------------------------------------------------------------ waste basket
 def smooth(pts):
@@ -1650,7 +1719,7 @@ for d_ in [
     lg('gLegW', S((0, '#B97543'), (1, '#7A4423')), **H),
     split('gOxa', '#5E2454', '#3D1437', .5), cyl('gStone', '#55595F', '#71767D', '#3A3D42', .14, .3, .7),
     lg('gOpal', S((0, '#EFE4CA'), (.3, '#FFFCF3'), (.7, '#EADDC0'), (1, '#D6C6A4')), **H), lg('gBronze', S((0, '#544433'), (.35, '#8A7352'), (.7, '#5A4A37'), (1, '#3A2F23')), **H),
-    cyl('gRattan', '#D9B27A', '#EFD3A0', '#B78A53', .1, .24, .64), cyl('gLiner', '#F6EFDF', '#FFFDF6', '#E3D7BF', .1, .24, .64),
+    cyl('gGuitarTop', '#ECBC82', '#F8DAAC', '#CF9459', .1, .26, .64), cyl('gRattan', '#D9B27A', '#EFD3A0', '#B78A53', .1, .24, .64), cyl('gLiner', '#F6EFDF', '#FFFDF6', '#E3D7BF', .1, .24, .64),
     split('gMonA', '#3E7B44', '#23502A', .53), split('gMonB', '#4A8A4D', '#2C5F32', .53), split('gMonC', '#356D3C', '#1D4524', .53),
     lg('gConcrete', S((0, '#9A9D9B'), (.3, '#B4B7B5'), (.75, '#8B8E8C'), (1, '#6F7270')), **H),
     lg('gPleat', S((0, '#000', .12), (.12, '#000', .12), (.12, '#fff', .16), (.26, '#fff', .16), (.26, '#000', 0), (.4, '#000', 0), (.4, '#000', .14), (.52, '#000', .14), (.52, '#fff', .12), (.66, '#fff', .12), (.66, '#000', 0), (.8, '#000', 0), (.8, '#000', .16), (1, '#000', .16)), **H),

@@ -201,6 +201,11 @@ nav: home
             <rect width="6" height="6" fill="#FBF8F1"/><rect width="1.8" height="6" fill="#C8463A"/><rect x="3" width="1.8" height="6" fill="#3F5DAE"/>
           </pattern>
           <linearGradient id="gPhoneScreen" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="#E9E3F7"/><stop offset=".55" stop-color="#DCE7F8"/><stop offset="1" stop-color="#F6E1E8"/></linearGradient>
+          <radialGradient id="gSoundHole" cx=".5" cy=".38" r=".62"><stop offset="0" stop-color="#4A2E1C"/><stop offset="1" stop-color="#1E120A"/></radialGradient>
+          <linearGradient id="gChrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F6F9"/><stop offset=".5" stop-color="#C4C9D1"/><stop offset="1" stop-color="#8F96A1"/></linearGradient>
+          <pattern id="kramaSm" width="3.2" height="3.2" patternUnits="userSpaceOnUse">
+            <rect width="3.2" height="3.2" fill="#FBF4EC"/><rect width="1.6" height="3.2" fill="#D3283A" opacity=".85"/><rect width="3.2" height="1.6" fill="#D3283A" opacity=".85"/>
+          </pattern>
           <!-- pages darken softly toward the spine -->
           <linearGradient id="gGutterL" x1="0" y1="0" x2="1" y2="0"><stop offset=".6" stop-color="#5A4A30" stop-opacity="0"/><stop offset="1" stop-color="#5A4A30" stop-opacity=".16"/></linearGradient>
           <linearGradient id="gGutterR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5A4A30" stop-opacity=".18"/><stop offset=".4" stop-color="#5A4A30" stop-opacity="0"/></linearGradient>
@@ -242,6 +247,7 @@ nav: home
           <linearGradient id="gStone" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#55595F"/><stop offset="0.14" stop-color="#55595F"/><stop offset="0.14" stop-color="#71767D"/><stop offset="0.3" stop-color="#71767D"/><stop offset="0.3" stop-color="#55595F"/><stop offset="0.7" stop-color="#55595F"/><stop offset="0.7" stop-color="#3A3D42"/><stop offset="1" stop-color="#3A3D42"/></linearGradient>
           <linearGradient id="gOpal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#EFE4CA"/><stop offset="0.3" stop-color="#FFFCF3"/><stop offset="0.7" stop-color="#EADDC0"/><stop offset="1" stop-color="#D6C6A4"/></linearGradient>
           <linearGradient id="gBronze" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#544433"/><stop offset="0.35" stop-color="#8A7352"/><stop offset="0.7" stop-color="#5A4A37"/><stop offset="1" stop-color="#3A2F23"/></linearGradient>
+          <linearGradient id="gGuitarTop" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ECBC82"/><stop offset="0.1" stop-color="#ECBC82"/><stop offset="0.1" stop-color="#F8DAAC"/><stop offset="0.26" stop-color="#F8DAAC"/><stop offset="0.26" stop-color="#ECBC82"/><stop offset="0.64" stop-color="#ECBC82"/><stop offset="0.64" stop-color="#CF9459"/><stop offset="1" stop-color="#CF9459"/></linearGradient>
           <linearGradient id="gRattan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D9B27A"/><stop offset="0.1" stop-color="#D9B27A"/><stop offset="0.1" stop-color="#EFD3A0"/><stop offset="0.24" stop-color="#EFD3A0"/><stop offset="0.24" stop-color="#D9B27A"/><stop offset="0.64" stop-color="#D9B27A"/><stop offset="0.64" stop-color="#B78A53"/><stop offset="1" stop-color="#B78A53"/></linearGradient>
           <linearGradient id="gLiner" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F6EFDF"/><stop offset="0.1" stop-color="#F6EFDF"/><stop offset="0.1" stop-color="#FFFDF6"/><stop offset="0.24" stop-color="#FFFDF6"/><stop offset="0.24" stop-color="#F6EFDF"/><stop offset="0.64" stop-color="#F6EFDF"/><stop offset="0.64" stop-color="#E3D7BF"/><stop offset="1" stop-color="#E3D7BF"/></linearGradient>
           <linearGradient id="gMonA" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3E7B44"/><stop offset="0.53" stop-color="#3E7B44"/><stop offset="0.53" stop-color="#23502A"/><stop offset="1" stop-color="#23502A"/></linearGradient>
@@ -826,17 +832,52 @@ nav: home
         
         <!-- Guitar -->
         <g class="obj lift" id="o-guitar" data-id="guitar" tabindex="0" role="button" aria-label="Guitar: after hours">
+          <ellipse cx="520" cy="767" rx="44" ry="4.4" fill="#000" opacity=".14"/>
           <g transform="rotate(5 512 766)">
-            <path d="M503 420 H521 L523 452 H501Z" fill="#6B432A"/>
-            <g fill="#E9E4DA"><circle cx="499" cy="428" r="2.6"/><circle cx="499" cy="438" r="2.6"/><circle cx="525" cy="428" r="2.6"/><circle cx="525" cy="438" r="2.6"/></g>
-            <rect x="505" y="450" width="14" height="172" fill="url(#gNeck)"/>
-            <path d="M506 470 H518 M506 486 H518 M506 502 H518 M506 518 H518 M506 534 H518 M506 550 H518 M506 566 H518 M506 582 H518 M506 598 H518" stroke="#E4D7C0" stroke-width="1" opacity=".8"/>
-            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="url(#gGuitar)"/>
-            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="none" stroke="#FFF1DC" stroke-width="2" opacity=".7"/>
-            <circle cx="512" cy="676" r="13" fill="none" stroke="#B9773F" stroke-width="3"/>
-            <circle cx="512" cy="676" r="10" fill="#3F2717"/>
-            <rect x="498" y="728" width="28" height="7" rx="2.5" fill="#5A3A26"/>
-            <path d="M509 430 V732 M512 430 V732 M515 430 V732" stroke="#FFFDF5" stroke-opacity=".75" stroke-width=".7"/>
+            <clipPath id="guitarTop"><path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z"/></clipPath>
+            <!-- headstock, nut and tuners -->
+            <path d="M503 453 L501.4 422 Q501.2 416.6 505.6 416 Q512 414.6 518.4 416 Q522.8 416.6 522.6 422 L521 453Z" fill="#3E2617"/>
+            <path d="M505.6 418.4 Q512 417.2 518.4 418.4" stroke="#7A5236" stroke-width=".6" fill="none"/>
+            <rect x="495.6" y="423" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="504.4" cy="425" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/><rect x="523.4" y="423" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="519.6" cy="425" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/><rect x="495.6" y="432" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="504.4" cy="434" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/><rect x="523.4" y="432" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="519.6" cy="434" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/><rect x="495.6" y="441" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="504.4" cy="443" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/><rect x="523.4" y="441" width="5" height="4" rx="1.6" fill="url(#gChrome)"/><circle cx="519.6" cy="443" r="1.5" fill="#E9ECF0" stroke="#9AA0AA" stroke-width=".4"/>
+            <rect x="505" y="451.4" width="14" height="2.2" rx=".6" fill="#F3EBDD"/>
+            <!-- neck and fingerboard, frets and dots -->
+            <rect x="504.6" y="453" width="14.8" height="170" fill="#6E4428"/>
+            <rect x="505.4" y="453" width="13.2" height="209" fill="#3B2416"/>
+            <path d="M505.6 468.32 H518.4 M505.6 483.26 H518.4 M505.6 497.35 H518.4 M505.6 510.66 H518.4 M505.6 523.21 H518.4 M505.6 535.07 H518.4 M505.6 546.25 H518.4 M505.6 556.81 H518.4 M505.6 566.78 H518.4 M505.6 576.19 H518.4 M505.6 585.07 H518.4 M505.6 593.45 H518.4 M505.6 601.36 H518.4 M505.6 608.83 H518.4 M505.6 615.88 H518.4 M505.6 622.53 H518.4 M505.6 628.81 H518.4 M505.6 634.73 H518.4 M505.6 640.33 H518.4" stroke="#C9CDD4" stroke-width=".7"/>
+            <circle cx="512" cy="490.30" r="1.25" fill="#F2E6CF"/><circle cx="512" cy="516.93" r="1.25" fill="#F2E6CF"/><circle cx="512" cy="540.66" r="1.25" fill="#F2E6CF"/><circle cx="512" cy="561.80" r="1.25" fill="#F2E6CF"/><circle cx="509.4" cy="589.26" r="1.15" fill="#F2E6CF"/><circle cx="514.6" cy="589.26" r="1.15" fill="#F2E6CF"/>
+            <!-- the body: its side shows a little, then the spruce top -->
+            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" transform="translate(3.4 1.4)" fill="#7A4628"/>
+            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="url(#gGuitarTop)"/>
+            <g clip-path="url(#guitarTop)">
+              <path d="M476 600 V780 M481 600 V780 M486 600 V780 M491 600 V780 M496 600 V780 M501 600 V780 M506 600 V780 M511 600 V780 M516 600 V780 M521 600 V780 M526 600 V780 M531 600 V780 M536 600 V780 M541 600 V780 M546 600 V780 M551 600 V780" stroke="#B9824B" stroke-width=".5" opacity=".22"/>
+              <path d="M484 640 C482 626 494 616 508 615" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round" opacity=".18"/>
+              <path d="M478 712 C476 698 486 690 492 686" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" opacity=".14"/>
+            </g>
+            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" fill="none" stroke="#FFF1DC" stroke-width="2.4"/>
+            <path d="M512 612 C536 612 546 630 544 650 C542 664 534 672 534 680 C534 690 554 698 554 722 C554 748 536 766 512 766 C488 766 470 748 470 722 C470 698 490 690 490 680 C490 672 482 664 480 650 C478 630 488 612 512 612Z" transform="translate(512 690) scale(.972) translate(-512 -690)" fill="none" stroke="#9C6A40" stroke-width=".6" opacity=".7"/>
+            <!-- the fingerboard runs on over the top, then the rosette and sound hole -->
+            <rect x="505.4" y="612" width="13.2" height="50" fill="#3B2416"/>
+            <path d="M505.6 628.81 H518.4 M505.6 634.73 H518.4 M505.6 640.33 H518.4" stroke="#C9CDD4" stroke-width=".7"/>
+            <path d="M524 684 C536 682 544 692 540 704 C536 712 524 712 520 704 C518 698 518 690 524 684Z" fill="#5C3220" opacity=".9"/>
+            <path d="M526 688 l3 2 M531 694 l2.4 1.4 M524 698 l3 1.6 M532 702 l2 1" stroke="#9B5B34" stroke-width=".9" stroke-linecap="round" opacity=".7"/>
+            <circle cx="512" cy="676" r="15.4" fill="none" stroke="#6E4428" stroke-width="1.3"/>
+            <circle cx="512" cy="676" r="13.4" fill="none" stroke="#2F6A58" stroke-width="2.2" stroke-dasharray="1.3 1"/>
+            <circle cx="512" cy="676" r="13.4" fill="none" stroke="#EAD9B6" stroke-width="2.2" stroke-dasharray="1 1.3" stroke-dashoffset="1.3" opacity=".9"/>
+            <circle cx="512" cy="676" r="11.4" fill="none" stroke="#6E4428" stroke-width=".9"/>
+            <circle cx="512" cy="676" r="10" fill="url(#gSoundHole)"/>
+            <!-- bridge, saddle and pins -->
+            <path d="M494 733 Q494 730.6 497 730.6 H527 Q530 730.6 530 733 V739 Q530 741.4 527 741.4 H497 Q494 741.4 494 739Z" fill="#3E2516"/>
+            <rect x="503.6" y="733.4" width="16.8" height="1.6" rx=".6" fill="#F3EBDD"/>
+            <circle cx="506.2" cy="738.4" r=".9" fill="#F3EBDD"/><circle cx="508.6" cy="738.4" r=".9" fill="#F3EBDD"/><circle cx="511.0" cy="738.4" r=".9" fill="#F3EBDD"/><circle cx="513.4" cy="738.4" r=".9" fill="#F3EBDD"/><circle cx="515.8" cy="738.4" r=".9" fill="#F3EBDD"/><circle cx="518.2" cy="738.4" r=".9" fill="#F3EBDD"/>
+            <path d="M505.60 734.4 L507.40 452.5" stroke="#E5C68C" stroke-width="1.00" opacity=".9"/><path d="M507.40 452.5 L504.4 425" stroke="#E5C68C" stroke-width="0.80" opacity=".75"/><path d="M508.16 734.4 L509.24 452.5" stroke="#E5C68C" stroke-width="0.91" opacity=".9"/><path d="M509.24 452.5 L504.4 434" stroke="#E5C68C" stroke-width="0.73" opacity=".75"/><path d="M510.72 734.4 L511.08 452.5" stroke="#E5C68C" stroke-width="0.82" opacity=".9"/><path d="M511.08 452.5 L504.4 443" stroke="#E5C68C" stroke-width="0.66" opacity=".75"/><path d="M513.28 734.4 L512.92 452.5" stroke="#F4F3EF" stroke-width="0.74" opacity=".9"/><path d="M512.92 452.5 L519.6 425" stroke="#F4F3EF" stroke-width="0.59" opacity=".75"/><path d="M515.84 734.4 L514.76 452.5" stroke="#F4F3EF" stroke-width="0.66" opacity=".9"/><path d="M514.76 452.5 L519.6 434" stroke="#F4F3EF" stroke-width="0.53" opacity=".75"/><path d="M518.40 734.4 L516.60 452.5" stroke="#F4F3EF" stroke-width="0.58" opacity=".9"/><path d="M516.60 452.5 L519.6 443" stroke="#F4F3EF" stroke-width="0.46" opacity=".75"/>
+            <circle cx="512" cy="767.4" r="1.7" fill="#3E2516"/>
+            <!-- a little krama, red and white checks, tied at the headstock -->
+            <g transform="translate(512 457)">
+              <path d="M-1 0 C-6 -6 -12 -4 -11 1 C-10 5 -4 4 -1 1Z M1 0 C6 -6 12 -4 11 1 C10 5 4 4 1 1Z" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+              <path d="M-1.4 1.2 C-3 8 -5 14 -7 19 L-3.4 19.6 C-2 14 -.6 8 .2 1.6Z M1 1.2 C2.6 7 3.8 12 6 16.6 L9.2 15.4 C7 11 4.4 6.6 2.2 1Z" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+              <path d="M-7 19 L-6 20.6 M-5.4 19.3 L-4.6 20.9 M6 16.6 L6.6 18.3 M7.6 16 L8.4 17.6" stroke="#C8202F" stroke-width=".6" stroke-linecap="round"/>
+              <rect x="-2.4" y="-2" width="4.8" height="4.4" rx="1.4" fill="url(#kramaSm)" stroke="#9E1F2A" stroke-width=".5"/>
+            </g>
           </g>
         </g>
         </g>
