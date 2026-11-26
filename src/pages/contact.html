@@ -15,7 +15,7 @@ nav: contact
     <div class="end-copy">
       <p class="mono kicker reveal">Chapter five · what's next</p>
       <h2 class="display reveal">Let's write the <span class="select">next chapter<i class="cursor" aria-hidden="true"></i></span> together.</h2>
-      <p class="lede reveal">[Where you're headed: the kind of work, teams or problems you want next. Say if you're open to freelance, full-time or a coffee chat.]</p>
+      <p class="lede reveal">I'm open to collaborations and freelance projects, rather than a full-time role. If you have an idea in IT or media, or you'd simply like to swap notes over coffee, I'd love to hear from you.</p>
     </div>
 
     <!-- the writing set: a letter to fill in, and the envelope it goes in -->
@@ -23,11 +23,11 @@ nav: contact
       <form class="letter reveal" id="letter" novalidate>
         <span class="letter-clip" aria-hidden="true"></span>
         <p class="letter-date mono"><span>{{site.city}}</span> · <span id="today">today</span></p>
-        <p class="hand letter-dear">Dear {{site.name}},</p>
+        <p class="hand letter-dear">Dear {{site.first}},</p>
 
         <fieldset class="reasons">
           <legend class="hand">I'd love to talk about…</legend>
-          <label><input type="radio" name="why" value="a full-time role" checked><span>a full-time role</span></label>
+          <label><input type="radio" name="why" value="a collaboration" checked><span>a collaboration</span></label>
           <label><input type="radio" name="why" value="a freelance project"><span>a freelance project</span></label>
           <label><input type="radio" name="why" value="a coffee chat"><span>a coffee chat</span></label>
           <label><input type="radio" name="why" value="just saying hi"><span>just saying hi</span></label>
@@ -80,14 +80,7 @@ nav: contact
 
         <p class="hand reply-note reveal">I usually write back within two days ✿</p>
 
-        <nav class="elsewhere reveal" aria-label="Elsewhere">
-          <p class="mono">Or find me elsewhere</p>
-          <ul class="stamps">
-            <li><a class="stamp-link" href="{{site.socials.linkedin}}" style="--art:#CFE0F6;--r:-4deg"><span class="stamp-in"><b>in</b><span class="mono">LinkedIn</span></span></a></li>
-            <li><a class="stamp-link" href="{{site.socials.instagram}}" style="--art:#F6D3DD;--r:3deg"><span class="stamp-in"><b>ig</b><span class="mono">Instagram</span></span></a></li>
-            <li><a class="stamp-link" href="{{site.socials.readcv}}" style="--art:#DCE9CF;--r:-2deg"><span class="stamp-in"><b>cv</b><span class="mono">Read.cv</span></span></a></li>
-          </ul>
-        </nav>
+        {{socials}}
       </div>
     </div>
 

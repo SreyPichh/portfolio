@@ -221,6 +221,21 @@ defs.append('''
             <path d="M0 -2 C0 -18 0 -34 2 -49" stroke="#C6E894" stroke-width="1.1" fill="none" opacity=".8"/>
             <ellipse cx="-8" cy="-28" rx="3" ry="8" transform="rotate(20 -8 -28)" fill="#fff" opacity=".28"/>
           </g>
+          <pattern id="ginghamSm" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="#F6EFDF"/><rect width="3" height="6" fill="#86A8C8" opacity=".55"/><rect width="6" height="3" fill="#86A8C8" opacity=".55"/>
+          </pattern>
+          <linearGradient id="gArtGreen" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#E3F0D6"/><stop offset="1" stop-color="#B9D3A8"/></linearGradient>
+          <linearGradient id="gArtBlue" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#E4ECFA"/><stop offset="1" stop-color="#B9CCF1"/></linearGradient>
+          <linearGradient id="gArtSun" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#FCF3D6"/><stop offset="1" stop-color="#F3DC94"/></linearGradient>
+          <pattern id="airmailSm" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="#FBF8F1"/><rect width="1.8" height="6" fill="#C8463A"/><rect x="3" width="1.8" height="6" fill="#3F5DAE"/>
+          </pattern>
+          <linearGradient id="gCylLight" x1="0" y1="0" x2="1" y2="0">
+            <stop offset=".1" stop-color="#FFF6DE" stop-opacity="0"/><stop offset=".22" stop-color="#FFF6DE" stop-opacity=".32"/><stop offset=".36" stop-color="#FFF6DE" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gCylShade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset=".55" stop-color="#3A2410" stop-opacity="0"/><stop offset="1" stop-color="#3A2410" stop-opacity=".22"/>
+          </linearGradient>
           <pattern id="gingham" width="12" height="12" patternUnits="userSpaceOnUse">
             <rect width="12" height="12" fill="#F6EFDF"/><rect width="6" height="12" fill="#86A8C8" opacity=".55"/><rect width="12" height="6" fill="#86A8C8" opacity=".55"/>
           </pattern>
@@ -1104,6 +1119,91 @@ w(f'''
         </g>''')
 
 w('</g>')
+# ------------------------------------------------------------------ waste basket
+def smooth(pts):
+    """A closed, rounded path through points (quadratic curves between their midpoints)."""
+    mid = [((x0 + x1) / 2, (y0 + y1) / 2) for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1])]
+    d = f'M{mid[-1][0]:.1f} {mid[-1][1]:.1f}'
+    for (px, py), (mx, my) in zip(pts, mid):
+        d += f' Q{px:.1f} {py:.1f} {mx:.1f} {my:.1f}'
+    return d + 'Z'
+
+
+def crumple(x, y, r, seed):
+    """A crumpled ball of paper: a lumpy round outline, a shaded underside and a few creases."""
+    rr = random.Random(seed)
+    pts = [(x + r * rr.uniform(.86, 1.06) * math.cos(2 * math.pi * k / 11), y + r * .92 * rr.uniform(.86, 1.06) * math.sin(2 * math.pi * k / 11)) for k in range(11)]
+    creases = ' '.join(f'M{x + rr.uniform(-.55, .45) * r:.1f} {y + rr.uniform(-.55, .35) * r:.1f} l{rr.uniform(.2, .5) * r:.1f} {rr.uniform(-.3, .3) * r:.1f} l{rr.uniform(-.1, .3) * r:.1f} {rr.uniform(.15, .4) * r:.1f}' for _ in range(3))
+    return (f'<path d="{smooth(pts)}" fill="#D8D0C0"/>'  # the shaded side shows round the lower right
+            f'<path d="{smooth([(px - r * .12, py - r * .14) for px, py in pts])}" fill="#FBF8F1"/>'
+            f'<path d="{creases}" stroke="#C4BAA6" stroke-width=".55" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
+
+
+def basket_cuff(cx, top, tw):
+    """The gingham cuff folded over the front of the rim, with a softly scalloped hem."""
+    left, right, n = cx - tw - 1.8, cx + tw + 1.8, 8
+    span = right - left - 2.4
+    sag = lambda x: 3.2 * (1 - (x - cx) ** 2 / (tw + 2) ** 2)   # the hem follows the curve of the rim
+    xs = [left + 1.2 + span * i / n for i in range(n + 1)]
+    # front half of the rim (left to right), down the right side, then the hem back to the left
+    d = f'M{left:.1f} {top} A{tw + 1.8} 5.8 0 0 0 {right:.1f} {top} L{xs[-1]:.1f} {top + 9.5 + sag(xs[-1]) * .6:.1f}'
+    for i in reversed(range(n)):
+        xm = (xs[i] + xs[i + 1]) / 2
+        d += f' Q{xm:.1f} {top + 11.5 + sag(xm) + (1.2 if i % 2 else 0):.1f} {xs[i]:.1f} {top + 9.5 + sag(xs[i]) * .6:.1f}'
+    d += 'Z'
+    return (f'<path d="{d}" fill="url(#gLiner)"/>'
+            f'<path d="{d}" fill="url(#ginghamSm)" opacity=".75"/>'
+            f'<path d="{d}" fill="url(#gCylShade)"/>'
+            f'<path d="M{left:.1f} {top} A{tw + 1.8} 5.8 0 0 0 {right:.1f} {top}" stroke="#FFFFFF" stroke-width=".9" fill="none" opacity=".7"/>'
+            f'<path d="M{cx - 11} {top + 5.4} l1.6 5 M{cx + 8} {top + 5.6} l-1.4 5.2" stroke="#4E6F92" stroke-width=".7" opacity=".35" stroke-linecap="round"/>')
+
+
+def waste_basket():
+    """A woven rattan basket with a gingham liner folded over the rim, crumpled notes inside
+    and one that missed, on the floor."""
+    cx, top, bot, tw, bw = 654, 727, 772, 29, 22   # centre, rim, base, half-widths at the rim and the base
+    hw = lambda y: tw + (bw - tw) * (y - top) / (bot - top)
+    # the body's top edge is the front of the rim, so the opening shows behind it
+    body = (f'M{cx - tw} {top} L{cx - bw - .6:.1f} {bot - 4} Q{cx - bw} {bot} {cx - bw + 4} {bot} '
+            f'H{cx + bw - 4} Q{cx + bw} {bot} {cx + bw + .6:.1f} {bot - 4} L{cx + tw} {top} A{tw} 5.4 0 0 1 {cx - tw} {top}Z')
+    # basket weave: rows of short rounded strands, each row offset from the last, over darker gaps
+    strands, shine = [], []
+    for j, y in enumerate(range(top + 8, bot - 3, 4)):
+        h, off = hw(y), (3.6 if j % 2 else 0)
+        strands.append(f'<path d="M{cx - h - 2:.1f} {y} H{cx + h + 2:.1f}" stroke-dashoffset="{off}"/>')
+        shine.append(f'<path d="M{cx - h - 2:.1f} {y - 1} H{cx + h + 2:.1f}" stroke-dashoffset="{off}"/>')
+    inside = (crumple(cx - 8, top - 3.5, 5.4, 3)
+              # a torn notebook page sticking up, ruled in blue, with its corner folded
+              + f'<path d="M{cx + 1} {top - 1} L{cx + 5} {top - 14} L{cx + 14} {top - 9} L{cx + 12} {top - 1}Z" fill="#FFFDF7"/>'
+              + f'<path d="M{cx + 5} {top - 14} L{cx + 14} {top - 9} L{cx + 12} {top - 7.6}Z" fill="#E6DFD0"/>'
+              + f'<path d="M{cx + 3.8} {top - 9.4} L{cx + 11.6} {top - 5.6} M{cx + 2.8} {top - 5.4} L{cx + 10.8} {top - 1.8}" stroke="#9DB4E8" stroke-width=".7"/>'
+              + crumple(cx + 9, top - 2.4, 4.4, 8))
+    parts = [
+        '',
+        '        <!-- little rattan waste basket under the desk -->',
+        f'        <clipPath id="basketBody"><path d="{body}"/></clipPath>',
+        '        <g class="c-sm">',
+        f'          <ellipse cx="{cx - 1}" cy="{bot + .5}" rx="{bw + 9}" ry="3.2" fill="#000" opacity=".12"/>',
+        f'          <ellipse cx="{cx}" cy="{top}" rx="{tw + 1.8}" ry="5.8" fill="#5C4124"/>',
+        f'          <ellipse cx="{cx}" cy="{top + 1}" rx="{tw - 2}" ry="3.6" fill="#3F2C18" opacity=".55"/>',
+        f'          <path d="M{cx - tw - 1.8} {top} A{tw + 1.8} 5.8 0 0 1 {cx + tw + 1.8} {top}" stroke="#EFE6D3" stroke-width="2.4" fill="none"/>',
+        f'          {inside}',
+        f'          <path d="{body}" fill="#A87B45"/>',
+        '          <g clip-path="url(#basketBody)">',
+        f'            <g fill="none" stroke="#DDB67F" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="4.2 3">{"".join(strands)}</g>',
+        f'            <g fill="none" stroke="#FFF1CF" stroke-width=".7" stroke-linecap="round" stroke-dasharray="2.4 4.8" opacity=".55">{"".join(shine)}</g>',
+        f'            <rect x="{cx - tw}" y="{bot - 6}" width="{2 * tw}" height="2.6" fill="#8A6236" opacity=".6"/>',
+        f'            <path d="{body}" fill="url(#gCylLight)"/>',
+        f'            <path d="{body}" fill="url(#gCylShade)"/>',
+        '          </g>',
+        f'          {basket_cuff(cx, top, tw)}',
+        '        </g>',
+        '        <!-- one that missed -->',
+        f'        <g class="c-sm">{crumple(cx - 40, bot - 3.6, 4.6, 21)}<ellipse cx="{cx - 39}" cy="{bot + .4}" rx="5" ry="1.2" fill="#000" opacity=".12"/></g>',
+    ]
+    return '\n'.join(parts)
+
+
 # ------------------------------------------------------------------ desk
 KD = 0.08
 w('<g transform="translate(0 26)">')
@@ -1127,14 +1227,82 @@ for y0 in (606, 660, 714):
 w(f'''          {poly([tl, tr, (1012, 588), (560, 588)], 'url(#gDeskTop)')}
           <rect x="558" y="587" width="456" height="15" rx="4" fill="url(#gDeskEdge)"/>
           <rect x="560" y="587" width="452" height="2" fill="#fff" opacity=".6"/>
-        </g>
-        <!-- little waste basket under the desk -->
-        <g class="c-sm">
-          <path d="M626 726 H682 L676 772 H632Z" fill="url(#gBasket)"/>
-          <path d="M626 726 H682 L676 772 H632Z" fill="url(#weave)"/>
-          <ellipse cx="654" cy="726" rx="28" ry="5" fill="#9E7C50"/>
-          <path d="M642 724 C646 714 660 712 664 722" fill="#FFFDF7"/>
-        </g>''')
+        </g>''' + waste_basket())
+
+# ------------------------------------------------------------------ monitor screen
+# the little icons from the Work page postcards (drawn on a 100 x 100 grid)
+_ICON_STROKE = 'stroke="#3A57C4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
+WORK_ICONS = {
+    'leaf': f'<path d="M20 80 C20 40 50 18 84 16 C84 54 60 82 20 80Z" fill="#fff" {_ICON_STROKE}/><path d="M20 80 L62 38" fill="none" {_ICON_STROKE}/>',
+    'phone': f'<rect x="30" y="10" width="40" height="80" rx="9" fill="#fff" {_ICON_STROKE}/><path d="M44 19 H56" fill="none" {_ICON_STROKE}/><rect x="38" y="28" width="24" height="16" rx="3" fill="#DCE5FA"/>',
+    'laptop': f'<rect x="18" y="20" width="64" height="44" rx="5" fill="#fff" {_ICON_STROKE}/><path d="M8 74 H92 L84 64 H16Z" fill="#fff" {_ICON_STROKE}/><path d="M28 34 H60 M28 44 H50" fill="none" {_ICON_STROKE}/>',
+}
+
+
+def mini_postcard(x, y, w, h, tilt, art, icon, featured=False):
+    """A small version of a Work page postcard: art and icon on the left, stamp and lines on the right."""
+    cx, cy = x + w / 2, y + h / 2
+    aw = w * .46                      # the art panel
+    s = min(aw, h - 4) * .62 / 100     # icon scale
+    ix, iy = x + 2 + aw / 2 - 50 * s, y + h / 2 - 50 * s
+    rx = x + 2 + aw + 3               # where the writing side starts
+    out = [f'<g transform="rotate({tilt} {cx:.1f} {cy:.1f})">',
+           f'<rect x="{x + .9}" y="{y + 1.3}" width="{w}" height="{h}" rx="1.4" fill="#2A2F3A" opacity=".12"/>']
+    if featured:  # airmail border
+        out.append(f'<rect x="{x - 1.6}" y="{y - 1.6}" width="{w + 3.2}" height="{h + 3.2}" rx="2" fill="url(#airmailSm)"/>')
+    out += [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="1.4" fill="#FBF8F1"/>',
+            f'<rect x="{x + 2}" y="{y + 2}" width="{aw:.1f}" height="{h - 4}" rx=".8" fill="url(#{art})"/>',
+            f'<g transform="translate({ix:.2f} {iy:.2f}) scale({s:.3f})">{WORK_ICONS[icon]}</g>',
+            # stamp in the corner and a round postmark beside it
+            f'<rect x="{x + w - 8.6}" y="{y + 2.2}" width="6.4" height="7.4" rx=".4" fill="#FFFEFA" stroke="#D8CFBF" stroke-width=".35" stroke-dasharray=".7 .5"/>',
+            f'<rect x="{x + w - 7.6}" y="{y + 3.2}" width="4.4" height="5.4" fill="url(#{art})"/>',
+            f'<circle cx="{x + w - 12}" cy="{y + 6.4}" r="3.1" fill="none" stroke="#6E5FA8" stroke-width=".35" opacity=".55"/>',
+            # the title and a couple of lines of writing
+            f'<path d="M{rx:.1f} {y + h * .52:.1f} h{(x + w - 3 - rx) * .8:.1f}" stroke="#2A2F3A" stroke-width="{1.3 if featured else 1}" opacity=".7" stroke-linecap="round"/>',
+            f'<path d="M{rx:.1f} {y + h * .52 + 3.6:.1f} h{(x + w - 3 - rx) * .95:.1f} M{rx:.1f} {y + h * .52 + 6.4:.1f} h{(x + w - 3 - rx) * .6:.1f}" stroke="#2A2F3A" stroke-width=".55" opacity=".28" stroke-linecap="round"/>',
+            '</g>']
+    return ''.join(out)
+
+
+def monitor_screen():
+    """The monitor shows a tiny version of the Work page: heading, button and project postcards."""
+    lines = [
+        '<g class="screen">',
+        # menu bar
+        '<rect x="706" y="446" width="188" height="5" fill="#FFFFFF" opacity=".55"/>',
+        '<circle cx="711" cy="448.5" r="1" fill="#2A2F3A" opacity=".6"/>',
+        '<path d="M716 448.5 h8 M727 448.5 h6 M736 448.5 h7 M872 448.5 h4 M879 448.5 h10" stroke="#2A2F3A" stroke-width=".9" opacity=".45"/>',
+        # the browser window
+        '<rect x="719" y="457.4" width="164" height="78" rx="4" fill="#2A2F3A" opacity=".1"/>',
+        '<rect x="718" y="456" width="164" height="78" rx="4" fill="#FFFDF9"/>',
+        '<path d="M722 456 H878 Q882 456 882 460 V465 H718 V460 Q718 456 722 456Z" fill="#F3EEE5"/>',
+        '<circle cx="724.5" cy="460.6" r="1.5" fill="#E2707A"/><circle cx="729.5" cy="460.6" r="1.5" fill="#F2C66B"/><circle cx="734.5" cy="460.6" r="1.5" fill="#8FBF7A"/>',
+        '<rect x="770" y="458.4" width="60" height="4.6" rx="2.3" fill="#FFFDF9"/>',
+        '<circle cx="773.6" cy="460.7" r=".9" fill="#8FBF7A"/><path d="M776.5 460.7 h22" stroke="#2A2F3A" stroke-width=".8" opacity=".35" stroke-linecap="round"/>',
+        # left: the page heading, a line of copy and a button
+        '<path d="M725 472 h5" stroke="#3A57C4" stroke-width=".8"/><path d="M732 472 h16" stroke="#3A57C4" stroke-width=".8" opacity=".45" stroke-linecap="round"/>',
+        '<text x="724.6" y="484.5" class="svg-screen sm">Selected</text>',
+        '<text x="724.6" y="496" class="svg-screen sm"><tspan font-style="italic" fill="#3A57C4">work</tspan></text>',
+        '<rect class="cursor-blink" x="747.6" y="488" width="1" height="9" fill="#3A57C4"/>',
+        '<path d="M725 502.5 h34 M725 506 h27" stroke="#2A2F3A" stroke-width=".7" opacity=".28" stroke-linecap="round"/>',
+        '<rect x="724.6" y="512" width="30" height="7.4" rx="3.7" fill="#2A2F3A"/>',
+        '<path d="M728.6 515.7 h14" stroke="#FFFDF9" stroke-width=".8" opacity=".85" stroke-linecap="round"/><path d="M746 515.7 h4.4 M748.4 513.9 l2 1.8 -2 1.8" stroke="#FFFDF9" stroke-width=".7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+        # right: three postcards, the first one featured
+        mini_postcard(836, 470, 38, 25, 4, 'gArtBlue', 'phone'),
+        mini_postcard(838, 503, 38, 25, -2.6, 'gArtSun', 'laptop'),
+        mini_postcard(768, 471, 60, 44, -3, 'gArtGreen', 'leaf', featured=True),
+        # the cursor, about to open the featured project
+        '<g transform="translate(806.5 499) scale(.4)"><path d="M3 2 L3 24 L9 18 L13 27 L17 25 L13 16 L21 16 Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/></g>',
+        '<rect x="813" y="509.6" width="16" height="6" rx="3" fill="#2A2F3A"/>',
+        '<text x="815.6" y="514" class="svg-screen tiny">Open ↗</text>',
+        # dock
+        '<rect x="772" y="538" width="56" height="7.6" rx="3.8" fill="#FFFFFF" opacity=".6"/>',
+        ''.join(f'<rect x="{777 + i * 8:.1f}" y="539.5" width="4.6" height="4.6" rx="1.3" fill="{c}"/>' for i, c in enumerate(['#E2707A', '#8EA9E0', '#9FC48A', '#F2C66B', '#BEB2F0', '#2A2F3A'])),
+        '<circle cx="787.3" cy="545.2" r=".5" fill="#2A2F3A" opacity=".5"/>',
+        '</g>',
+    ]
+    return '\n            '.join(lines)
+
 
 # ------------------------------------------------------------------ desk items
 w('''
@@ -1184,27 +1352,7 @@ w('''
           <rect x="703" y="547" width="194" height="1" fill="#000" opacity=".12"/>
           <circle cx="800" cy="444.4" r=".8" fill="#5C6070"/>
           <rect x="706" y="446" width="188" height="102" rx="2" fill="url(#gWallpaper)"/>
-          <g class="screen">
-            <rect x="706" y="446" width="188" height="5" fill="#FFFFFF" opacity=".55"/>
-            <circle cx="711" cy="448.5" r="1" fill="#2A2F3A" opacity=".6"/>
-            <path d="M716 448.5 h8 M727 448.5 h6 M736 448.5 h7" stroke="#2A2F3A" stroke-width=".9" opacity=".45"/>
-            <path d="M872 448.5 h4 M879 448.5 h10" stroke="#2A2F3A" stroke-width=".9" opacity=".45"/>
-            <rect x="718" y="456" width="164" height="78" rx="4" fill="#FFFDF9" opacity=".95"/>
-            <rect x="718" y="456" width="164" height="78" rx="4" fill="none" stroke="#FFFFFF" stroke-width=".8"/>
-            <circle cx="725" cy="462" r="1.6" fill="#E2707A"/><circle cx="730.5" cy="462" r="1.6" fill="#F2C66B"/><circle cx="736" cy="462" r="1.6" fill="#8FBF7A"/>
-            <text x="726" y="479" class="svg-screen">Selected <tspan font-style="italic" fill="#3A57C4">work</tspan></text>
-            <rect x="726" y="486" width="46" height="34" rx="3" fill="#DDEBD2"/>
-            <rect x="777" y="486" width="46" height="34" rx="3" fill="#DCE5F7"/>
-            <rect x="828" y="486" width="46" height="34" rx="3" fill="#F8E8C4"/>
-            <circle cx="749" cy="503" r="7" fill="#9FC48A"/>
-            <path d="M793 510 L800 496 L807 510Z" fill="#8EA9E0"/>
-            <rect x="845" y="497" width="12" height="12" rx="2" fill="#E9C26B"/>
-            <path d="M726 525 h28 M777 525 h22 M828 525 h26" stroke="#2A2F3A" stroke-width="1.4" opacity=".55"/>
-            <path d="M726 529 h18 M777 529 h26 M828 529 h16" stroke="#2A2F3A" stroke-width="1" opacity=".25"/>
-            <rect class="cursor-blink" x="868" y="468" width="1.6" height="11" fill="#3A57C4"/>
-            <rect x="772" y="538" width="56" height="7.6" rx="3.8" fill="#FFFFFF" opacity=".6"/>
-            <g><circle cx="780" cy="541.8" r="2.3" fill="#E2707A"/><circle cx="788" cy="541.8" r="2.3" fill="#8EA9E0"/><circle cx="796" cy="541.8" r="2.3" fill="#9FC48A"/><circle cx="804" cy="541.8" r="2.3" fill="#F2C66B"/><circle cx="812" cy="541.8" r="2.3" fill="#BEB2F0"/><circle cx="820" cy="541.8" r="2.3" fill="#2A2F3A" opacity=".7"/></g>
-          </g>
+''' + '          ' + monitor_screen() + '''
           <path d="M706 446 L760 446 L706 500Z" fill="#FFFFFF" opacity=".08"/>
         </g>
         <!-- Keyboard + mouse -->
@@ -1338,8 +1486,8 @@ w('''
             <ellipse cx="650" cy="505" rx="22" ry="3.2" fill="#FFF6DA" opacity=".9"/>
           </g>
         </g>
-        <!-- the monitor chin keeps its true blue: daylight and lamp glow skip it (the desk group sits 26 lower) -->
-        <mask id="noChin" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="7200" height="7000"><rect x="-3000" y="-3000" width="7200" height="7000" fill="#fff"/><path transform="translate(0 26)" d="M703 547 H897 V557 Q897 562 892 562 H708 Q703 562 703 557Z" fill="#000"/></mask>
+        <!-- the monitor keeps its true colours (the screen glows on its own): daylight and lamp glow skip it (the desk group sits 26 lower) -->
+        <mask id="noChin" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="7200" height="7000"><rect x="-3000" y="-3000" width="7200" height="7000" fill="#fff"/><path transform="translate(0 26)" d="M709 442 H891 Q897 442 897 448 V557 Q897 562 892 562 H708 Q703 562 703 557 V448 Q703 442 709 442Z" fill="#000"/></mask>
         <g class="daylight" pointer-events="none" mask="url(#noChin)">
           <path d="M640 438 L928 438 L1060 772 L700 772Z" fill="url(#gBeam)" filter="url(#soft)"/>
           <path d="M880 792 L990 792 L1012 822 L894 822Z M1002 792 L1112 792 L1136 822 L1024 822Z M898 830 L1016 830 L1040 866 L914 866Z M1028 830 L1146 830 L1174 866 L1052 866Z" style="fill:var(--sun)" opacity=".5" filter="url(#edge1)"/>
@@ -1391,6 +1539,7 @@ for d_ in [
     lg('gLegW', S((0, '#B97543'), (1, '#7A4423')), **H),
     split('gOxa', '#5E2454', '#3D1437', .5), cyl('gStone', '#55595F', '#71767D', '#3A3D42', .14, .3, .7),
     lg('gOpal', S((0, '#EFE4CA'), (.3, '#FFFCF3'), (.7, '#EADDC0'), (1, '#D6C6A4')), **H), lg('gBronze', S((0, '#544433'), (.35, '#8A7352'), (.7, '#5A4A37'), (1, '#3A2F23')), **H),
+    cyl('gRattan', '#D9B27A', '#EFD3A0', '#B78A53', .1, .24, .64), cyl('gLiner', '#F6EFDF', '#FFFDF6', '#E3D7BF', .1, .24, .64),
     split('gMonA', '#3E7B44', '#23502A', .53), split('gMonB', '#4A8A4D', '#2C5F32', .53), split('gMonC', '#356D3C', '#1D4524', .53),
     lg('gConcrete', S((0, '#9A9D9B'), (.3, '#B4B7B5'), (.75, '#8B8E8C'), (1, '#6F7270')), **H),
     lg('gPleat', S((0, '#000', .12), (.12, '#000', .12), (.12, '#fff', .16), (.26, '#fff', .16), (.26, '#000', 0), (.4, '#000', 0), (.4, '#000', .14), (.52, '#000', .14), (.52, '#fff', .12), (.66, '#fff', .12), (.66, '#000', 0), (.8, '#000', 0), (.8, '#000', .16), (1, '#000', .16)), **H),

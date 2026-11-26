@@ -1,21 +1,28 @@
 {
   "_read_me": "Your details, in one place. Change them here, then run: python3 tools/build.py",
 
-  "name": "Your Name",
-  "monogram": "Yn",
-  "role": "[your role]",
-  "city": "[City]",
-  "country": "[Country]",
-  "availability": "[Taking on new work from Month]",
+  "name": "Sreypich Phan",
+  "_first_note": "Used where the site greets people (\"Hi, I'm …\", \"Dear …\"). Leave empty to use the first word of name.",
+  "first": "Sreypich",
+  "monogram": "Pich",
+  "role": "IT and Media Rep.",
+  "city": "Phnom Penh",
+  "country": "Cambodia",
+  "availability": "Open for collaboration · coffee chats",
 
-  "email": "hello@yourname.com",
+  "email": "sereypichphan@gmail.com",
   "resume": "",
   "playlist": "",
 
+  "_socials_note": "Paste a link to show it on the site; leave empty (\"\") to hide it.",
   "socials": {
-    "linkedin": "#",
-    "instagram": "#",
-    "readcv": "#"
+    "linkedin": "https://www.linkedin.com/in/sreypich-phan/",
+    "instagram": "https://www.instagram.com/sreypich_phan",
+    "facebook": "",
+    "telegram": "",
+    "behance": "",
+    "github": "",
+    "readcv": ""
   },
 
   "_url_note": "The address the site will live at, with no slash at the end. Used for link previews and the sitemap.",

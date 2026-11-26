@@ -24,6 +24,33 @@ SRC = os.path.join(ROOT, 'src')
 DIST = os.path.join(ROOT, 'dist')
 TOKEN = re.compile(r'\{\{\s*(>\s*)?([\w.]+)\s*\}\}')
 NAV = ('about', 'work', 'notes', 'contact')
+# social links in site.json, in the order they appear, drawn as little postage stamps
+NETWORKS = [  # key, label, the letters on the stamp, stamp colour
+    ('linkedin', 'LinkedIn', 'in', '#CFE0F6'), ('instagram', 'Instagram', 'ig', '#F6D3DD'),
+    ('facebook', 'Facebook', 'fb', '#D6DDF5'), ('telegram', 'Telegram', 'tg', '#CFEAF2'),
+    ('behance', 'Behance', 'Bē', '#E2DAF5'), ('github', 'GitHub', 'gh', '#E6E2D8'), ('readcv', 'Read.cv', 'cv', '#DCE9CF'),
+]
+
+
+def social_links(site):
+    """The social links that have a URL, as (label, letters, colour, url)."""
+    links = site.get('socials') or {}
+    return [(label, mark, col, links[key].strip()) for key, label, mark, col in NETWORKS
+            if isinstance(links.get(key), str) and links[key].strip() not in ('', '#')]
+
+
+def stamps_html(site):
+    """The "Or find me elsewhere" stamps on the contact page, or nothing when there are no links."""
+    links = social_links(site)
+    if not links:
+        return ''
+    tilt = ['-4deg', '3deg', '-2deg', '2.5deg', '-3deg']
+    items = ''.join(
+        f'\n            <li><a class="stamp-link" href="{html.escape(url)}" target="_blank" rel="noopener" style="--art:{col};--r:{tilt[i % len(tilt)]}">'
+        f'<span class="stamp-in"><b>{html.escape(mark)}</b><span class="mono">{html.escape(label)}</span></span></a></li>'
+        for i, (label, mark, col, url) in enumerate(links))
+    return ('<nav class="elsewhere reveal" aria-label="Elsewhere">\n          <p class="mono">Or find me elsewhere</p>\n'
+            f'          <ul class="stamps">{items}\n          </ul>\n        </nav>')
 
 
 class BuildError(Exception):
@@ -85,6 +112,7 @@ def load_site():
     except json.JSONDecodeError as e:
         raise BuildError(f'site.json: {e.msg} on line {e.lineno} (check for a missing comma or quote)')
     site['url'] = site.get('url', '').rstrip('/')
+    site['first'] = (site.get('first') or site.get('name', '').split(' ')[0]).strip()
     base = site.get('basePath') or '/'
     site['basePath'] = '/' + base.strip('/') + '/' if base.strip('/') else '/'
     return site
@@ -120,6 +148,8 @@ def build():
         raw = {
             'mark': html.escape(mono[:1]) + '<em>' + html.escape(mono[1:]) + '</em>',
             'build': stamp,
+            'socials': stamps_html(site),
+            'socials_json': html.escape(json.dumps({label: url for label, _, _, url in social_links(site)}), quote=True),
             # the 404 page can be shown at any address, so its links start from the site root
             'page.base': f'<base href="{html.escape(site["basePath"])}">' if is_404 else '',
         }
@@ -222,6 +252,8 @@ def check():
                 continue
             if isinstance(v, dict):
                 walk(v, prefix + k + '.')
+            elif prefix == 'socials.':
+                continue  # an empty link is simply hidden
             elif isinstance(v, str) and ('[' in v or v == '#' or v == DEFAULTS.get(k)):
                 todo.append(f'site.json  {prefix}{k}: {v!r}')
     walk(site)

@@ -9,3 +9,6 @@ inspo/
 .claude/
 __pycache__/
 *.pyc
+
+# your private fill-in sheet: answers go on the site, the sheet itself stays local
+content-sheet.md

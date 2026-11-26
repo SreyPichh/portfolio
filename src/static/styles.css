@@ -1284,3 +1284,14 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   .embed-cover { grid-template-columns: 1fr; gap: 18px; padding: 20px; }
   .embed-sleeve { width: 110px; }
 }
+
+/* the illustrated portrait inside a polaroid: line art on soft paper, sun-washed at the top */
+.ph-portrait { display: block; background:
+  radial-gradient(120% 70% at 30% 0%, rgba(255, 246, 218, .9), transparent 60%),
+  linear-gradient(180deg, #E6EEF9 0%, #F6E3EA 100%); }
+.ph-portrait.warm { background:
+  radial-gradient(120% 70% at 70% 0%, rgba(255, 246, 218, .9), transparent 60%),
+  linear-gradient(180deg, #FBEFD9 0%, #F6DCE3 100%); }
+.ph-portrait img { position: absolute; left: 50%; bottom: -2%; height: 96%; width: auto; transform: translateX(-50%); mix-blend-mode: multiply; }  /* the white paper of the drawing takes on the polaroid colour */
+.svg-screen.sm { font-size: 11.5px; letter-spacing: -.01em; }
+.svg-screen.tiny { font: 500 3.6px var(--sans); fill: #FFFDF9; letter-spacing: .02em; }
