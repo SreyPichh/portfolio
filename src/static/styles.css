@@ -916,13 +916,13 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
               linear-gradient(to bottom left, transparent calc(50% - 1px), rgba(110, 90, 70, .18) 50%, transparent calc(50% + 1px)) right top / 50% 62% no-repeat;
 }
 .env-stamp {
-  position: absolute; top: 16px; right: 16px; width: 62px; height: 72px; padding: 5px; background: #FFFEFA;
+  position: absolute; top: 14px; right: 16px; width: 96px; height: 120px; padding: 5px; background: #FBF9F4; z-index: 1;
   -webkit-mask: radial-gradient(circle, #0000 2.6px, #000 3px) -4px -4px / 8px 8px, linear-gradient(#000 0 0) content-box;
           mask: radial-gradient(circle, #0000 2.6px, #000 3px) -4px -4px / 8px 8px, linear-gradient(#000 0 0) content-box;
   filter: drop-shadow(0 1px 1px rgba(60, 40, 20, .2)); transform: rotate(4deg);
 }
 .env-stamp-in { display: block; width: 100%; height: 100%; }
-.env-postmark { position: absolute; top: 22px; right: 46px; width: 118px; color: rgba(70, 60, 120, .55); transform: rotate(-10deg); pointer-events: none; }
+.env-postmark { position: absolute; top: 96px; right: 96px; width: 118px; z-index: 2; color: rgba(70, 60, 120, .55); transform: rotate(-10deg); pointer-events: none; }
 .env-label { position: relative; margin: 0 0 6px; font-size: 9.5px; color: #C2493C; }
 .env-name { position: relative; margin: 0; font: 400 clamp(32px, 3.2vw, 42px)/1.05 var(--serif); letter-spacing: -.02em; }
 .env-addr {
@@ -1408,3 +1408,22 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   .tm-back { padding: 6px 11px; font-size: 12px; }
 }
 @media (max-width: 700px) { .tm-zoomtitle { display: none; } }
+
+/* the Angkor Wat stamp: its lettering, and room for it on the envelope */
+.stamp-name { font: 300 12.5px var(--sans); letter-spacing: .9px; fill: #1E1E1E; }
+.stamp-khmer { font: 400 8.5px "Khmer Sangam MN", "Khmer UI", "Noto Sans Khmer", "Leelawadee UI", sans-serif; }
+.stamp-side { font: 400 3.6px var(--mono); letter-spacing: .8px; fill: #1E1E1E; }
+.envelope .env-label, .envelope .env-name { max-width: calc(100% - 118px); }
+.envelope .env-addr { margin-top: 38px; }
+@media (max-width: 520px) {
+  .env-stamp { width: 80px; height: 100px; top: 12px; right: 12px; }
+  .envelope .env-label, .envelope .env-name { max-width: calc(100% - 94px); }
+  .env-postmark { top: 74px; right: 56px; left: auto; width: 100px; }
+  .envelope .env-addr { margin-top: 30px; }
+}
+/* the networks' logos on the social stamps */
+/* the logo is the stamp's picture: big and centred, with the name printed below */
+.stamp-in:has(.stamp-logo) { align-items: center; justify-content: center; gap: 9px; padding: 10px 8px 9px; }
+.stamp-logo { width: 46px; height: 46px; display: block; border-radius: 11px; box-shadow: 0 2px 5px -1px rgba(42, 47, 58, .3); transition: transform .35s var(--ease); }
+.stamp-link:hover .stamp-logo, .stamp-link:focus-visible .stamp-logo { transform: scale(1.06) rotate(-3deg); }
+.stamp-in:has(.stamp-logo) .mono { font-size: 8.5px; }

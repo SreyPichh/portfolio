@@ -1273,7 +1273,7 @@ def phone():
     w = 'fill="#FFFFFF"'
     return f'''
         <!-- Phone on an oak stand, open on a "say hello" chat -->
-        <g class="obj lift" id="o-phone" data-id="phone" tabindex="0" role="button" aria-label="Phone: say hello">
+        <g class="obj lift" id="o-phone" data-id="phone" tabindex="0" role="link" aria-label="Phone: go to the Contact page">
           <rect x="954" y="518" width="50" height="74" fill="transparent"/>
           <ellipse cx="980" cy="589.6" rx="26" ry="2.2" fill="#000" opacity=".12"/>
           <path d="M957 583.4 H1001 Q1003.4 583.4 1003.4 585.6 V587.2 H954.6 V585.6 Q954.6 583.4 957 583.4Z" fill="url(#gOakF)"/>

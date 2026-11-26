@@ -216,8 +216,6 @@
   // your email and résumé come from site.json (the build puts them on <body>)
   const EMAIL = document.body.dataset.email || 'hello@yourname.com';
   const RESUME = document.body.dataset.resume || '';
-  let SOCIALS = {};  // { LinkedIn: 'https://…' }, only the ones filled in
-  try { SOCIALS = JSON.parse(document.body.dataset.socials || '{}'); } catch (e) {}
   const el = (id) => document.getElementById('o-' + id);
   const replay = (node, cls) => { node.classList.remove(cls); void node.getBoundingClientRect(); node.classList.add(cls); };
 
@@ -746,11 +744,8 @@
       <p class="quote">“[A line from the card that came with it.]”</p><p class="mono quote-by">[From whom] · [When]</p>
       <p>[What you learned from mentoring, teaching or working with them, in a sentence or two.]</p>`) },
     map: { label: "Where I've been", open: () => panel('Pinned to the wall', "Where I've <em>been</em>", placesPanel()) },
-    phone: { label: 'Say hello', open: () => panel('Ring ring', 'Say <em>hello</em>',
-      `<p class="lead">I'm always happy to talk about new projects, ideas, or just say hi.</p>
-      <div class="panel-actions"><a class="pill" href="mailto:${EMAIL}" data-copy="${EMAIL}">${EMAIL} <span aria-hidden="true">↗</span></a>
-      ${Object.entries(SOCIALS).map(([label, url]) => `<a class="ghost" href="${url}" target="_blank" rel="noopener">${label}</a>`).join('')}</div>
-      <p class="mono copy-hint" style="margin-top:14px">click the email to copy it</p>`) },
+    // the phone leads straight to the Contact page
+    phone: { label: 'Say hello', act: () => { window.location.href = 'contact.html'; } },
     record: { label: 'On repeat',
       // first click drops the needle (the record spins, notes float up); next click opens the playlist
       act: () => {
