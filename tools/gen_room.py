@@ -230,6 +230,9 @@ defs.append('''
           <pattern id="airmailSm" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <rect width="6" height="6" fill="#FBF8F1"/><rect width="1.8" height="6" fill="#C8463A"/><rect x="3" width="1.8" height="6" fill="#3F5DAE"/>
           </pattern>
+          <!-- pages darken softly toward the spine -->
+          <linearGradient id="gGutterL" x1="0" y1="0" x2="1" y2="0"><stop offset=".6" stop-color="#5A4A30" stop-opacity="0"/><stop offset="1" stop-color="#5A4A30" stop-opacity=".16"/></linearGradient>
+          <linearGradient id="gGutterR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5A4A30" stop-opacity=".18"/><stop offset=".4" stop-color="#5A4A30" stop-opacity="0"/></linearGradient>
           <linearGradient id="gCylLight" x1="0" y1="0" x2="1" y2="0">
             <stop offset=".1" stop-color="#FFF6DE" stop-opacity="0"/><stop offset=".22" stop-color="#FFF6DE" stop-opacity=".32"/><stop offset=".36" stop-color="#FFF6DE" stop-opacity="0"/>
           </linearGradient>
@@ -1229,6 +1232,70 @@ w(f'''          {poly([tl, tr, (1012, 588), (560, 588)], 'url(#gDeskTop)')}
           <rect x="560" y="587" width="452" height="2" fill="#fff" opacity=".6"/>
         </g>''' + waste_basket())
 
+# ------------------------------------------------------------------ sketchbook
+def pencil(x, y, angle, length=64):
+    """A yellow hexagonal pencil lying on the desk: eraser, metal band, body, sharpened wood, graphite."""
+    b = length - 10                       # where the body ends and the sharpened wood begins
+    return f'''<g transform="translate({x} {y}) rotate({angle})">
+            <rect x="1" y="1.4" width="{length - 1}" height="4.4" rx="2" fill="#000" opacity=".12"/>
+            <rect x="0" y="-2.2" width="5" height="4.4" rx="1.8" fill="#EFA2B5"/><rect x="0" y=".8" width="5" height="1.4" rx=".7" fill="#D9849A"/>
+            <rect x="4.4" y="-2.3" width="4.6" height="4.6" fill="#C9CED6"/>
+            <path d="M5.6 -2.3 V2.3 M7.2 -2.3 V2.3" stroke="#9AA1AC" stroke-width=".5"/><rect x="4.4" y="-2.3" width="4.6" height="1.1" fill="#EEF1F5"/>
+            <rect x="9" y="-2.2" width="{b - 9}" height="1.45" fill="#F9E199"/>
+            <rect x="9" y="-.75" width="{b - 9}" height="1.5" fill="#F2CE62"/>
+            <rect x="9" y=".75" width="{b - 9}" height="1.45" fill="#D6AA43"/>
+            <path d="M{b} -2.2 L{b + 7} -.55 L{b + 7} .55 L{b} 2.2Z" fill="#EBCB9C"/>
+            <path d="M{b} .2 L{b + 7} .1 L{b + 7} .55 L{b} 2.2Z" fill="#D2AE7C"/>
+            <path d="M{b} -2.2 Q{b + 1} -1.4 {b} -.75 Q{b + 1} 0 {b} .75 Q{b + 1} 1.4 {b} 2.2" fill="none" stroke="#C99E45" stroke-width=".5"/>
+            <path d="M{b + 7} -.55 L{length} 0 L{b + 7} .55Z" fill="#3A3F4A"/>
+          </g>'''
+
+
+def sketchbook():
+    """An open spiral sketchbook: blue hardback, curved pages, a lightbulb doodle and a checklist,
+    a ribbon bookmark and a pencil."""
+    gx = 656                                   # the gutter, where the spiral runs
+    back, front = 568.5, 586.5                 # back and front edges of the pages
+    left_page = f'M611 {front} L621.5 {back} C634 566.4 647 567.2 {gx - 1} {back + 2.6} L{gx - 1} {front + .6} C643 584.6 626 584.6 611 {front}Z'
+    right_page = f'M701 {front} L690.5 {back} C678 566.4 665 567.2 {gx + 1} {back + 2.6} L{gx + 1} {front + .6} C669 584.6 686 584.6 701 {front}Z'
+    # page content is drawn flat, then squashed and slanted to lie on each page
+    bulb = ('<circle cx="14" cy="13" r="6.4" fill="none"/><path d="M10.6 18.6 Q14 21 17.4 18.6 M11.4 21.6 H16.6 M12.2 24.2 H15.8"/>'
+            '<path d="M14 2.6 V0 M5 6 L3 4 M23 6 L25 4 M3.4 13 H1 M24.6 13 H27" stroke-dasharray="none"/>'
+            '<path d="M12.4 13.6 Q14 10 15.6 13.6" />'
+            '<path d="M29 22 C33 18 36 24 40 19" /><path d="M37.6 18.4 L40 19 L39.4 21.4"/>')
+    lines_l = '<path d="M10 32 H34 M10 37 H28" stroke-width=".9" opacity=".45"/>'
+    check = ''.join(f'<rect x="3" y="{8 + i * 8}" width="4.4" height="4.4" rx=".8" fill="none"/>'
+                    + (f'<path d="M3.8 {10.4 + i * 8} l1.4 1.4 l2.6 -3.4" stroke="#3A57C4" stroke-width="1.3"/>' if i < 2 else '')
+                    + f'<path d="M10 {10.2 + i * 8} H{30 - i * 5}" stroke-width=".9" opacity=".55"/>' for i in range(3))
+    page_ink = 'fill="none" stroke="#3A57C4" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"'
+    coils = ''.join(f'<ellipse cx="{gx}" cy="{back + 3.4 + i * 2.15:.2f}" rx="2.3" ry=".75" fill="none" stroke="#8C919C" stroke-width=".75"/>'
+                    f'<circle cx="{gx - 2.6}" cy="{back + 3.6 + i * 2.15:.2f}" r=".45" fill="#B9B2A3"/><circle cx="{gx + 2.6}" cy="{back + 3.6 + i * 2.15:.2f}" r=".45" fill="#B9B2A3"/>'
+                    for i in range(7))
+    return f'''
+        <!-- Sketchbook: an open spiral book with a doodle, a checklist, a bookmark and a pencil -->
+        <g class="obj lift" id="o-sketch" data-id="sketch" tabindex="0" role="link" aria-label="Sketchbook: go to the Notes page">
+          <path d="M606 590.6 L702 590.6 L707 592.4 L601 592.4Z" fill="#000" opacity=".1"/>
+          <path d="M617.5 567 L694.5 567 L706.5 588.4 L605.5 588.4Z" fill="#6C7FB8"/>
+          <path d="M605.5 588.4 L706.5 588.4 L706.5 590.6 L605.5 590.6Z" fill="#4E619A"/>
+          <path d="M608.6 {front + .4} L{gx - 1} {front + 1.2} L{gx - 1} {front + 2.4} L608.6 {front + 1.8}Z" fill="#EFE7D6"/>
+          <path d="M703.4 {front + .4} L{gx + 1} {front + 1.2} L{gx + 1} {front + 2.4} L703.4 {front + 1.8}Z" fill="#E7DECB"/>
+          <path d="M609 {front + 1.3} L{gx - 1} {front + 2} M703 {front + 1.3} L{gx + 1} {front + 2}" stroke="#D3C8B2" stroke-width=".35"/>
+          <path d="{left_page}" fill="#FFFEFA"/>
+          <path d="{right_page}" fill="#FAF5E9"/>
+          <path d="{left_page}" fill="url(#gGutterL)"/>
+          <path d="{right_page}" fill="url(#gGutterR)"/>
+          <g transform="translate(620 569.6) matrix(1 0 -.34 .37 0 0)" {page_ink}>{bulb}{lines_l}</g>
+          <g transform="translate(661 569.6) matrix(1 0 .32 .37 0 0)" fill="none" stroke="#2A2F3A" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2.6 H22" stroke="#3A57C4" stroke-width="1.6"/>{check}
+          </g>
+          <path d="M688 {back + .8} L697.4 {back + .4} L700.6 {back + 6.2} L691 {back + 6.6}Z" fill="#F7DD86"/>
+          <path d="M691 {back + 6.6} L700.6 {back + 6.2} L700.9 {back + 6.8} L691.4 {back + 7.2}Z" fill="#E2C36A"/>
+          {coils}
+          <path d="M{gx - 4} {front + 1} L{gx - 4} {front + 7.2} L{gx - 2.6} {front + 6} L{gx - 1.2} {front + 7.2} L{gx - 1.2} {front + 1}Z" fill="#D9584A"/>
+          {pencil(633, 588.6, -10, 60)}
+        </g>'''
+
+
 # ------------------------------------------------------------------ monitor screen
 # the little icons from the Work page postcards (drawn on a 100 x 100 grid)
 _ICON_STROKE = 'stroke="#3A57C4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
@@ -1330,16 +1397,7 @@ w('''
           <ellipse class="bulb" cx="650" cy="505" rx="24" ry="3.6" fill="#FFF6D8"/>
         </g>
 
-        <!-- Sketchbook -->
-        <g class="obj lift" id="o-sketch" data-id="sketch" tabindex="0" role="link" aria-label="Sketchbook: go to the Notes page">
-          <path d="M608 586 L620 572 L692 572 L702 586Z" fill="#6C7FB8"/>
-          <path d="M612 584 L623 572 C636 570 648 572 656 575 L656 586 C644 583 626 583 612 584Z" fill="#FFFEFA"/>
-          <path d="M700 584 L690 572 C676 570 664 572 656 575 L656 586 C668 583 686 583 700 584Z" fill="#F4EEE2"/>
-          <path d="M626 579 C632 574 638 582 646 576 M666 576 L684 576 M664 580 L688 580" stroke="#3A57C4" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-          <path d="M622 592 L676 580" stroke="#F2D57E" stroke-width="4" stroke-linecap="round"/>
-          <path d="M676 580 L682 579" stroke="#3A3F4A" stroke-width="2" stroke-linecap="round"/>
-          <path d="M620 592 L625 591" stroke="#EFA2B5" stroke-width="4" stroke-linecap="round"/>
-        </g>
+''' + sketchbook() + '''
 
         <!-- Monitor: slim charcoal bezel, sage chin, angled aluminium stand -->
         <g class="obj" id="o-monitor" data-id="monitor" tabindex="0" role="link" aria-label="Monitor: go to the Work page">
