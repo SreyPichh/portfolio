@@ -826,6 +826,84 @@
       <p class="hob-guitar"><span class="mono">And the guitar?</span> I don't play an instrument, not yet. I taught myself a little piano for a short while, and I'm planning to buy a guitar one day and learn.</p>`;
   }
 
+  /* ---------- Fuel: the pink mug's café ticket and fun facts ----------
+     Fill in your usual order. sugar is the sweetness level you'd ask for: 0, 25, 50, 75 or 100 (null to leave it blank). */
+  const CAFE = {
+    drink: 'Iced latte',
+    milk: 'Oat milk',
+    sugar: 0,
+    with: 'Pain au chocolat',
+    when: 'In the morning, once I’ve checked my mail',
+  };
+  const FUN_FACTS = [
+    'I’m a homebody. I don’t like crowds, and I’m quiet around people I’ve just met.',
+    'I love watching horror movies.',
+    'I really enjoy time on my own.',
+  ];
+
+  function cafePanel() {
+    const first = (document.body.dataset.name || '').split(' ')[0];
+    const levels = [0, 25, 50, 75, 100];
+    const sugar = `<span class="sugar" role="img" aria-label="${CAFE.sugar == null ? 'Sugar level not set' : `Sugar level ${CAFE.sugar}%`}">${levels.map((l) =>
+      `<i class="${CAFE.sugar != null && l <= CAFE.sugar ? 'on' : ''}"><b>${l}</b></i>`).join('')}</span>`;
+    const line = (k, v) => `<div class="tk-row"><dt class="mono">${k}</dt><dd>${v}</dd></div>`;
+    // an iced latte: espresso settling into oat milk over ice, a pink straw, drops on the glass
+    const mug = `<svg class="cafe-mug" viewBox="-10 0 212 180" aria-hidden="true">
+        <defs>
+          <clipPath id="iceIn"><path d="M45 36 L54.5 158 Q55.5 164 62 164 H98 Q104.5 164 105.5 158 L115 36Z"/></clipPath>
+          <linearGradient id="iceLatte" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8E5A36"/><stop offset=".3" stop-color="#A9744B"/><stop offset=".52" stop-color="#CDA77F"/>
+            <stop offset=".66" stop-color="#EBDCC6"/><stop offset="1" stop-color="#F4EADB"/>
+          </linearGradient>
+          <linearGradient id="pastry" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E3A24E"/><stop offset=".6" stop-color="#C98336"/><stop offset="1" stop-color="#B06A2B"/></linearGradient>
+        </defs>
+        <ellipse cx="80" cy="170" rx="56" ry="8" fill="#C9965C"/><ellipse cx="80" cy="167" rx="56" ry="8" fill="#E2B985"/>
+        <path d="M94 4 L84 150" stroke="#E79BB1" stroke-width="7" stroke-linecap="round"/>
+        <path d="M94 4 L84 150" stroke="#F7C6D3" stroke-width="2" stroke-linecap="round" transform="translate(-1.6 0)"/>
+        <g clip-path="url(#iceIn)">
+          <rect x="40" y="52" width="80" height="116" fill="url(#iceLatte)"/>
+          <path d="M40 52 Q60 47 80 52 T120 52 V58 Q100 54 80 58 T40 58Z" fill="#7E4E2E" opacity=".35"/>
+          <path d="M52 104 C64 98 70 112 84 106 C96 101 100 110 110 106" stroke="#fff" stroke-width="2.4" fill="none" opacity=".45" stroke-linecap="round"/>
+          <g fill="#fff" fill-opacity=".42" stroke="#fff" stroke-opacity=".85" stroke-width="1.6">
+            <rect x="50" y="40" width="26" height="24" rx="5" transform="rotate(-12 63 52)"/>
+            <rect x="78" y="44" width="24" height="22" rx="5" transform="rotate(14 90 55)"/>
+            <rect x="60" y="66" width="24" height="22" rx="5" transform="rotate(8 72 77)"/>
+            <rect x="86" y="74" width="20" height="19" rx="4.5" transform="rotate(-18 96 83)"/>
+          </g>
+        </g>
+        <path d="M42 30 L52 160 Q53 168 61 168 H99 Q107 168 108 160 L118 30Z" fill="#fff" fill-opacity=".12" stroke="#C9D3DF" stroke-width="2.4" stroke-linejoin="round"/>
+        <ellipse cx="80" cy="30" rx="38" ry="4.6" fill="#fff" fill-opacity=".35" stroke="#C9D3DF" stroke-width="2"/>
+        <path d="M50 42 L57 150" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+        <g fill="#fff" opacity=".8"><circle cx="100" cy="96" r="1.8"/><circle cx="104" cy="120" r="1.4"/><circle cx="62" cy="128" r="1.5"/><circle cx="97" cy="140" r="1.9"/><circle cx="70" cy="62" r="1.2"/></g>
+      
+        <!-- the pain au chocolat on a little plate, seen from above at an angle: a glossy golden top, flaky layers
+             along its side, and the two bars of chocolate peeking out of each end -->
+        <ellipse cx="152" cy="172" rx="44" ry="8.6" fill="#000" opacity=".1"/>
+        <ellipse cx="152" cy="168.6" rx="44" ry="8.6" fill="#FFFDF8" stroke="#E6DACB" stroke-width="1.4"/>
+        <ellipse cx="152" cy="168" rx="34" ry="5.6" fill="none" stroke="#F2C4D1" stroke-width="1.4"/>
+        <ellipse cx="153" cy="166" rx="38" ry="5" fill="#000" opacity=".14"/>
+        <g transform="translate(153 153)"><g transform="translate(0 8) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="#B06A2B"/></g><g transform="translate(0 6.4) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="#E2A85E"/></g><g transform="translate(0 5.4) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="#C27E36"/></g><g transform="translate(0 3.8) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="#E6AE64"/></g><g transform="translate(0 2.8) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="#C88539"/></g><g transform="translate(0 4) scale(1 .58) rotate(-10)" fill="#4A2A1A"><rect x="-40.5" y="-11" width="8" height="7" rx="3"/><rect x="-40.5" y="3" width="8" height="7" rx="3"/><rect x="32.5" y="-10" width="8" height="6.4" rx="3"/><rect x="32.5" y="4" width="8" height="6.4" rx="3"/></g><g transform="translate(0 0) scale(1 .58) rotate(-10)"><rect x="-37" y="-21" width="74" height="42" rx="16" fill="url(#pastry)"/><g fill="none" stroke="#A9632A" stroke-width="1.4" opacity=".28" stroke-linecap="round"><path d="M-13 -19 C-8 -7 -8 7 -13 19"/><path d="M13 -19 C18 -7 18 7 13 19"/></g><g fill="none" stroke="#FBE2B0" stroke-width="1.6" opacity=".55" stroke-linecap="round"><path d="M-10 -15 C-6 -6 -6 5 -10 14"/><path d="M16 -15 C20 -6 20 5 16 14"/></g><ellipse cx="-20" cy="-8" rx="9" ry="6" fill="#fff" opacity=".22"/></g></g>
+        <g fill="#D9A05A"><circle cx="113" cy="167" r="1.1"/><circle cx="192" cy="169" r="1"/><circle cx="181" cy="171.6" r=".8"/><circle cx="127" cy="171" r=".8"/><circle cx="196" cy="166" r=".7"/></g>
+      </svg>`;
+    const packets = FUN_FACTS.map((f, i) => `<li class="packet p${i % 3}"><span class="mono">Fun fact · 0${i + 1}</span><p>${f}</p></li>`).join('');
+    return `<p class="lead">My day starts properly with an iced latte, once I've checked my mail. Here's my usual, and a few things you might not guess about me.</p>
+      <div class="cafe">
+        <div class="cafe-art">${mug}</div>
+        <div class="cafe-ticket">
+          <p class="tk-head"><b>${first ? `${first}'s café` : 'The home café'}</b><span class="mono">Order no. 01 · for here</span></p>
+          <dl>
+            ${line('Drink', CAFE.drink)}
+            ${line('Milk', CAFE.milk)}
+            ${line('Sugar', `${sugar}${CAFE.sugar == null ? '<em class="tk-note">[your level]</em>' : CAFE.sugar === 0 ? '<em class="tk-note">no sugar</em>' : ''}`)}
+            ${line('With', CAFE.with)}
+            ${line('When', CAFE.when)}
+          </dl>
+          <p class="tk-foot mono">Thank you · come again ♡</p>
+        </div>
+      </div>
+      <ul class="packets">${packets}</ul>`;
+  }
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -885,9 +963,7 @@
       },
       open: () => panel('On the record player', 'On <em>repeat</em>', deckHTML()) },
     guitar: { label: 'After hours', open: () => panel('Leaning on the wall', 'After <em>hours</em>', hobbiesPanel()) },
-    mug: { label: 'Fuel', open: () => panel('The pink mug', '<em>Fuel</em>',
-      `<p class="lead">Currently powered by [your coffee or tea order].</p>
-      ${rows([['Fun fact', '[Something surprising about you.]', '01'], ['Fun fact', '[Something you are weirdly good at.]', '02']])}`) },
+    mug: { label: 'Fuel', open: () => panel('The pink mug', '<em>Fuel</em>', cafePanel()) },
     window: { label: 'A peek outside', open: () => panel('Through the window', 'A peek <em>outside</em>',
       `<p class="lead">Out there is the meadow where my story happens: how I started, the moment things turned, and the work that came out of it.</p>
       <p>Tip: the wall clock changes the time of day. Try it at golden hour.</p>
