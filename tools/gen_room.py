@@ -1645,6 +1645,40 @@ w(f'''          </g>
           <rect x="1074" y="774" width="96" height="6" rx="3" fill="#000" opacity=".1"/>
           <ellipse cx="1122" cy="684" rx="48" ry="5.5" fill="#9DA09E"/>
           <ellipse cx="1122" cy="684.6" rx="43" ry="4" fill="url(#gSoil)"/>
+          <!-- watering: hidden until the plant is clicked (styles.css .watered), then a can pours, the soil darkens and the leaves perk up -->
+          <g class="water-fx" pointer-events="none" aria-hidden="true">
+            <ellipse class="wet" cx="1122" cy="684.8" rx="42" ry="3.8" fill="#3A281C"/>
+            <g class="wet"><ellipse cx="1108" cy="683.6" rx="5" ry="1" fill="#FFFFFF" opacity=".28"/><ellipse cx="1136" cy="685.4" rx="3.4" ry=".8" fill="#FFFFFF" opacity=".22"/></g>
+            <g transform="translate(1110 684)"><ellipse class="ripple" rx="5" ry="1.3" fill="none" stroke="#DDF0FA" stroke-width=".9"/></g>
+            <g transform="translate(1100 685)"><ellipse class="ripple r2" rx="4" ry="1.1" fill="none" stroke="#DDF0FA" stroke-width=".9"/></g>
+            <g transform="translate(1104 652)">
+              <path class="drop" style="--x:-3px; --d:.80s" d="M0 0 v4.5" stroke="#9FD3EE" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="drop" style="--x:1px; --d:.92s" d="M0 0 v4.5" stroke="#B9E0F3" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="drop" style="--x:4px; --d:1.04s" d="M0 0 v4.5" stroke="#9FD3EE" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="drop" style="--x:-1px; --d:1.16s" d="M0 0 v4.5" stroke="#B9E0F3" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="drop" style="--x:6px; --d:1.28s" d="M0 0 v4.5" stroke="#9FD3EE" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="drop" style="--x:2px; --d:1.40s" d="M0 0 v4.5" stroke="#B9E0F3" stroke-width="1.6" stroke-linecap="round"/>
+            </g>
+            <!-- the watering can: a pink one, its spout tips down over the soil -->
+            <g transform="translate(1068 604)">
+              <g class="can">
+                <path d="M-17 -6 C-30 -7 -31 11 -16 10" fill="none" stroke="#C46B7B" stroke-width="3.6" stroke-linecap="round"/>
+                <path d="M-11 -14 C-10 -28 9 -28 10 -14" fill="none" stroke="#C46B7B" stroke-width="3.4" stroke-linecap="round"/>
+                <path d="M14 3 L39 -16 L42.4 -12.4 L16 11Z" fill="#D9808F"/>
+                <path d="M14 3 L39 -16 L40.2 -14.6 L15 6Z" fill="#F2B4BE"/>
+                <path d="M-18 -10 Q-18 -15 -13 -15 H13 Q18 -15 18 -10 L16 12 Q16 16 11 16 H-11 Q-16 16 -16 12Z" fill="#E99AA5"/>
+                <path d="M6 -15 H13 Q18 -15 18 -10 L16 12 Q16 16 11 16 H4 Q9 0 6 -15Z" fill="#D47F8D"/>
+                <path d="M-17.4 -4 H17.4 L17 0 H-17Z" fill="#FFF1F3" opacity=".85"/>
+                <path d="M-13 -11 V8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+                <ellipse cx="41.6" cy="-15" rx="3.2" ry="5.4" transform="rotate(-52 41.6 -15)" fill="#B65E6E"/>
+                <ellipse cx="42.4" cy="-15.6" rx="1.6" ry="3.6" transform="rotate(-52 42.4 -15.6)" fill="#E8A3AF"/>
+              </g>
+            </g>
+            <!-- a little sparkle of thanks above the leaves -->
+            <g transform="translate(1078 432)"><path class="spark" style="--d:2.0s" d="M0 -10 Q1.4 -1.4 10 0 Q1.4 1.4 0 10 Q-1.4 1.4 -10 0 Q-1.4 -1.4 0 -10Z" fill="#F5BF45"/></g>
+            <g transform="translate(1190 442)"><path class="spark" style="--d:2.25s" d="M0 -7 Q1 -1 7 0 Q1 1 0 7 Q-1 1 -7 0 Q-1 -1 0 -7Z" fill="#F5BF45"/></g>
+            <g transform="translate(1136 404)"><path class="spark" style="--d:2.45s" d="M0 6 C-10 -1.6 -7.6 -10.6 0 -5.6 C7.6 -10.6 10 -1.6 0 6Z" fill="#EE8FA4"/></g>
+          </g>
         </g>''')
 
 w('</g>')

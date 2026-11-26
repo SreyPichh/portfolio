@@ -347,8 +347,33 @@ em { font-style: italic; }
 .sway-slow { transform-box: fill-box; transform-origin: 50% 0; animation: sway 6s ease-in-out infinite alternate; }
 @keyframes sway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
 .leaves { transform-box: fill-box; transform-origin: 50% 100%; }
-.watered .leaves { animation: wiggle 1s var(--ease); }
+.watered .leaves { animation: perk 1.2s var(--ease) 1.5s; }
 @keyframes wiggle { 20% { transform: rotate(-4deg); } 45% { transform: rotate(3deg); } 70% { transform: rotate(-1.5deg); } }
+@keyframes perk { 25% { transform: scale(1.03, 1.06) rotate(-2deg); } 55% { transform: scale(.995, .985) rotate(1.5deg); } 80% { transform: scale(1.01, 1.02) rotate(-.5deg); } }
+
+/* watering the monstera: the can tips in, pours, the soil darkens and slowly dries, the leaves perk up */
+.water-fx .can, .water-fx .drop, .water-fx .wet, .water-fx .ripple, .water-fx .spark { opacity: 0; }
+.water-fx .can { transform-box: fill-box; transform-origin: 30% 60%; }
+.water-fx .ripple, .water-fx .spark { transform-box: fill-box; transform-origin: center; }
+.watered .can { animation: can-pour 2.9s var(--ease) both; }
+.watered .drop { animation: drip .42s cubic-bezier(.5, 0, 1, .6) var(--d) 3; }
+.watered .wet { animation: soak 16s ease .9s both; }
+.watered .ripple { animation: ripple .6s ease-out 1.1s 3; }
+.watered .ripple.r2 { animation-delay: 1.35s; }
+.watered .spark { animation: spark 1.3s var(--ease) var(--d) both; }
+.full .leaves { animation: nope .7s var(--ease); }
+@keyframes can-pour {
+  0% { opacity: 0; transform: translate(-26px, -22px) rotate(-12deg); }
+  14% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  26%, 66% { opacity: 1; transform: rotate(50deg); }
+  80% { opacity: 1; transform: rotate(0deg); }
+  100% { opacity: 0; transform: translate(-20px, -18px) rotate(-8deg); }
+}
+@keyframes drip { 0% { opacity: 0; transform: translate(var(--x), 0); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(var(--x) * 1.6), 28px); } }
+@keyframes soak { 0% { opacity: 0; } 6%, 55% { opacity: .85; } 100% { opacity: 0; } }
+@keyframes ripple { 0% { opacity: .9; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes spark { 0% { opacity: 0; transform: translateY(6px) scale(.4) rotate(0deg); } 35% { opacity: 1; transform: translateY(-4px) scale(1.1) rotate(20deg); } 100% { opacity: 0; transform: translateY(-18px) scale(.8) rotate(45deg); } }
+@keyframes nope { 20% { transform: rotate(-2.5deg); } 40% { transform: rotate(2.5deg); } 60% { transform: rotate(-1.8deg); } 80% { transform: rotate(1deg); } }
 
 /* title */
 .office-top {
@@ -990,6 +1015,7 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .reveal { opacity: 1; transform: none; filter: none; }
   .pull .w { opacity: 1; filter: none; }
+  .watered .water-fx .wet { opacity: .85; }  /* no animation: the soil still shows it was watered */
 }
 
 .hero, .hero * { -webkit-user-select: none; user-select: none; }

@@ -838,7 +838,7 @@
   const FUN_FACTS = [
     'I’m a homebody. I don’t like crowds, and I’m quiet around people I’ve just met.',
     'I love watching horror movies.',
-    'I really enjoy time on my own.',
+    'Sometimes I imagine a novel in my head, and I’ve always wanted to write one.',
   ];
 
   function cafePanel() {
@@ -902,6 +902,39 @@
         </div>
       </div>
       <ul class="packets">${packets}</ul>`;
+  }
+
+  /* ---------- Watering the monstera ----------
+     A can pours, the soil darkens and dries again, the leaves perk up. Water it too often and
+     it shakes its leaves: the soil is still wet. The last watering is remembered in this browser. */
+  const PLANT_THANKS = ['The monstera says thank you ✿', 'Glug, glug. The leaves are perking up.', 'A happy plant makes a happy office ✿'];
+  let lastWater = 0, sips = 0, thanks = 0;
+  const ago = (ms) => {
+    const m = Math.round(ms / 60000), h = Math.round(ms / 3600000), d = Math.round(ms / 86400000);
+    return d >= 1 ? `${d} day${d > 1 ? 's' : ''} ago` : h >= 1 ? `${h} hour${h > 1 ? 's' : ''} ago` : `${m} minutes ago`;
+  };
+  function waterPlant() {
+    const p = el('plant'), now = Date.now();
+    if (p.classList.contains('pouring')) return;               // let it finish the drink it's having
+    sips = now - lastWater < 20000 ? sips + 1 : 0;            // the soil is still wet for a while
+    if (sips >= 2) {
+      replay(p, 'full');
+      say('That’s plenty for now. Monstera like their soil to dry out a little between drinks.');
+      return;
+    }
+    let before = 0;
+    try { before = +localStorage.getItem('plant-watered') || 0; localStorage.setItem('plant-watered', String(now)); } catch (e) {}
+    lastWater = now;
+    p.classList.remove('full');
+    replay(p, 'watered');
+    p.classList.add('pouring');
+    setTimeout(() => p.classList.remove('pouring'), 2900);
+    window.RoomSound?.water?.();
+    const msg = before && now - before > 3600000 && !thanks
+      ? `Thank you! Its last drink was ${ago(now - before)} ✿`
+      : PLANT_THANKS[thanks % PLANT_THANKS.length];
+    thanks++;
+    setTimeout(() => say(msg), 1400);
   }
 
   // Everything you can find in the room, Edit the text here.
@@ -974,7 +1007,7 @@
       say(lampOn ? 'Lamp on ✿' : 'Lamp off'); } },
     clock: { label: 'Change the time of day', act: () => {
       const n = nextPreset(); tweenTo(n); say(`Skipping ahead to ${phaseName(n)} ✿`); } },
-    plant: { label: 'Water the plant', act: () => { replay(el('plant'), 'watered'); say('The monstera says thank you ✿'); } },
+    plant: { label: 'Water the plant', act: waterPlant },
   };
 
   /* the crystal award: a 4-sided glass block that turns on its LED base */

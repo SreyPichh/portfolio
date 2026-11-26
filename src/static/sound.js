@@ -296,6 +296,19 @@
       wake(); emit();
     },
     pauseMusic() { wantsMusic = false; stopMusic(); emit(); },
+    // watering the plant: a soft pour, then a few drops landing in the soil
+    water() {
+      if (!enabled || !ctx) return;
+      const t = ctx.currentTime + .75;
+      const src = ctx.createBufferSource(); src.buffer = noise;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .9;
+      bp.frequency.setValueAtTime(700, t); bp.frequency.linearRampToValueAtTime(1100, t + 1.1);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.07, t + .15);
+      g.gain.setValueAtTime(.07, t + .9); g.gain.exponentialRampToValueAtTime(.0001, t + 1.3);
+      src.connect(bp).connect(g).connect(amb); src.start(t); src.stop(t + 1.4);
+      for (let i = 0; i < 5; i++) chirp(t + .15 + i * .22 + Math.random() * .06, 700 + Math.random() * 300, 1500 + Math.random() * 500, .07, .05, .35);
+    },
     setDaytime(t) { daytime = t; },
     // how loud it is right now, 0 to 1 (handy for anything that wants to move with the music)
     level() {
