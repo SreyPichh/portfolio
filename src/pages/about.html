@@ -9,7 +9,7 @@ nav: about
     <div class="ai-copy reveal">
       <p class="mono kicker">About · the long version</p>
       <h1 class="display">Hi, I'm <em>{{site.first}}</em>.</h1>
-      <p class="lede">[One or two sentences: what you do, where you're based, and the kind of problems you like. Keep it warm and plain.]</p>
+      <p class="lede">I'm an IT and Media Rep. based in {{site.city}}, {{site.country}}, working remotely from my home office. I trained as a software engineer, and these days I work where tech meets media: keeping things running, and making what we share clear and good to look at.</p>
       <nav class="contents" aria-label="On this page">
         <p class="mono contents-head">Contents</p>
         <ol>
@@ -31,62 +31,37 @@ nav: about
     <header class="chapter-head reveal">
       <p class="mono kicker">The beginning</p>
       <h2 class="h2">Where it all <em>began</em></h2>
-      <p class="mono meta">[Year] — [Place]</p>
+      <p class="mono meta">Kirirom, Cambodia · class of 2019</p>
     </header>
 
-    <!-- an open journal: photos on the left page, the story on the right -->
+    <!-- an open journal: the short story on the left, a page of stamps from those years on the right -->
     <div class="journal reveal">
-      <div class="page page-l">
-        <div class="collage">
-          <figure class="snap snap-back" style="--r:7deg">
-            <span class="washi washi-c"></span>
-            <div class="ph ph-dusk"><span class="mono">photo</span></div>
-          </figure>
-          <figure class="polaroid snap-main" style="--r:-3deg">
-            <span class="washi washi-a"></span>
-            <span class="washi washi-b"></span>
-            <div class="ph ph-portrait warm"><img src="assets/portrait.png" alt="Illustrated portrait of {{site.first}}" width="257" height="436" loading="lazy"></div>
-            <figcaption class="hand">me, age 9, already redesigning the family calendar</figcaption>
-          </figure>
-          <div class="ticket" aria-hidden="true">
-            <span class="mono">Admit one</span>
-            <b>[Year]</b>
-            <span class="mono">No. 0001</span>
-          </div>
-          <svg class="sprig" viewBox="0 0 120 170" aria-hidden="true">
-            <path d="M62 166 C60 130 58 96 64 60 C68 38 74 22 84 6" fill="none" stroke="#7C8F72" stroke-width="2" stroke-linecap="round"/>
-            <g fill="#9DB39A" stroke="#7C9479" stroke-width=".8">
-              <ellipse cx="48" cy="140" rx="13" ry="10" transform="rotate(-24 48 140)"/>
-              <ellipse cx="76" cy="124" rx="12" ry="9.5" transform="rotate(22 76 124)"/>
-              <ellipse cx="46" cy="104" rx="12" ry="9" transform="rotate(-30 46 104)"/>
-              <ellipse cx="78" cy="88" rx="11" ry="8.5" transform="rotate(26 78 88)"/>
-              <ellipse cx="52" cy="68" rx="10" ry="8" transform="rotate(-34 52 68)"/>
-              <ellipse cx="82" cy="52" rx="9" ry="7" transform="rotate(30 82 52)"/>
-              <ellipse cx="66" cy="34" rx="8" ry="6" transform="rotate(-38 66 34)"/>
-              <ellipse cx="90" cy="20" rx="6.5" ry="5" transform="rotate(30 90 20)"/>
-            </g>
-            <g fill="#F2DCA0"><circle cx="72" cy="104" r="2.6"/><circle cx="58" cy="50" r="2.2"/><circle cx="86" cy="36" r="1.8"/></g>
-          </svg>
-          <p class="hand scribble">that's me!</p>
-          <svg class="arrow" viewBox="0 0 90 60" aria-hidden="true"><path d="M84 8 C70 4 46 8 34 22 C26 31 22 40 18 52 M18 52 L12 40 M18 52 L28 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+      <div class="page page-l prose">
+        <p class="dropcap">My story with technology starts at <strong>Kirirom Institute of Technology</strong>, a campus in the pine forests of Kirirom, where I studied <strong class="bold">Software Engineering</strong>.</p>
+        <p>It's also where Japan came into my life: an exchange in Kyoto that was my <span class="select sm">very first flight abroad</span>, and a three-month internship in Tokyo in my third year.</p>
+        <p>I graduated in 2019 and found my way into a role between IT and media. It suits me: part of the day solving problems, part of the day making things read and look right.</p>
       </div>
 
-      <div class="page page-r prose">
-        <p class="dropcap">It started with <strong>[a small, specific memory]</strong>. Maybe it's the afternoon you took apart a radio, the notebook you filled with logos for brands that didn't exist, or the first time something you made <span class="select sm">made someone smile</span>.</p>
-        <p><strong>[Then zoom out.]</strong> Where did you grow up? What were you curious about? What quietly pulled you toward this work? Three or four sentences per beat is plenty. Readers here want a feeling, not a CV.</p>
-        <p><strong>[End on a door opening.]</strong> The class you almost didn't take, the friend who handed you a tool, the summer you finally decided to try.</p>
-
-        <aside class="field-card" aria-label="Field notes">
-          <span class="clip" aria-hidden="true"></span>
-          <p class="mono card-head">Field notes <span>No. 01</span></p>
-          <dl class="card-rows">
-            <div><dt class="mono">Born</dt><dd class="hand">[City, Year]</dd></div>
-            <div><dt class="mono">First tool</dt><dd class="hand">[MS Paint, a pencil, a hand-me-down laptop]</dd></div>
-            <div><dt class="mono">Favourite place</dt><dd class="hand">[A hill somewhere]</dd></div>
-          </dl>
-          <span class="seal mono" aria-hidden="true">since<b>[Year]</b></span>
-        </aside>
+      <div class="page page-r">
+        <p class="mono visa-head">Stamps from my student years</p>
+        <ul class="visas">
+          <li class="visa st-round" style="--c:#2F4A9E; --r:-7deg">
+            <span class="st-ink"><span class="mono">Kirirom · Cambodia</span><b>KIT</b><span class="mono">Class of 2019</span></span>
+            <p class="hand">Software Engineering</p>
+          </li>
+          <li class="visa st-rect" style="--c:#C2493C; --r:5deg">
+            <span class="st-ink"><span class="mono">SAKURA Science · IoT</span><b>KYOTO <i>京都</i></b><span class="mono"><svg class="st-plane" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 13.5 L21 6.5 C22.4 6 23 7.4 21.8 8.2 L7.5 17.5 L4.5 16.8 L6.6 14.6 Z M9 10.6 L5.2 7.2 L7 6.6 L12.8 9.2 Z" fill="currentColor"/></svg> Feb–Mar 2018</span></span>
+            <p class="hand">my very first flight abroad</p>
+          </li>
+          <li class="visa st-oval" style="--c:#8A5A35; --r:-3deg">
+            <span class="st-ink"><span class="mono">Factory visit</span><b>OSAKA <i>大阪</i></b><span class="mono">Meiji · 2018</span></span>
+            <p class="hand">a trip to the Meiji chocolate factory</p>
+          </li>
+          <li class="visa st-post" style="--c:#3E7B4E; --r:6deg">
+            <span class="st-ink"><span class="mono">Internship</span><b>TOKYO <i>東京</i></b><span class="mono">3 months</span></span>
+            <p class="hand">three months, in my third year</p>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
@@ -109,22 +84,22 @@ nav: about
 
     <div class="turn-inner" id="turn">
       <p class="mono kicker reveal">The turning point</p>
-      <blockquote class="pull" id="pull">“The moment I realised design wasn't about making things <em>pretty</em>. It was about making them make&nbsp;sense.”</blockquote>
+      <blockquote class="pull" id="pull">“The moment I realised the details nobody notices are what make something <em>feel</em>&nbsp;right.”</blockquote>
       <div class="turn-note reveal">
         <span class="tape" aria-hidden="true"></span>
-        <p>[Describe the project, person or failure that changed your direction. What did you believe before, and what did you believe after? This is the emotional middle of your story, so keep it honest.]</p>
+        <p>Editing our product catalogue was a quiet job: checking every name, price and photo, page after page. When it earned me a Good Job Award from my company, I saw that the careful, invisible work counts too. Now I don't just fix things. I try to make them clear for the people who use them.</p>
       </div>
 
       <!-- before and after, on two cards -->
       <div class="shift reveal" aria-label="What changed">
         <div class="shift-card before">
           <p class="mono">Before</p>
-          <p class="hand"><s>[the old belief]</s></p>
+          <p class="hand"><s>good enough is good enough</s></p>
         </div>
         <svg class="shift-arrow" viewBox="0 0 90 40" aria-hidden="true"><path d="M4 26 C24 8 52 6 80 20 M80 20 L68 12 M80 20 L70 30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div class="shift-card after">
           <p class="mono">After</p>
-          <p class="hand"><span class="ring-mark">[the new belief]</span></p>
+          <p class="hand"><span class="ring-mark">the small details are the work</span></p>
         </div>
       </div>
     </div>
@@ -135,33 +110,40 @@ nav: about
     <header class="chapter-head reveal" data-num="now">
       <p class="mono kicker">These days</p>
       <h2 class="h2">What's on my <em>desk</em> right now</h2>
-      <p class="mono meta">updated [Month Year]</p>
+      <p class="mono meta">updated November 2026</p>
     </header>
 
     <ul class="nowcards">
       <li class="nowcard reveal" style="--band:#CFE0F6;--r:-1deg">
         <p class="mono nc-label">Making</p>
-        <h3>[What you're working on]</h3>
-        <p>[A line on the project, or the problem you're chewing on.]</p>
+        <h3>Tech and media, every day</h3>
+        <p>Looking after our IT, and helping make the photos, pages and posts we share.</p>
+        <a class="nc-ask mono" href="contact.html?ask=work">Ask me about this <span aria-hidden="true">↗</span></a>
       </li>
       <li class="nowcard reveal" style="--band:#F6D3DD;--r:1.2deg">
         <p class="mono nc-label">Learning</p>
-        <h3>Japanese</h3>
-        <p>Passed the JLPT at level N4. [What you're studying next, and why.]</p>
+        <h3>Japanese &amp; English</h3>
+        <p>Passed the JLPT at level N4, and I plan to take N3 in 2027. Alongside Japanese, I'm learning English on Duolingo: level 129 done so far.</p>
         <span class="nc-stamp mono" aria-hidden="true">N4<b>2025</b></span>
+        <a class="nc-ask mono" href="contact.html?ask=languages">Ask me about this <span aria-hidden="true">↗</span></a>
       </li>
       <li class="nowcard reveal" style="--band:#DCE9CF;--r:-.6deg">
         <p class="mono nc-label">Proud of</p>
         <h3>A Good Job Award</h3>
-        <p>From my company, for editing our product catalogue. [One line on what made it work.]</p>
+        <p>From my company, for editing our product catalogue. Every name, price and photo checked, page after page.</p>
+        <a class="nc-ask mono" href="contact.html?ask=award">Ask me about this <span aria-hidden="true">↗</span></a>
       </li>
       <li class="nowcard reveal" style="--band:#F4E3B0;--r:1deg">
-        <p class="mono nc-label">Reading</p>
-        <h3>[A book on your desk]</h3>
-        <p>[Why you picked it up, or the one idea that stuck.]</p>
+        <p class="mono nc-label">Someday</p>
+        <h3>A novel of my own</h3>
+        <p>Sometimes I imagine a story in my head. One day I'd like to write it down.</p>
+        <a class="nc-ask mono" href="contact.html?ask=novel">Ask me about this <span aria-hidden="true">↗</span></a>
       </li>
     </ul>
-    <p class="hand now-note reveal">ask me about any of these ✿</p>
+    <div class="now-cta reveal">
+      <p class="hand now-note">ask me about any of these ✿</p>
+      <a class="pill big" href="contact.html">Write me a letter <span aria-hidden="true">↗</span></a>
+    </div>
   </section>
 
   <nav class="page-next" aria-label="Keep exploring">

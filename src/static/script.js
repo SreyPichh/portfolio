@@ -1296,6 +1296,20 @@
   if (letter) {
     const today = document.getElementById('today');
     if (today) today.textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    // arriving from an "Ask me about this" link on the About page: start the note on that topic
+    const ASK = {
+      work: 'your work in tech and media',
+      languages: 'learning Japanese and English',
+      award: 'your Good Job Award and the product catalogue',
+      novel: 'the novel you want to write',
+    };
+    const topic = ASK[new URLSearchParams(location.search).get('ask')];
+    if (topic) {
+      const note = letter.querySelector('#letter-msg');
+      if (note && !note.value) note.value = `I read your About page and I'd love to hear more about ${topic}.`;
+      const chat = letter.querySelector('input[name="why"][value="a coffee chat"]');
+      if (chat) chat.checked = true;
+    }
     letter.addEventListener('submit', (e) => {
       e.preventDefault();
       const why = (letter.querySelector('input[name="why"]:checked') || {}).value || 'saying hi';

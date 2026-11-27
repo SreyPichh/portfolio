@@ -455,6 +455,7 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 
 .prose p { margin: 0 0 1.3em; max-width: 36em; font-size: clamp(17px, 1.35vw, 19px); }
 .prose strong { font-weight: 400; color: var(--accent); }
+.prose strong.bold { font-weight: 650; }
 .dropcap::first-letter {
   font-family: var(--serif); float: left; font-size: 5.6em; line-height: .76;
   margin: .06em .12em 0 0; color: var(--accent); font-style: italic;
@@ -496,13 +497,6 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   box-shadow: inset 0 0 0 3px #6E4329, inset 0 0 0 4px rgba(251, 243, 228, .5);
 }
 
-/* left page: a little photo collage */
-.collage { position: relative; min-height: 560px; padding-top: 96px; }
-.snap { margin: 0; background: #FFFEFA; padding: 10px 10px 26px; position: absolute; transform: rotate(var(--r, 0deg)); box-shadow: 0 18px 34px -20px rgba(60, 40, 20, .5), 0 1px 3px rgba(60, 40, 20, .1); }
-.snap-back { top: 58px; right: 0; width: 42%; z-index: 1; }
-.snap-back .ph { aspect-ratio: 1; }
-.snap-back .ph span { display: none; }
-.collage .snap-main { position: relative; z-index: 2; width: 78%; max-width: 330px; margin: 0; justify-self: auto; }
 .ph-dusk { background:
   radial-gradient(circle at 64% 52%, #FFE9B8 0 9%, transparent 10%),
   linear-gradient(#E9B59A, #F3D7B4 56%, #8FB2C4 56%, #6E97AE); }
@@ -516,46 +510,35 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
 .washi-a { top: -12px; left: -26px; transform: rotate(-32deg); }
 .washi-b { top: -10px; right: -24px; transform: rotate(30deg); width: 80px; }
 .washi-c { top: -11px; left: 50%; width: 70px; transform: translateX(-50%) rotate(4deg); background: rgba(247, 222, 150, .75); }
-.ticket {
-  position: absolute; right: 3%; bottom: 84px; z-index: 3; transform: rotate(9deg);
-  display: grid; justify-items: center; gap: 2px; padding: 10px 18px; color: #7A2E26;
-  background:
-    radial-gradient(circle at 0 50%, transparent 7px, #F2D2C4 7.5px) left / 51% 100% no-repeat,
-    radial-gradient(circle at 100% 50%, transparent 7px, #F2D2C4 7.5px) right / 51% 100% no-repeat;
-  filter: drop-shadow(0 6px 8px rgba(60, 40, 20, .2));
+/* right page: ink stamps from the student years (passport style) */
+.page-l { align-content: center; }
+.page-l p:last-child { margin-bottom: 0; }
+.visa-head { margin: 0 0 22px; font-size: 10px; letter-spacing: .16em; color: var(--pg-soft); }
+.visas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 18px; }
+.visa { margin: 0; display: grid; justify-items: center; gap: 8px; text-align: center; }
+.visa p { margin: 0; font-size: 18px; line-height: 1.15; color: var(--pg-soft); max-width: 13em; }
+.st-ink {
+  display: grid; place-content: center; justify-items: center; gap: 4px;
+  width: 100%; max-width: 188px; min-height: 112px; padding: 12px 10px; color: var(--c, #2F4A9E);
+  border: 2.5px solid currentColor; box-shadow: inset 0 0 0 3px var(--pg), inset 0 0 0 4.5px currentColor;
+  transform: rotate(var(--r, 0deg)); mix-blend-mode: multiply; opacity: .9; filter: url(#inked);
+  transition: transform .45s var(--ease), opacity .3s ease;
 }
-.ticket .mono { font-size: 8px; letter-spacing: .2em; }
-.ticket b { font: 400 22px/1 var(--serif); }
-.sprig { position: absolute; left: 30%; bottom: -96px; width: 76px; z-index: 3; transform: rotate(-72deg); filter: drop-shadow(0 4px 4px rgba(60, 40, 20, .16)); }
-.scribble { position: absolute; left: 47%; top: 4px; margin: 0; color: var(--accent); font-size: 26px; transform: rotate(-8deg); z-index: 4; }
-.arrow { position: absolute; left: 30%; top: 22px; width: 64px; color: var(--accent); transform: scaleX(-1) rotate(-10deg); z-index: 4; }
-
-/* right page: an index card of field notes */
-.field-card {
-  position: relative; margin: 34px 0 0; max-width: 400px; transform: rotate(1.4deg);
-  padding: 20px 22px 18px; background: #FFFDF8; color: var(--pg-ink);
-  background-image: linear-gradient(transparent 0 calc(100% - 1px), rgba(120, 150, 200, .35) calc(100% - 1px)), linear-gradient(#E26B5C, #E26B5C);
-  background-size: 100% 34px, 100% 1.5px; background-position: 0 50px, 0 48px; background-repeat: repeat-y, no-repeat;
-  box-shadow: 0 16px 30px -18px rgba(60, 40, 20, .45), 0 1px 2px rgba(60, 40, 20, .1);
+.visa:hover .st-ink { transform: rotate(0deg) scale(1.04); opacity: 1; }
+.st-ink .mono { font-size: 8.5px; letter-spacing: .14em; line-height: 1.3; display: inline-flex; align-items: center; gap: 5px; }
+.st-ink b { font: 400 clamp(26px, 2.6vw, 34px)/1 var(--serif); letter-spacing: .04em; }
+.st-ink b i { font: 400 .5em/1 var(--sans); letter-spacing: 0; font-style: normal; vertical-align: .35em; }
+.st-plane { width: 12px; height: 12px; transform: rotate(-8deg); }
+.st-round .st-ink { width: 136px; height: 136px; min-height: 0; border-radius: 50%; padding: 0 18px; }
+.st-round b { font-size: 36px; }
+.st-rect .st-ink { border-radius: 4px; }
+.st-oval .st-ink { border-radius: 50%; padding: 12px 24px; }
+.st-post .st-ink {  /* a postage stamp with a perforated edge */
+  border: 0; box-shadow: inset 0 0 0 7px var(--pg), inset 0 0 0 9px currentColor;
+  background: color-mix(in srgb, currentColor 9%, var(--pg));
+  -webkit-mask: radial-gradient(circle at 5px 5px, transparent 3px, #000 3.4px) -5px -5px / 11px 11px, linear-gradient(#000, #000) center / calc(100% - 10px) calc(100% - 10px) no-repeat;
+          mask: radial-gradient(circle at 5px 5px, transparent 3px, #000 3.4px) -5px -5px / 11px 11px, linear-gradient(#000, #000) center / calc(100% - 10px) calc(100% - 10px) no-repeat;
 }
-.card-head { margin: 0 0 12px; display: flex; justify-content: space-between; font-size: 10px; color: var(--pg-soft); }
-.card-head span { color: #C2493C; }
-.card-rows { margin: 0; display: grid; }
-.card-rows div { display: grid; grid-template-columns: 118px 1fr; gap: 10px; align-items: baseline; min-height: 34px; }
-.card-rows dt { font-size: 9.5px; color: var(--pg-soft); }
-.card-rows dd { margin: 0; font-size: 21px; line-height: 34px; color: #2F4A9E; }
-.clip {
-  position: absolute; top: -14px; left: 30px; width: 16px; height: 44px; border-radius: 9px;
-  border: 2.5px solid #A9AFB8; border-bottom-color: transparent; transform: rotate(-8deg);
-}
-.clip::after { content: ""; position: absolute; left: 2px; right: 2px; top: 6px; bottom: -4px; border-radius: 6px; border: 2.5px solid #BCC2CA; border-top-color: transparent; }
-.seal {
-  position: absolute; right: 22px; bottom: -30px; width: 74px; height: 74px; border-radius: 50%;
-  display: grid; place-content: center; text-align: center; gap: 1px; font-size: 8px; color: rgba(194, 73, 60, .85);
-  border: 2px solid currentColor; box-shadow: inset 0 0 0 4px #FFFDF8, inset 0 0 0 5px currentColor;
-  transform: rotate(-14deg); background: rgba(255, 253, 248, .2); mix-blend-mode: multiply;
-}
-.seal b { font: 400 16px/1 var(--serif); letter-spacing: 0; text-transform: none; }
 
 /* lamps-on evening: the journal sits in warm lamplight */
 :root[data-theme="night"] .journal { --pg: #EEE6D6; --pg-edge: #DCD2BF; filter: brightness(.9); }
@@ -565,17 +548,9 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   .journal::after { left: auto; right: 28px; height: 110px; }
   .page-l { padding-bottom: 12px; }
   .page-r { padding-top: 24px; border-top: 1px dashed rgba(90, 64, 40, .2); padding-left: clamp(24px, 4.4vw, 64px); }
-  .collage { max-width: 420px; margin: 0 auto; min-height: 0; padding-bottom: 70px; }
-  .sprig { left: 8%; bottom: -8px; }
-  .ticket { right: 4%; bottom: 0; }
 }
 @media (max-width: 480px) {
   .journal { margin: 8px; box-shadow: 0 1px 0 var(--pg-edge), 0 3px 0 var(--pg), 0 4px 0 var(--pg-edge), 0 3px 0 8px #6E4329, 0 40px 60px -30px rgba(60, 40, 20, .5); }
-  .card-rows div { grid-template-columns: 1fr; gap: 0; min-height: 0; }
-  .card-rows dt { line-height: 1.6; margin-top: 6px; }
-  .card-rows dd { line-height: 1.3; margin-bottom: 4px; }
-  .field-card { background-size: 0 0, 100% 1.5px; }
-  .seal { right: 10px; }
 }
 
 /* Polaroids + placeholders */
@@ -1100,7 +1075,14 @@ button.row:hover b, button.row:focus-visible b { color: var(--accent); }
   color: rgba(194, 73, 60, .85); font-size: 12px; letter-spacing: .1em; line-height: 1; transform: rotate(-12deg);
 }
 .nc-stamp b { font: italic 400 14px/1 var(--serif); letter-spacing: 0; }
-.now-note { margin: 40px 0 0; text-align: center; font-size: 26px; color: var(--ink-soft); transform: rotate(-1.5deg); }
+.now-note { margin: 0; text-align: center; font-size: 26px; color: var(--ink-soft); transform: rotate(-1.5deg); }
+.now-cta { margin: 48px 0 0; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.nc-ask {
+  margin-top: auto; align-self: flex-start; display: inline-flex; gap: .5em; padding: 7px 0 2px;
+  font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #2E2A26; text-decoration: none;
+  border-bottom: 1.5px solid var(--band); transition: border-color .25s ease, gap .25s var(--ease);
+}
+.nc-ask:hover, .nc-ask:focus-visible { border-color: #2E2A26; gap: .8em; }
 :root[data-theme="night"] .nowcard, :root[data-theme="night"] .polaroid.portrait, :root[data-theme="night"] .hello-sticker { filter: brightness(.9); }
 
 @media (max-width: 1000px) {
