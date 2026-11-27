@@ -103,6 +103,7 @@
     room?.classList.toggle('lamp-off', !lampOn);
   }
 
+  let peekSync = null;  // set while the window panel is open
   function applyTime(t) {
     daytime = clamp(t);
     let i = 0;
@@ -126,6 +127,7 @@
     const sx = 650 + daytime * 260;
     const sy = 360 - 200 * Math.sin(Math.PI * (0.2 + 0.6 * daytime));
     winSun?.setAttribute('transform', `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`);
+    document.querySelectorAll('.peek-sun').forEach((n) => n.setAttribute('transform', `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`));
 
     // the wall clock + the little readout
     const mins = Math.round((5 + daytime * 18) * 60);
@@ -136,6 +138,7 @@
     if (clock) clock.textContent = time;
     if (phase) phase.textContent = phaseName(daytime);
     clockObj?.setAttribute('aria-label', `Wall clock: it's ${time}, ${phaseName(daytime)}. Change the time of day`);
+    if (peekSync) peekSync(time);
   }
   function saveTime() { try { localStorage.setItem('daytime', daytime.toFixed(3)); } catch (e) {} }
 
@@ -230,6 +233,8 @@
     if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
     else dialog.setAttribute('open', '');
     dialog.querySelector('.story-inner').scrollTop = 0;
+    peekSync = null;
+    if (body.querySelector('.peek')) mountPeek();
   }
   const panel = (kicker, title, html) => `<p class="mono kicker">${kicker}</p><h3 id="story-title">${title}</h3>${html}`;
   const rows = (list) => `<ul class="rows">${list.map((r) => `<li><div class="row"><b>${r[0]}</b><span>${r[1]}</span><i class="mono">${r[2] || ''}</i></div></li>`).join('')}</ul>`;
@@ -937,6 +942,154 @@
     setTimeout(() => say(msg), 1400);
   }
 
+  /* ---------- Experience: pages torn from the sunflower wall calendar ----------
+     Newest first. Write dates as 'Feb 2024' or '2014'; "to" can also be 'now'.
+     "org", "where", "text", "badge" and "open" are optional; "open" adds a button to another panel.
+     Leave a field in [brackets] and it shows as a gap to fill in. */
+  const EXPERIENCE = [
+    { kind: 'Work', role: 'IT and Media Rep.', where: 'Remote, from my home office in Phnom Penh',
+      from: 'Feb 2024', to: 'now', text: 'Looking after our IT, and helping make the photos, pages and posts we share.',
+      badge: 'Good Job Award, for editing our product catalogue' },
+    { kind: 'Work', role: 'Project Manager', from: 'Jan 2020', to: 'Dec 2023' },
+    { kind: 'Internship', role: 'Intern', where: 'Tokyo, Japan', from: 'Jun 2019', to: 'Aug 2019',
+      text: 'Three months working in Tokyo, the summer before I graduated.' },
+    { kind: 'Study', role: 'Software Engineering', org: 'Kirirom Institute of Technology', where: 'Kirirom, Cambodia',
+      from: 'Nov 2015', to: 'Nov 2019', text: 'My degree, with the SAKURA Science exchange program in Kyoto along the way, in 2018.',
+      open: ['diploma', 'Where I studied'] },
+    { kind: 'Volunteer', role: 'Team leader', org: 'Child Protection Group (CPG)', where: 'An independent volunteer group',
+      from: '2014', to: '2015', text: 'I led a team of about ten volunteers, helping our local community understand child rights and child abuse, especially parents who asked their children to start working at a young age.' },
+    { kind: 'School', role: 'High school', org: 'Koh Kong High School', where: 'Koh Kong, Cambodia', from: '2013', to: '2015' },
+  ];
+  const XP_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function experiencePanel() {
+    const gap = (v) => /^\[.*\]$/.test(v) ? `<span class="xp-gap">${v.slice(1, -1)}</span>` : v;
+    const today = new Date();
+    const day = today.getDate(), mon = today.toLocaleDateString('en-GB', { month: 'short' });
+    // 'Feb 2024' -> { m: 'Feb', y: '2024' }; '2014' -> { m: '', y: '2014' }
+    const split = (d) => { const [a, b] = String(d).split(' '); return b ? { m: a, y: b } : { m: '', y: a }; };
+    const ym = (d) => d === 'now' ? [today.getFullYear(), today.getMonth()] : [+split(d).y, Math.max(0, XP_MONTHS.indexOf(split(d).m))];
+    // how long, for jobs: "3 months", "4 years", "2 yrs 10 mos"
+    const length = (x) => {
+      if (!split(x.from).m || /\[/.test(x.from + x.to)) return '';
+      const [y1, m1] = ym(x.from), [y2, m2] = ym(x.to);
+      const n = (y2 - y1) * 12 + (m2 - m1) + 1, y = Math.floor(n / 12), m = n % 12;
+      if (!y) return `${m} month${m === 1 ? '' : 's'}`;
+      if (!m) return `${y} year${y === 1 ? '' : 's'}`;
+      return `${y} yr${y === 1 ? '' : 's'} ${m} mo${m === 1 ? '' : 's'}`;
+    };
+    const ring = `<svg class="xp-ring" viewBox="0 0 60 40" aria-hidden="true"><path d="M44 6 C30 1 8 6 5 19 C2 32 22 38 36 35 C52 32 58 20 52 11 C48 5 40 3 32 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const pages = EXPERIENCE.map((x, i) => {
+      const now = x.to === 'now', f = split(x.from), t = split(x.to);
+      // the page shows the end year, or just the month when it ends the same year it began
+      const toShort = now ? '' : (t.m && t.y === f.y ? t.m : t.y);
+      const len = x.kind === 'Study' || x.kind === 'School' ? '' : length(x);
+      return `<li class="xp${now ? ' xp-now' : ''}" data-kind="${x.kind.toLowerCase()}" style="--r:${[-1.6, 1.2, -.8][i % 3]}deg">
+        <div class="xp-page" aria-hidden="true">
+          <span class="xp-clip"></span>
+          <span class="mono xp-kind">${x.kind}</span>
+          ${f.m ? `<span class="mono xp-mon">${f.m}</span>` : ''}
+          <b class="xp-from">${gap(f.y)}</b>
+          <span class="xp-to">${now ? `${ring}<em>now</em>` : `<span class="mono">to</span> ${gap(toShort)}`}</span>
+        </div>
+        <div class="xp-body">
+          <p class="mono xp-when">${x.kind} · ${gap(x.from)} to ${gap(x.to)}${len ? ` · ${len}` : ''}</p>
+          <h4>${x.role}${x.org ? ` <span>· ${gap(x.org)}</span>` : ''}</h4>
+          ${x.where ? `<p class="xp-where">${x.where}</p>` : ''}
+          ${x.text ? `<p class="xp-text">${x.text}</p>` : ''}
+          ${x.badge ? `<p class="xp-badge"><span aria-hidden="true">★</span> ${x.badge}</p>` : ''}
+          ${x.open ? `<button class="xp-link mono" type="button" data-open="${x.open[0]}">${x.open[1]} <span aria-hidden="true">→</span></button>` : ''}
+        </div>
+      </li>`;
+    }).join('');
+    const resume = RESUME
+      ? `<a class="ghost" href="${RESUME}" target="_blank" rel="noopener">Download résumé (PDF)</a>`
+      : `<a class="ghost" href="#" data-todo="Add your résumé link in site.json ✿">Download résumé (PDF)</a>`;
+    return `<p class="lead">From high school in Koh Kong to working remotely from my home office in Phnom Penh. Here's where I've been so far.</p>
+      <div class="xp-today">
+        <span class="xp-date"><b>${day}</b><span class="mono">${mon}</span>${ring}</span>
+        <p><span class="mono">Today</span>Working remotely from my home office in ${document.body.dataset.home || 'Phnom Penh'}, probably with an iced latte.</p>
+      </div>
+      <ol class="xps">${pages}</ol>
+      <div class="panel-actions">${resume}<a class="ghost" href="contact.html">Work with me →</a></div>`;
+  }
+
+  /* ---------- A peek outside: the view from the window, and the time of day ----------
+     One line for each part of the day, about what you can see out there. */
+  const PEEK_LINES = {
+    'dawn': 'The lake turns pink and the meadow is still waking up.',
+    'morning': 'Fresh light on the mountains, and the birds are already up.',
+    'midday': 'Bright and clear, with clouds drifting over the hills.',
+    'afternoon': 'A slow, warm afternoon. The sun starts its walk west.',
+    'golden hour': 'Everything turns honey-coloured: the best light of the day.',
+    'dusk': 'The sun slips behind the hills and the lamps come on.',
+    'night': 'Stars over the lake, and the moon is out.',
+  };
+  const HOME_CITY = document.body.dataset.home || 'Phnom Penh';
+  // the real time where I am, as hours and minutes
+  function homeTime() {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Phnom_Penh', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    const get = (type) => +parts.find((p) => p.type === type).value;
+    return [get('hour'), get('minute')];
+  }
+  // the room's day runs 05:00 to 23:00; before 5 in the morning it stays night
+  const timeToDay = (h, m) => (h < 5 ? 1 : clamp((h + m / 60 - 5) / 18));
+
+  function peekPanel() {
+    const marks = [[0, 'Dawn'], [0.35, 'Midday'], [0.7, 'Golden hour'], [1, 'Night']];
+    return `<p class="lead">The view from my desk: a meadow, a lake and the hills beyond. Slide through the day, and the whole room changes with it.</p>
+      <figure class="peek">
+        <div class="peek-glass"><svg viewBox="580 140 420 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div>
+        <figcaption><span class="mono peek-time"></span><span class="peek-line"></span></figcaption>
+      </figure>
+      <div class="peek-dial">
+        <input class="peek-range" type="range" min="0" max="1" step="0.005" aria-label="Time of day">
+        <div class="peek-marks">${marks.map(([t, n]) => `<button class="mono" type="button" data-t="${t}">${n}</button>`).join('')}</div>
+      </div>
+      <div class="peek-real">
+        <p><span class="mono">In ${HOME_CITY} right now</span><b class="peek-now"></b></p>
+        <button class="ghost peek-sync" type="button">Match the real time</button>
+      </div>
+      <div class="panel-actions">${go('about.html', 'Step outside: about me →')}</div>`;
+  }
+
+  function mountPeek() {
+    const svg = body.querySelector('.peek-glass svg'), src = document.querySelector('#o-window .view');
+    if (!svg || !src) return;
+    // a copy of the view in the window; it shares the room's colours, so it changes with the time
+    const view = src.cloneNode(true);
+    view.setAttribute('class', 'peek-view');
+    view.querySelectorAll('[id]').forEach((n) => { if (n.id === 'win-sun') n.classList.add('peek-sun'); n.removeAttribute('id'); });
+    svg.appendChild(view);
+
+    const range = body.querySelector('.peek-range'), stamp = body.querySelector('.peek-time'), line = body.querySelector('.peek-line');
+    const now = body.querySelector('.peek-now'), marks = [...body.querySelectorAll('.peek-marks button')];
+    peekSync = (time) => {
+      const name = phaseName(daytime);
+      range.value = daytime;
+      range.setAttribute('aria-valuetext', `${time}, ${name}`);
+      stamp.textContent = `${time} · ${name}`;
+      if (line.dataset.phase !== name) { line.dataset.phase = name; line.textContent = PEEK_LINES[name]; replay(line, 'fresh'); }
+      marks.forEach((b) => b.classList.toggle('on', Math.abs(+b.dataset.t - daytime) < 0.02));
+    };
+    const showReal = () => {
+      const [h, m] = homeTime();
+      now.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}, ${phaseName(timeToDay(h, m))}`;
+    };
+    showReal();
+    applyTime(daytime);
+
+    range.addEventListener('input', () => { cancelAnimationFrame(tween); applyTime(+range.value); });
+    range.addEventListener('change', saveTime);
+    marks.forEach((b) => b.addEventListener('click', () => tweenTo(+b.dataset.t)));
+    body.querySelector('.peek-sync').addEventListener('click', () => {
+      showReal();
+      const [h, m] = homeTime();
+      tweenTo(timeToDay(h, m));
+      say(`Matched to ${HOME_CITY} time ✿`);
+    });
+  }
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -944,9 +1097,7 @@
     // the monitor and the sketchbook lead straight to their pages
     monitor: { label: 'My work', act: () => { window.location.href = 'work.html'; } },
     sketch: { label: 'How I work', act: () => { window.location.href = 'notes.html'; } },
-    calendar: { label: 'Experience', open: () => panel('On the calendar', 'Experience',
-      `${rows([['[Role] · [Company]', '[What you did there, in one line.]', '[2024 — now]'], ['[Role] · [Company]', '[What you did there, in one line.]', '[2022 — 24]'], ['[Role] · [Company]', '[What you did there, in one line.]', '[2020 — 22]']])}
-      <div class="panel-actions">${RESUME ? `<a class="ghost" href="${RESUME}" target="_blank" rel="noopener">Download résumé (PDF)</a>` : `<a class="ghost" href="#" data-todo="Add your résumé link in site.json ✿">Download résumé (PDF)</a>`}</div>`) },
+    calendar: { label: 'Experience', open: () => panel('On the calendar', 'My <em>experience</em>', experiencePanel()) },
     diploma: { label: 'Where I studied', open: () => panel('Framed on the shelf', 'Where I <em>studied</em>', studyPanel()) },
     // opened from its card in "Where I studied"
     sakura: { label: 'SAKURA Science', open: () => panel('Kyoto, Japan · 2018', 'SAKURA <em>Science</em>',
@@ -998,9 +1149,7 @@
     guitar: { label: 'After hours', open: () => panel('Leaning on the wall', 'After <em>hours</em>', hobbiesPanel()) },
     mug: { label: 'Fuel', open: () => panel('The pink mug', '<em>Fuel</em>', cafePanel()) },
     window: { label: 'A peek outside', open: () => panel('Through the window', 'A peek <em>outside</em>',
-      `<p class="lead">Out there is the meadow where my story happens: how I started, the moment things turned, and the work that came out of it.</p>
-      <p>Tip: the wall clock changes the time of day. Try it at golden hour.</p>
-      <div class="panel-actions">${go('about.html', 'Step outside →')}</div>`) },
+      peekPanel()) },
     lamp: { label: 'Switch the lamp', act: () => {
       lampOn = !lampOn; setLamp();
       try { localStorage.setItem('lamp', lampOn ? 'on' : 'off'); } catch (e) {}
