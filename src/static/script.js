@@ -15,26 +15,76 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const hero = document.getElementById('prologue');
 
-  /* ---------- Placeholder projects: edit these ----------
+  /* ---------- Projects: edit these ----------
      Add a real picture with  cover: 'assets/project-one.jpg'  (put the file in src/static/assets/).
-     Without one, the card shows the drawn icon on the art colour. */
+     Without one, the card shows the drawn icon on the art colour.
+     front: 'docs' draws an illustration from FRONTS on the postcard instead (the cover still opens in the story).
+     Optional: role, team, tools, links (label + href) and beats (the story); without beats the story uses the template below.
+     Anything still in [brackets] shows as a dotted gap to fill in. */
   const projects = [
-    { title: 'Project One', tag: 'Brand identity', dur: '3m', year: '2026', icon: 'leaf',
-      summary: '[One sentence: what it is, who it was for, and why it mattered.]',
-      art: 'linear-gradient(160deg,#E3F0D6,#B9D3A8)' },
-    { title: 'Project Two', tag: 'Mobile app', dur: '2m', year: '2025', icon: 'phone',
-      summary: '[One sentence: the problem in plain words.]',
-      art: 'linear-gradient(160deg,#E4ECFA,#B9CCF1)' },
-    { title: 'Project Three', tag: 'Website design', dur: '6w', year: '2025', icon: 'laptop',
-      summary: '[One sentence: what changed because of this work.]',
+    { title: 'This portfolio', tag: 'Personal website', dur: 'In progress', year: '2026', icon: 'laptop',
+      cover: 'assets/project-portfolio.jpg', coverPos: '30% 50%', coverAlt: 'The home page: an illustrated home office with a bookshelf, a window, a desk and a monstera',
+      summary: 'My portfolio, made as a cosy home office you can explore. Click the things in the room to find out about me.',
+      role: 'Design & build', team: 'Solo', tools: ['HTML', 'CSS', 'JavaScript', 'SVG', 'Python'],
+      links: [{ label: 'Step into the office', href: 'index.html' }, { label: 'See the code on GitHub ↗', href: 'https://github.com/SreyPichh/portfolio', ext: true }],
+      beats: [
+        ['The idea', '[Why a home office? What you wanted people to feel when they land on your portfolio.]'],
+        ['What’s in the room', 'Seventeen things to find. The books open my About page, the monitor my work, and the calendar my experience. The wall clock turns the day from dawn to night, the plant can be watered, and the record player spins.'],
+        ['How it’s built', 'A small static site in plain HTML, CSS and JavaScript. The whole room is one SVG drawing, and a short Python script builds the pages and draws the room.'],
+        ['What was tricky', '[The hardest part to get right, and how you solved it.]'],
+        ['What I learned', '[One honest lesson you are taking into the next project.]'],
+      ],
       art: 'linear-gradient(160deg,#FCF3D6,#F3DC94)' },
-    { title: 'Project Four', tag: 'Packaging', dur: '1m', year: '2024', icon: 'box',
-      summary: '[One sentence: the most surprising thing about this project.]',
+    { title: 'Technical documents, always up to date', tag: 'Internal system', dur: '3 weeks', year: '2026', icon: 'docs',
+      front: 'docs', cover: 'assets/project-nsk-docs.jpg', coverAlt: 'The dealer portal dashboard: a search bar, counts of published, new and updated documents, and the product categories',
+      summary: 'A system that keeps NSK’s technical staff and distributors up to date, even as technical documents from headquarters keep changing.',
+      role: 'Design & build', team: 'Solo',
+      beats: [
+        ['The problem', 'Technical documents from headquarters were changing and being updated all the time. Keeping up with every change had become an urgent problem inside the company: technical staff and distributors needed to know they were working from the latest information.'],
+        ['What I built', 'A system that gives NSK’s technical staff and distributors one place to get up-to-date technical information. [How it works in a sentence or two: where the documents live, and how people find the latest version.]'],
+        ['What was tricky', '[The hardest part to get right, and how you solved it.]'],
+        ['What changed', '[What is different now: time saved, fewer outdated documents, how many people use it. One number if you have it.]'],
+        ['What I learned', '[One honest lesson you are taking into the next project.]'],
+      ],
+      art: 'linear-gradient(160deg,#E4ECFA,#B9CCF1)' },
+    { title: 'A QR price list for Expodent', tag: 'Exhibition tool', dur: '2 weeks', year: '2025', icon: 'qr', front: 'qr',
+      summary: 'Visitors at Expodent in India scan a QR code beside each product to see its details, promotion and price, and send an inquiry on the spot.',
+      role: 'Design & build', team: 'Solo', tools: ['Google Apps Script'],
+      beats: [
+        ['The problem', 'Every Expodent in India brings a huge number of visitors, and each of them has questions about the products: what it is, what it costs, and whether there is a promotion.'],
+        ['What I built', 'A price list system made with Google Apps Script. It shows the price of every product and makes a QR code for each one. At the exhibition, a customer scans the code to see the product’s information, promotion and price, and can send an inquiry straight from a form in the same app.'],
+        ['What was tricky', '[The hardest part to get right, and how you solved it.]'],
+        ['What changed', 'Visitors could find their own answers with one scan, which cut down on customers’ questions and helped them at the booth. [One number if you have it: scans, inquiries sent, products listed.]'],
+        ['What I learned', '[One honest lesson you are taking into the next project.]'],
+      ],
+      art: 'linear-gradient(160deg,#E6F4EC,#B7DDC6)' },
+    { title: 'A digital flip catalogue', tag: 'Digital catalogue', dur: '6 months', year: '2024', icon: 'book', front: 'flip',
+      summary: 'An online catalogue that turns pages like a real book, so fewer copies need printing. Every customer can open it from a link or a QR code.',
+      role: 'Design & build', team: 'Solo', tools: ['Photoshop', 'Illustrator', 'InDesign', 'HTML flipbook'],
+      beats: [
+        ['The problem', 'The catalogue was printed on paper, so only the customers holding a copy could see it. [Why else printed copies were a problem: printing cost, reprints when products change, customers far away.]'],
+        ['What I built', 'A digital version of the catalogue that turns pages like a real book. I designed the pages in Photoshop, Illustrator and InDesign, then published them as an HTML flipbook. Customers open it from a link or by scanning a QR code. I made it on my own, as the only IT engineer in the company.'],
+        ['What was tricky', '[The hardest part to get right, and how you solved it.]'],
+        ['What changed', 'Fewer printed catalogues, and every customer can open the catalogue from a link or a QR code. [One number if you have it: pages, products, views, or printed copies saved.]'],
+        ['What I learned', '[One honest lesson you are taking into the next project.]'],
+      ],
       art: 'linear-gradient(160deg,#FBE6EC,#F2BFCF)' },
-    { title: 'Project Five', tag: 'Side project', dur: '∞', year: 'Ongoing', icon: 'star',
-      summary: '[One sentence: the thing you make just because you love it.]',
+    { title: 'Selling land, three pins at a time', tag: 'Mobile app', dur: '8 months', year: '2023', icon: 'pin', front: 'land',
+      summary: 'A real estate app where owners sell their property online. They mark their land with three points on the map, and the app works out its area.',
+      role: 'Project lead', team: 'Team of 4', tools: ['Flutter'],
+      beats: [
+        ['The problem', 'Property was sold through traditional real estate advertising. The idea was to move selling online, so owners could list their land or property themselves, from their phone.'],
+        ['What we built', 'A mobile app for selling property, built with Flutter. What makes it different: the owner marks their land with three points on the map, the app calculates the land area, and the owner checks it and sets the selling price. An API and a web admin sit behind the app.'],
+        ['The team', 'I led the project at the company I worked for at the time, with a team of three: a frontend developer, an API developer and a developer building the web admin. We built it in 8 months.'],
+        ['What was tricky', '[The hardest part to get right, and how you solved it. Getting the area right from three points, perhaps?]'],
+        ['What changed', '[What happened after launch: how many listings or users, or what the company did with it.]'],
+        ['What I learned', '[One honest lesson about leading a team that you are taking into the next project.]'],
+      ],
       art: 'linear-gradient(160deg,#ECE8FB,#CFC6F2)' },
   ];
+
+  // any [bracketed] text shows as a dotted gap to fill in
+  const gaps = (v) => String(v).replace(/\[([^\]]+)\]/g, '<span class="todo-gap">$1</span>');
 
   const beats = [
     ['The problem', '[What was broken, missing or confusing? Who felt it? Set the scene in two or three sentences.]'],
@@ -45,11 +95,189 @@
   ];
 
   const S = 'stroke="#3A57C4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+  /* Drawn postcard fronts. Each fits a tall card on desktop and a wide one on phones. */
+  const L = 'stroke="#2C3F8F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+  // a QR-like pattern: three corner squares and a fixed scatter of modules (decorative, not scannable)
+  const qrArt = (x, y, m, ink) => {
+    const n = 15, corner = (c, r) => (c < 6 && r < 6) || (c > 8 && r < 6) || (c < 6 && r > 8);
+    let seed = 11, d = '';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      if (!corner(c, r) && (seed >> 16) & 1) d += `M${x + c * m} ${y + r * m}h${m}v${m}h-${m}z`;
+    }
+    const f = (cx, cy) => `<rect x="${x + cx * m}" y="${y + cy * m}" width="${5 * m}" height="${5 * m}" fill="${ink}"/><rect x="${x + (cx + 1) * m}" y="${y + (cy + 1) * m}" width="${3 * m}" height="${3 * m}" fill="#fff"/><rect x="${x + (cx + 2) * m}" y="${y + (cy + 2) * m}" width="${m}" height="${m}" fill="${ink}"/>`;
+    return `<path d="${d}" fill="${ink}"/>${f(0, 0)}${f(10, 0)}${f(0, 10)}`;
+  };
+  const TOOTH = 'M-9 -6 C-9 -12 -4 -13 0 -10 C4 -13 9 -12 9 -6 C9 0 7 2 6 10 C5 14 2 14 2 10 L1 5 Q0 3 -1 5 L-2 10 C-2 14 -5 14 -6 10 C-7 2 -9 0 -9 -6Z';
+  const FRONTS = {
+    // headquarters sends a new version; old ones are crossed out; staff and distributors all get the latest
+    docs: `<svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle cx="122" cy="158" r="100" fill="#fff" opacity=".32"/>
+      <g class="ill-hq">
+        <rect x="18" y="8" width="56" height="12" rx="2" fill="#F6D9A8" ${L}/>
+        <text x="46" y="17.4" text-anchor="middle" class="ill-label">HQ</text>
+        <rect x="22" y="20" width="48" height="46" fill="#fff" ${L}/>
+        <g fill="#DCE5FA" ${L} stroke-width="1.6"><rect x="28" y="26" width="9" height="7"/><rect x="41.5" y="26" width="9" height="7"/><rect x="55" y="26" width="9" height="7"/><rect x="28" y="38" width="9" height="7"/><rect x="41.5" y="38" width="9" height="7"/><rect x="55" y="38" width="9" height="7"/><rect x="28" y="50" width="9" height="7"/><rect x="55" y="50" width="9" height="7"/></g>
+        <rect x="41.5" y="51" width="9" height="15" fill="#2C3F8F"/>
+      </g>
+      <path d="M80 34 C112 12 144 30 150 68" fill="none" ${L} stroke-width="2" stroke-dasharray="3 6"/>
+      <path d="M144 61 L150 70 L156 61" fill="none" ${L} stroke-width="2"/>
+      <g class="ill-fly" transform="translate(114 22) rotate(-16)">
+        <rect x="-8" y="-10" width="16" height="20" rx="1.5" fill="#fff" ${L} stroke-width="1.8"/>
+        <path d="M-4 -4 H4 M-4 1 H4 M-4 6 H1" ${L} stroke-width="1.4"/>
+      </g>
+      <g class="ill-spin">
+        <circle cx="206" cy="40" r="20" fill="#fff" ${L}/>
+        <path d="M195 37 A11 11 0 0 1 215 33 M217 43 A11 11 0 0 1 197 47" fill="none" ${L}/>
+        <path d="M209 31 L215 33 L216 27 M203 49 L197 47 L196 53" fill="none" ${L}/>
+      </g>
+      <g transform="rotate(-9 100 150)">
+        <rect x="44" y="72" width="100" height="140" rx="2" fill="#E3EAF8" ${L}/>
+        <text x="52" y="88" class="ill-old">v1</text><path d="M50 84.5 H64" stroke="#C2493C" stroke-width="1.8" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(-4.5 110 150)">
+        <rect x="60" y="76" width="102" height="142" rx="2" fill="#EEF2FB" ${L}/>
+        <text x="66" y="92" class="ill-old">v2</text><path d="M64 88.5 H78" stroke="#C2493C" stroke-width="1.8" stroke-linecap="round"/>
+      </g>
+      <path d="M78 80 H162 L178 96 V230 H78Z" fill="#fff" ${L}/>
+      <path d="M162 80 V96 H178" fill="#DCE5FA" ${L}/>
+      <rect x="88" y="94" width="58" height="7" rx="3.5" fill="#2C3F8F"/>
+      <rect x="88" y="110" width="46" height="14" rx="7" fill="#3E9B6A"/>
+      <text x="111" y="119.6" text-anchor="middle" class="ill-badge">LATEST</text>
+      <text x="141" y="120.4" class="ill-ver">v3</text>
+      <path d="M88 140 H168 M88 151 H160 M88 162 H168 M88 173 H140" stroke="#B9C6EA" stroke-width="3.2" stroke-linecap="round"/>
+      <rect x="88" y="185" width="34" height="32" rx="3" fill="#DCE5FA" ${L} stroke-width="1.8"/>
+      <circle cx="105" cy="201" r="10" fill="#fff" ${L} stroke-width="1.8"/><circle cx="105" cy="201" r="4.5" fill="#F6D9A8" ${L} stroke-width="1.6"/>
+      <path d="M131 193 H160 M131 203 H152" stroke="#B9C6EA" stroke-width="3.2" stroke-linecap="round"/>
+      <g class="ill-seal"><circle cx="174" cy="224" r="15" fill="#3E9B6A" stroke="#fff" stroke-width="3"/><path d="M167 224 L172 229 L181 218" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <path d="M128 231 V243 M66 243 H188 M66 243 V249 M128 243 V249 M188 243 V249" fill="none" ${L} stroke-width="2" stroke-dasharray="3 5"/>
+      ${[[66, '#F6D9A8'], [128, '#CFE3B6'], [188, '#F3C1B5']].map(([x, c]) => `
+        <path d="M${x - 17} 294 C${x - 17} 276 ${x + 17} 276 ${x + 17} 294Z" fill="${c}" ${L}/>
+        <circle cx="${x}" cy="262" r="10" fill="#F4DCC6" ${L}/>
+        <circle cx="${x + 11}" cy="254" r="6" fill="#3E9B6A" stroke="#fff" stroke-width="2"/>
+        <path d="M${x + 8} 254 L${x + 10.4} 256.4 L${x + 14} 252" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`).join('')}
+    </svg>`,
+    // an exhibition booth: a product with a QR price card, a phone showing what the scan opens, and visitors
+    qr: `<svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle cx="120" cy="160" r="100" fill="#fff" opacity=".32"/>
+      <path d="M6 14 Q120 46 234 14" fill="none" ${L} stroke-width="1.8"/>
+      ${Array.from({ length: 9 }, (_, i) => {
+        const t = (i + 0.5) / 9, x = (1 - t) ** 2 * 6 + 2 * (1 - t) * t * 120 + t * t * 234, y = (1 - t) ** 2 * 14 + 2 * (1 - t) * t * 46 + t * t * 14;
+        return `<path d="M${(x - 7).toFixed(1)} ${y.toFixed(1)} L${(x + 7).toFixed(1)} ${y.toFixed(1)} L${x.toFixed(1)} ${(y + 15).toFixed(1)}Z" fill="${['#C2493C', '#F6D9A8', '#2C3F8F', '#3E9B6A'][i % 4]}" ${L} stroke-width="1.6"/>`;
+      }).join('')}
+      <rect x="30" y="150" width="52" height="56" rx="3" fill="#fff" ${L}/>
+      <path d="M30 162 H82" fill="none" ${L} stroke-width="1.8"/>
+      <path d="${TOOTH}" transform="translate(56 183) scale(1.15)" fill="#DCE5FA" ${L} stroke-width="1.7"/>
+      <path d="M88 206 L94 150 H128 L134 206Z" fill="#fff" ${L}/>
+      ${qrArt(96, 156, 2, '#2C3F8F')}
+      <g fill="none" stroke="#3E9B6A" stroke-width="2.2" stroke-linecap="round"><path d="M93 159 V153 H99 M119 153 H125 V159 M125 183 V189 H119 M99 189 H93 V183"/></g>
+      <text x="111" y="200" text-anchor="middle" class="ill-old">SCAN</text>
+      <path class="ill-beam" d="M126 156 L151 104 L151 196 L126 188Z" fill="#3E9B6A" opacity=".3"/><path d="M126 156 L151 104 M126 188 L151 196" stroke="#3E9B6A" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round"/>
+      <rect x="10" y="206" width="132" height="10" rx="2" fill="#F6D9A8" ${L}/>
+      <rect x="16" y="216" width="120" height="72" fill="#fff" ${L}/>
+      <path d="M30 240 H96 M30 252 H80" stroke="#B9C6EA" stroke-width="3.2" stroke-linecap="round"/>
+      <g class="ill-phone">
+        <rect x="150" y="62" width="78" height="156" rx="13" fill="#2C3F8F" ${L}/>
+        <rect x="156" y="72" width="66" height="138" rx="7" fill="#fff"/>
+        <rect x="161" y="78" width="56" height="38" rx="4" fill="#FCEFD2"/>
+        <path d="${TOOTH}" transform="translate(189 97)" fill="#fff" ${L} stroke-width="1.6"/>
+        <rect x="161" y="122" width="34" height="11" rx="5.5" fill="#C2493C"/>
+        <text x="178" y="129.6" text-anchor="middle" class="ill-badge">PROMO</text>
+        <path d="M161 142 H211" stroke="#B9C6EA" stroke-width="3.2" stroke-linecap="round"/>
+        <text x="161" y="162" class="ill-price">₹</text><path d="M172 157.5 H200" stroke="#2C3F8F" stroke-width="5" stroke-linecap="round"/>
+        <path d="M161 172 H205" stroke="#B9C6EA" stroke-width="3.2" stroke-linecap="round"/>
+        <rect x="161" y="184" width="56" height="15" rx="7.5" fill="#3E9B6A"/>
+        <text x="189" y="193.8" text-anchor="middle" class="ill-badge">SEND INQUIRY</text>
+      </g>
+      ${[[170, '#CFE3B6'], [210, '#F3C1B5']].map(([x, c]) => `
+        <path d="M${x - 17} 294 C${x - 17} 276 ${x + 17} 276 ${x + 17} 294Z" fill="${c}" ${L}/>
+        <circle cx="${x}" cy="262" r="10" fill="#F4DCC6" ${L}/>`).join('')}
+    </svg>`,
+    // printed catalogues give way to one online flipbook, opened from a link or a QR code
+    flip: `<svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle cx="120" cy="150" r="100" fill="#fff" opacity=".32"/>
+      <g opacity=".8">
+        <rect x="18" y="32" width="44" height="12" rx="2" fill="#F6D9A8" ${L} stroke-width="2"/>
+        <rect x="22" y="20" width="44" height="12" rx="2" fill="#fff" ${L} stroke-width="2"/>
+        <rect x="16" y="44" width="44" height="12" rx="2" fill="#F3C1B5" ${L} stroke-width="2"/>
+        <path d="M12 60 L70 14" stroke="#C2493C" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <path d="M74 36 C100 22 128 26 140 58" fill="none" ${L} stroke-width="2" stroke-dasharray="3 6"/>
+      <path d="M133 52 L140 61 L146 51" fill="none" ${L} stroke-width="2"/>
+      <path d="M196 30 V42 M190 36 H202 M214 52 V60 M210 56 H218" ${L} stroke-width="2"/>
+      <rect x="28" y="70" width="184" height="124" rx="11" fill="#2C3F8F" ${L}/>
+      <rect x="36" y="78" width="168" height="108" rx="5" fill="#fff"/>
+      <path d="M50 88 H118 V176 H50Z" fill="#FFF8F2" ${L} stroke-width="1.8"/>
+      <rect x="57" y="95" width="54" height="34" rx="2" fill="#F3C1B5"/>
+      <circle cx="84" cy="112" r="10" fill="#fff" ${L} stroke-width="1.8"/><circle cx="84" cy="112" r="4" fill="#F6D9A8" ${L} stroke-width="1.5"/>
+      <path d="M58 140 H110 M58 150 H102 M58 160 H108" stroke="#E8B9C6" stroke-width="3" stroke-linecap="round"/>
+      <path d="M118 88 H186 V176 H118Z" fill="#FFF8F2" ${L} stroke-width="1.8"/>
+      <path d="M126 100 H176 M126 110 H170 M126 120 H178" stroke="#E8B9C6" stroke-width="3" stroke-linecap="round"/>
+      <g class="ill-page">
+        <path d="M118 88 C138 86 158 84 178 81 C170 108 168 140 176 170 C156 172 136 174 118 176Z" fill="#F7DCE4" ${L} stroke-width="1.8"/>
+        <path d="M128 102 C142 99 156 96 166 93 M128 114 C140 111 152 109 162 107" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </g>
+      <path d="M118 88 V176" ${L} stroke-width="1.8"/>
+      <rect x="22" y="210" width="108" height="24" rx="12" fill="#fff" ${L}/>
+      <g fill="none" ${L} stroke-width="2"><path d="M38 225 L44 219 M41 217 l2.5 -2.5 a4 4 0 0 1 5.6 5.6 l-2.5 2.5 M41 227 l-2.5 2.5 a4 4 0 0 1 -5.6 -5.6 l2.5 -2.5"/></g>
+      <text x="56" y="225.4" class="ill-ver">OPEN LINK</text>
+      <rect x="150" y="204" width="62" height="74" rx="4" fill="#fff" ${L}/>
+      ${qrArt(158, 212, 3.07, '#2C3F8F')}
+      <text x="181" y="271" text-anchor="middle" class="ill-old">SCAN</text>
+      ${[[48, '#CFE3B6'], [96, '#F6D9A8']].map(([x, c]) => `
+        <path d="M${x - 17} 294 C${x - 17} 276 ${x + 17} 276 ${x + 17} 294Z" fill="${c}" ${L}/>
+        <circle cx="${x}" cy="262" r="10" fill="#F4DCC6" ${L}/>`).join('')}
+    </svg>`,
+    // a "for sale" sign gives way to an app: three pins mark the land, the app works out the area, the owner sets a price
+    land: `<svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle cx="120" cy="160" r="100" fill="#fff" opacity=".32"/>
+      <g opacity=".85">
+        <rect x="40" y="46" width="5" height="40" fill="#E9C89A" ${L} stroke-width="1.8"/>
+        <rect x="14" y="18" width="58" height="30" rx="3" fill="#fff" ${L}/>
+        <text x="43" y="36.6" text-anchor="middle" class="ill-ver">FOR SALE</text>
+        <path d="M10 56 L76 12" stroke="#C2493C" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <path d="M80 30 C104 18 126 24 134 48" fill="none" ${L} stroke-width="2" stroke-dasharray="3 6"/>
+      <path d="M127 42 L134 51 L140 41" fill="none" ${L} stroke-width="2"/>
+      <path d="M204 40 V52 M198 46 H210 M220 66 V74 M216 70 H224" ${L} stroke-width="2"/>
+      <rect x="62" y="58" width="116" height="226" rx="16" fill="#2C3F8F" ${L}/>
+      <rect x="69" y="68" width="102" height="206" rx="9" fill="#fff"/>
+      <rect x="74" y="74" width="92" height="112" rx="5" fill="#E4EFDB"/>
+      <path d="M74 132 H166 M120 74 V186 M74 92 L110 186" stroke="#fff" stroke-width="6"/>
+      <rect x="132" y="82" width="22" height="16" rx="2" fill="#D3E5C6"/><rect x="80" y="160" width="18" height="18" rx="2" fill="#D3E5C6"/>
+      <path d="M84 98 L160 106 L124 178Z" fill="#CFC6F2" fill-opacity=".8" stroke="#2C3F8F" stroke-width="2" stroke-dasharray="4 4" stroke-linejoin="round"/>
+      <g class="ill-pins">${[[84, 98], [160, 106], [124, 178]].map(([x, y]) => `
+        <path d="M${x} ${y} C${x} ${y} ${x - 7} ${y - 8} ${x - 7} ${y - 13} A7 7 0 0 1 ${x + 7} ${y - 13} C${x + 7} ${y - 8} ${x} ${y} ${x} ${y}Z" fill="#C2493C" stroke="#fff" stroke-width="1.6"/>
+        <circle cx="${x}" cy="${y - 13}" r="2.6" fill="#fff"/>`).join('')}
+      </g>
+      <rect x="98" y="117" width="50" height="17" rx="8.5" fill="#fff" ${L} stroke-width="1.5"/>
+      <path d="M105 125.5 H124" stroke="#2C3F8F" stroke-width="3.6" stroke-linecap="round"/>
+      <text x="128" y="129" class="ill-ver">m²</text>
+      <text x="76" y="201" class="ill-old">PRICE</text>
+      <rect x="74" y="205" width="92" height="20" rx="4" fill="#F4F1FB" ${L} stroke-width="1.6"/>
+      <text x="80" y="219" class="ill-ver">$</text><path d="M90 215 H124" stroke="#2C3F8F" stroke-width="4" stroke-linecap="round"/>
+      <rect x="74" y="234" width="92" height="18" rx="9" fill="#3E9B6A"/>
+      <text x="120" y="245.3" text-anchor="middle" class="ill-badge">CONFIRM &amp; SELL</text>
+      <rect x="106" y="263" width="28" height="3" rx="1.5" fill="#DCE5FA"/>
+      <path d="M16 252 L36 236 L56 252" fill="#F6D9A8" ${L}/>
+      <rect x="21" y="252" width="30" height="26" fill="#fff" ${L}/>
+      <rect x="32" y="262" width="9" height="16" fill="#2C3F8F"/>
+      <g transform="translate(206 250) rotate(-12)">
+        <path d="M-14 -12 H8 L18 0 L8 12 H-14Z" fill="#fff" ${L}/>
+        <circle cx="8" cy="0" r="2.6" fill="#CFC6F2" ${L} stroke-width="1.4"/>
+        <text x="-6" y="3.6" text-anchor="middle" class="ill-ver">$</text>
+      </g>
+    </svg>`,
+  };
   const icons = {
     leaf: `<path d="M20 80 C20 40 50 18 84 16 C84 54 60 82 20 80Z" fill="#fff" ${S}/><path d="M20 80 L62 38" fill="none" ${S}/>`,
     phone: `<rect x="30" y="10" width="40" height="80" rx="9" fill="#fff" ${S}/><path d="M44 19 H56" fill="none" ${S}/><rect x="38" y="28" width="24" height="16" rx="3" fill="#DCE5FA"/>`,
     laptop: `<rect x="18" y="20" width="64" height="44" rx="5" fill="#fff" ${S}/><path d="M8 74 H92 L84 64 H16Z" fill="#fff" ${S}/><path d="M28 34 H60 M28 44 H50" fill="none" ${S}/>`,
     box: `<path d="M50 12 L86 30 V70 L50 88 L14 70 V30Z" fill="#fff" ${S}/><path d="M14 30 L50 48 L86 30 M50 48 V88" fill="none" ${S}/>`,
+    docs: `<path d="M30 20 H62 L74 32 V84 H30Z" fill="#DCE5FA" ${S} transform="translate(8 -6)"/><path d="M26 18 H58 L70 30 V86 H26Z" fill="#fff" ${S}/><path d="M58 18 V30 H70" fill="none" ${S}/><path d="M36 46 H60 M36 56 H60 M36 66 H52" fill="none" ${S}/>`,
+    qr: `<rect x="16" y="16" width="26" height="26" rx="3" fill="#fff" ${S}/><rect x="58" y="16" width="26" height="26" rx="3" fill="#fff" ${S}/><rect x="16" y="58" width="26" height="26" rx="3" fill="#fff" ${S}/><g fill="#3A57C4"><rect x="25" y="25" width="8" height="8"/><rect x="67" y="25" width="8" height="8"/><rect x="25" y="67" width="8" height="8"/><rect x="58" y="58" width="9" height="9"/><rect x="75" y="60" width="9" height="9"/><rect x="66" y="70" width="9" height="9"/><rect x="58" y="77" width="7" height="7"/><rect x="77" y="77" width="7" height="7"/></g>`,
+    book: `<path d="M50 30 C40 22 24 20 12 24 V78 C24 74 40 76 50 84Z" fill="#fff" ${S}/><path d="M50 30 C60 22 76 20 88 24 V78 C76 74 60 76 50 84Z" fill="#DCE5FA" ${S}/><path d="M22 38 H40 M22 48 H40 M60 38 H78 M60 48 H78" fill="none" ${S}/>`,
+    pin: `<path d="M50 88 C50 88 22 60 22 40 A28 28 0 0 1 78 40 C78 60 50 88 50 88Z" fill="#fff" ${S}/><circle cx="50" cy="40" r="10" fill="#DCE5FA" ${S}/>`,
     star: `<path d="M50 10 L61 38 L90 40 L67 58 L75 88 L50 71 L25 88 L33 58 L10 40 L39 38Z" fill="#fff" ${S}/>`,
   };
 
@@ -235,6 +463,7 @@
     dialog.querySelector('.story-inner').scrollTop = 0;
     peekSync = null;
     if (body.querySelector('.peek')) mountPeek();
+    if (body.querySelector('.bq-stage')) mountBouquet();
   }
   const panel = (kicker, title, html) => `<p class="mono kicker">${kicker}</p><h3 id="story-title">${title}</h3>${html}`;
   const rows = (list) => `<ul class="rows">${list.map((r) => `<li><div class="row"><b>${r[0]}</b><span>${r[1]}</span><i class="mono">${r[2] || ''}</i></div></li>`).join('')}</ul>`;
@@ -1090,6 +1319,56 @@
     });
   }
 
+  /* ---------- The thank-you bouquet: edit these ----------
+     Anything still in [brackets] shows as a dotted gap to fill in. */
+  const BOUQUET = {
+    story: '[A short story about this bouquet: who gave it to you, and why.]',
+    card: '[The line written on the card that came with it.]',
+    from: '[From whom]',
+    when: '[When]',
+    meant: '[What that thank-you meant to you, in a sentence or two.]',
+  };
+  const todo = (v) => /^\[.*\]$/.test(v) ? `<span class="todo-gap">${v.slice(1, -1)}</span>` : v;
+
+  function bouquetPanel() {
+    const b = BOUQUET;
+    const petals = Array.from({ length: 7 }, (_, i) => `<i class="bq-petal" style="--x:${8 + i * 13}%;--d:${(i * 1.7) % 6}s;--t:${7 + (i % 3) * 2}s"></i>`).join('');
+    return `<p class="lead">${todo(b.story)}</p>
+      <div class="bq-stage">
+        <div class="bq-art" aria-hidden="true">${petals}<svg viewBox="922 486 126 104"></svg></div>
+        <button class="bq-env" type="button" aria-expanded="false" aria-controls="bq-note">
+          <span class="bq-back"></span>
+          <span class="bq-clip"><span class="bq-note" id="bq-note">
+            <span class="hand bq-line">${todo(b.card)}</span>
+            <span class="bq-sign hand">— ${todo(b.from)}</span>
+          </span></span>
+          <span class="bq-front"></span>
+          <span class="bq-flap"></span>
+          <span class="bq-seal" aria-hidden="true">♡</span>
+          <span class="mono bq-hint">Open the card</span>
+        </button>
+      </div>
+      <p class="mono bq-from">From ${todo(b.from)} · ${todo(b.when)}</p>
+      <p>${todo(b.meant)}</p>
+      <div class="panel-actions"><a class="ghost" href="contact.html">Write me a letter ↗</a></div>`;
+  }
+
+  function mountBouquet() {
+    const svg = body.querySelector('.bq-art svg'), src = document.getElementById('bq-art');
+    if (svg && src) {
+      // the same bouquet as on the shelf, drawn big
+      const art = src.cloneNode(true);
+      art.removeAttribute('id'); art.removeAttribute('transform');
+      svg.appendChild(art);
+    }
+    const env = body.querySelector('.bq-env'), hint = env?.querySelector('.bq-hint');
+    env?.addEventListener('click', () => {
+      const open = env.classList.toggle('open');
+      env.setAttribute('aria-expanded', open);
+      hint.textContent = open ? 'Close the card' : 'Open the card';
+    });
+  }
+
   // Everything you can find in the room, Edit the text here.
   const THINGS = {
     // the books lead straight to the About page
@@ -1127,10 +1406,7 @@
       <p class="quote">“[A short quote from a teammate or client about working with you.]”</p><p class="mono quote-by">[Name] · [Role, Company]</p>
       <p class="quote">“[Another one. Specific beats glowing.]”</p><p class="mono quote-by">[Name] · [Role, Company]</p>
       <div class="panel-actions"><button class="ghost" type="button" data-award-off>Switch the award light off</button></div>`) },
-    bouquet: { label: 'A thank-you bouquet', open: () => panel('On the desk', 'A thank-you <em>bouquet</em>',
-      `<p class="lead">[A short story about this bouquet: who gave it, and what the moment meant to you.]</p>
-      <p class="quote">“[A line from the card that came with it.]”</p><p class="mono quote-by">[From whom] · [When]</p>
-      <p>[What you learned from mentoring, teaching or working with them, in a sentence or two.]</p>`) },
+    bouquet: { label: 'A thank-you bouquet', open: () => panel('On the bookshelf', 'A thank-you <em>bouquet</em>', bouquetPanel()) },
     map: { label: "Where I've been", open: () => panel('Pinned to the wall', "Where I've <em>been</em>", placesPanel()) },
     // the phone leads straight to the Contact page
     phone: { label: 'Say hello', act: () => { window.location.href = 'contact.html'; } },
@@ -1348,19 +1624,19 @@
     li.innerHTML = `
       <button class="postcard" type="button" data-i="${i}" aria-label="Read the story of ${p.title}">
         <span class="pc-front" style="--art:${p.art}">
-          ${p.cover
-            ? `<img class="pc-img" src="${p.cover}" alt="" loading="lazy">`
+          ${p.front ? `<span class="pc-ill">${FRONTS[p.front]}</span>` : p.cover
+            ? `<img class="pc-img" src="${p.cover}" alt="" loading="lazy"${p.coverPos ? ` style="object-position:${p.coverPos}"` : ''}>`
             : `<span class="pc-icon">${icon}</span><span class="pc-cover mono">cover image</span>`}
         </span>
         <span class="pc-back">
           <span class="pc-stamp" style="--art:${p.art}"><span class="pc-stamp-in">${icon}</span></span>
-          ${postmark(p.year)}
+          ${postmark(/^\[/.test(p.year) ? '20··' : p.year)}
           <span class="pc-no mono">No. ${String(i + 1).padStart(2, '0')}${i === 0 ? ' · Featured' : ''}</span>
           <span class="pc-title">${p.title}</span>
-          <span class="pc-sum">${p.summary}</span>
+          <span class="pc-sum">${gaps(p.summary)}</span>
           <span class="pc-lines">
-            <span><b class="mono">Type</b>${p.tag}</span>
-            <span><b class="mono">Journey</b>${p.dur} · ${p.year}</span>
+            <span><b class="mono">Type</b>${gaps(p.tag)}</span>
+            <span><b class="mono">Journey</b>${gaps(p.dur)} · ${gaps(p.year)}</span>
           </span>
           <span class="pc-read hand">read the story <span aria-hidden="true">→</span></span>
         </span>
@@ -1370,13 +1646,19 @@
 
   function openProject(i) {
     const p = projects[i];
+    const facts = [p.tag, p.dur, p.role || '[Your role]', p.team || '[Team]'];
     openPanel(`
-      <p class="mono kicker">Project ${String(i + 1).padStart(2, '0')} · ${p.year}</p>
-      <h3 id="story-title">${p.title}</h3>
-      <p class="summary">${p.summary}</p>
-      <div class="facts mono"><span>${p.tag}</span><span>${p.dur} journey</span><span>[Your role]</span><span>[Team]</span></div>
-      <div class="cover" style="background:${p.art}"><span class="mono">hero image here</span></div>
-      <ol class="beats">${beats.map((b, j) => `<li data-n="${j + 1}"><h4>${b[0]}</h4><p>${b[1]}</p></li>`).join('')}</ol>`);
+      <p class="mono kicker">Project ${String(i + 1).padStart(2, '0')} · ${gaps(p.year)}</p>
+      <h3 id="story-title">${gaps(p.title)}</h3>
+      <p class="summary">${gaps(p.summary)}</p>
+      <div class="facts mono">${facts.map((f) => `<span>${gaps(f)}</span>`).join('')}</div>
+      ${p.cover
+        ? `<figure class="cover cover-img"><img src="${p.cover}" alt="${p.coverAlt || ''}" loading="lazy"></figure>`
+        : p.front ? `<div class="cover cover-ill" style="background:${p.art}"><span class="pc-ill">${FRONTS[p.front]}</span></div>`
+        : `<div class="cover" style="background:${p.art}"><span class="mono">hero image here</span></div>`}
+      ${p.tools ? `<p class="tools"><span class="mono">Made with</span>${p.tools.map((t) => `<b>${t}</b>`).join('')}</p>` : ''}
+      <ol class="beats">${(p.beats || beats).map((b, j) => `<li data-n="${j + 1}"><h4>${b[0]}</h4><p>${gaps(b[1])}</p></li>`).join('')}</ol>
+      ${p.links ? `<div class="panel-actions">${p.links.map((l) => `<a class="ghost" href="${l.href}"${l.ext ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`).join('')}</div>` : ''}`);
   }
   list?.addEventListener('click', (e) => {
     const btn = e.target.closest('.postcard');
