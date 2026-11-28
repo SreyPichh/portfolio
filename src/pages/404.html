@@ -1,45 +1,115 @@
 ---
 title: Page not found — {{site.name}}
-description: This page wandered off. Head back to the office.
+description: Nobody's home in room 404. Head back to the office.
 nav: none
 sitemap: no
 ---
 <main class="subpage">
   <!-- ============ 404: shown for any address that doesn't exist ============ -->
-  <section class="lost scene">
-    <div class="sky"></div>
-    <div class="clouds" aria-hidden="true">
-      <svg class="cloud c1"><use href="#cloud"/></svg>
-      <svg class="cloud c3"><use href="#cloud"/></svg>
+  <section class="lost">
+    <div class="lost-grid">
+      <div class="lost-copy">
+        <p class="mono kicker">Error 404 · room not found</p>
+        <h1 class="display">Nobody’s home in <em>room&nbsp;404</em>.</h1>
+        <p class="lede">The link may be old, or there might be a typo in the address. You can knock if you like, but everyone’s back at the office.</p>
+        <a class="pill big" href="index.html">Back to the office <span aria-hidden="true">↗</span></a>
+
+        <p class="mono lost-or">Or try another door</p>
+        <nav class="lost-doors" aria-label="Pages on this site">
+          <a href="about.html">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 12 C16 9 10 8 6 9.5 V30 C10 28.5 16 29 20 32Z M20 12 C24 9 30 8 34 9.5 V30 C30 28.5 24 29 20 32Z"/></svg>
+            <span><b>About me</b><small>the story so far</small></span>
+          </a>
+          <a href="work.html">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="10" width="30" height="21" rx="2"/><path d="M21 13 V28 M9 16 H17 M9 21 H17 M9 26 H14"/><rect x="25" y="14" width="6" height="7"/></svg>
+            <span><b>My work</b><small>five projects</small></span>
+          </a>
+          <a href="notes.html">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 7 H27 L32 12 V33 H9Z M14 16 H26 M14 22 H26 M14 28 H21"/></svg>
+            <span><b>Notes</b><small>how I think</small></span>
+          </a>
+          <a href="contact.html">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="10" width="30" height="21" rx="2"/><path d="M5.5 11 L20 22 L34.5 11"/></svg>
+            <span><b>Say hello</b><small>drop me a line</small></span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- the door to room 404: knock three times and it opens onto an empty room -->
+      <div class="door-scene">
+        <svg class="door-back" viewBox="0 0 420 480" aria-hidden="true">
+          <defs>
+            <linearGradient id="roomLight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3D4570"/><stop offset="1" stop-color="#2A3054"/></linearGradient>
+            <radialGradient id="lampGlow"><stop offset="0" stop-color="#FFE3A3" stop-opacity=".9"/><stop offset="1" stop-color="#FFE3A3" stop-opacity="0"/></radialGradient>
+          </defs>
+          <!-- the empty room behind the door -->
+          <rect x="84" y="44" width="252" height="416" fill="url(#roomLight)"/>
+          <rect x="150" y="88" width="120" height="104" rx="3" fill="#1F2850" stroke="#11162E" stroke-width="3"/>
+          <path d="M210 88 V192 M150 140 H270" stroke="#11162E" stroke-width="3"/>
+          <circle cx="238" cy="114" r="12" fill="#FFF3C9"/><circle cx="244" cy="110" r="11" fill="#1F2850"/>
+          <g fill="#FFF3C9"><circle cx="170" cy="104" r="1.6"/><circle cx="186" cy="124" r="1.2"/><circle cx="174" cy="170" r="1.4"/><circle cx="252" cy="168" r="1.2"/><circle cx="228" cy="156" r="1.6"/></g>
+          <path d="M84 372 H336 V460 H84Z" fill="#4A3F5C"/>
+          <path d="M84 372 H336 M84 400 H336 M84 430 H336 M130 372 V400 M220 400 V430 M170 430 V460 M290 372 V400 M270 430 V460" stroke="#3A314A" stroke-width="2"/>
+          <g>
+            <path d="M232 352 L300 352 L300 410 L232 410Z" fill="#D7B48A" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M232 352 L244 336 L312 336 L300 352Z" fill="#E6C79E" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M300 352 L312 336 V394 L300 410Z" fill="#C49C6E" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/>
+            <rect x="252" y="370" width="30" height="14" fill="#FAF7F0" stroke="#2A2F3A" stroke-width="1.6"/>
+            <text x="267" y="381" text-anchor="middle" class="door-tag">404</text>
+          </g>
+          <!-- frame, wall lamp and floor, in front of the room -->
+          <path d="M0 460 H420 V480 H0Z" class="door-floor"/>
+          <path d="M64 24 H356 V460 H336 V44 H84 V460 H64Z" class="door-frame" stroke="#2A2F3A" stroke-width="2.6" stroke-linejoin="round"/>
+          <path d="M58 18 H362 V28 H58Z" class="door-frame" stroke="#2A2F3A" stroke-width="2.6" stroke-linejoin="round"/>
+          <rect class="door-gap" x="86" y="455" width="248" height="4" fill="#FFE7A8"/>
+          <g class="door-lamp">
+            <circle cx="388" cy="160" r="44" fill="url(#lampGlow)" class="lamp-glow"/>
+            <path d="M376 196 H400 M388 196 V180" stroke="#2A2F3A" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M372 180 H404 L398 146 H378Z" fill="#F6D9A8" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/>
+          </g>
+          <g class="door-mat">
+            <path d="M128 462 H292 L300 476 H120Z" fill="#C98F5A" stroke="#2A2F3A" stroke-width="2.2" stroke-linejoin="round"/>
+            <text x="210" y="473.4" text-anchor="middle" class="door-mattext">HELLO</text>
+          </g>
+        </svg>
+
+        <a class="door-note-link" href="index.html" tabindex="-1" aria-hidden="true" aria-label="Moved to the office: go to the home page"><span>moved to<br>the office <b aria-hidden="true">→</b></span></a>
+        <button class="door" type="button" aria-label="Knock on the door of room 404">
+          <svg viewBox="0 0 252 416" aria-hidden="true">
+            <rect x="1.3" y="1.3" width="249.4" height="413.4" class="door-leaf" stroke="#2A2F3A" stroke-width="2.6"/>
+            <rect x="30" y="34" width="192" height="156" rx="4" class="door-panel" stroke="#2A2F3A" stroke-width="2.2"/>
+            <rect x="40" y="44" width="172" height="136" rx="2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+            <rect x="30" y="218" width="192" height="164" rx="4" class="door-panel" stroke="#2A2F3A" stroke-width="2.2"/>
+            <rect x="40" y="228" width="172" height="144" rx="2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+            <circle cx="126" cy="66" r="6" fill="#E8C277" stroke="#2A2F3A" stroke-width="2"/>
+            <rect x="80" y="94" width="92" height="46" rx="23" fill="#E8C277" stroke="#2A2F3A" stroke-width="2.4"/>
+            <text x="126" y="126" text-anchor="middle" class="door-num">404</text>
+            <rect x="96" y="300" width="60" height="13" rx="3" fill="#E8C277" stroke="#2A2F3A" stroke-width="2"/>
+            <path d="M101 306.5 H151" stroke="#2A2F3A" stroke-width="1.6"/>
+            <rect x="204" y="196" width="14" height="40" rx="7" fill="#E8C277" stroke="#2A2F3A" stroke-width="2"/>
+            <circle cx="211" cy="216" r="10" fill="#F2D48E" stroke="#2A2F3A" stroke-width="2.2"/>
+            <circle cx="208" cy="213" r="3" fill="#fff" opacity=".7"/>
+          </svg>
+          <span class="door-hint hand" aria-hidden="true">knock knock?</span>
+        </button>
+        <!-- a peace lily beside the door; the leaves and flowers sway like the plants in the office -->
+        <svg class="door-lily" viewBox="0 0 180 220" aria-hidden="true">
+          <g class="lily-lf" style="--t:7s;--dl:-1s"><path d="M90 168 Q73 148 62 112" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(62 112) rotate(-38.6) scale(1)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#4E8A45" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:6.4s;--dl:-3s"><path d="M90 168 Q107 146 118 108" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(118 108) rotate(37.0) scale(1)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#4E8A45" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:8s;--dl:-2s"><path d="M90 168 Q90 141 90 98" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(90 98) rotate(0.0) scale(1.05)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#4E8A45" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-fl" style="--t:9s;--dl:-1s"><path d="M90 168 Q78 110 66 52" fill="none" stroke="#4E8A45" stroke-width="2" stroke-linecap="round"/><g transform="translate(66 52) rotate(-10)"><path d="M0 2 C11 -5 13 -24 0 -40 C-13 -24 -11 -5 0 2Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M1 -4 C5 -15 5 -27 1 -35" fill="none" stroke="#E3E6EC" stroke-width="1.4" stroke-linecap="round"/><path d="M0 -6 C3 -11 3 -21 0 -26 C-3 -21 -3 -11 0 -6Z" fill="#EADFB0" stroke="#BFAE6E" stroke-width="1"/></g></g>
+          <g class="lily-fl" style="--t:8s;--dl:-4s"><path d="M90 168 Q93 101 96 34" fill="none" stroke="#4E8A45" stroke-width="2" stroke-linecap="round"/><g transform="translate(96 34) rotate(4)"><path d="M0 2 C11 -5 13 -24 0 -40 C-13 -24 -11 -5 0 2Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M1 -4 C5 -15 5 -27 1 -35" fill="none" stroke="#E3E6EC" stroke-width="1.4" stroke-linecap="round"/><path d="M0 -6 C3 -11 3 -21 0 -26 C-3 -21 -3 -11 0 -6Z" fill="#EADFB0" stroke="#BFAE6E" stroke-width="1"/></g></g>
+          <g class="lily-fl" style="--t:9.5s;--dl:-2.5s"><path d="M90 168 Q106 111 122 54" fill="none" stroke="#4E8A45" stroke-width="2" stroke-linecap="round"/><g transform="translate(122 54) rotate(14)"><path d="M0 2 C11 -5 13 -24 0 -40 C-13 -24 -11 -5 0 2Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M1 -4 C5 -15 5 -27 1 -35" fill="none" stroke="#E3E6EC" stroke-width="1.4" stroke-linecap="round"/><path d="M0 -6 C3 -11 3 -21 0 -26 C-3 -21 -3 -11 0 -6Z" fill="#EADFB0" stroke="#BFAE6E" stroke-width="1"/></g></g>
+          <g class="lily-fl" style="--t:7.5s;--dl:-5s"><path d="M90 168 Q85 123 80 78" fill="none" stroke="#4E8A45" stroke-width="2" stroke-linecap="round"/><g transform="translate(80 78) rotate(-6)"><path d="M0 2 C11 -5 13 -24 0 -40 C-13 -24 -11 -5 0 2Z" fill="#FFFFFF" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M1 -4 C5 -15 5 -27 1 -35" fill="none" stroke="#E3E6EC" stroke-width="1.4" stroke-linecap="round"/><path d="M0 -6 C3 -11 3 -21 0 -26 C-3 -21 -3 -11 0 -6Z" fill="#EADFB0" stroke="#BFAE6E" stroke-width="1"/></g></g>
+          <g class="lily-lf" style="--t:6s;--dl:-2s"><path d="M90 168 Q68 160 54 136" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(54 136) rotate(-74.4) scale(0.9)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#6CA155" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:6.8s;--dl:-4s"><path d="M90 168 Q112 159 126 134" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(126 134) rotate(72.6) scale(0.9)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#6CA155" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:7.4s;--dl:-0s"><path d="M90 168 Q80 149 74 114" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(74 114) rotate(-24.5) scale(1.05)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#5E9E50" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:6.2s;--dl:-5s"><path d="M90 168 Q101 148 108 112" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(108 112) rotate(25.8) scale(1.05)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#5E9E50" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:5.6s;--dl:-1.5s"><path d="M90 168 Q68 168 54 152" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(54 152) rotate(-88.0) scale(0.8)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#5E9E50" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <g class="lily-lf" style="--t:6.6s;--dl:-3.5s"><path d="M90 168 Q112 167 126 150" fill="none" stroke="#3F7438" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(126 150) rotate(85.4) scale(0.8)"><path d="M0 0 C14 -12 16 -40 0 -62 C-16 -40 -14 -12 0 0Z" fill="#5E9E50" stroke="#2A2F3A" stroke-width="2" stroke-linejoin="round"/><path d="M0 -3 C1.5 -24 1.5 -42 0 -58" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.6" stroke-linecap="round"/></g></g>
+          <path d="M56 166 H124 L122 188 H58Z" fill="#F7F5EF" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="90" cy="168" rx="30" ry="3" fill="#6B4A34"/><path d="M58 188 H122 L116 216 H64Z" fill="#D9D2B2" stroke="#2A2F3A" stroke-width="2.4" stroke-linejoin="round"/><path d="M60 194 H120 M61 199.5 H119 M62 205 H118 M63 210.5 H117" stroke="#BDB38A" stroke-width="1"/>
+        </svg>
+      </div>
     </div>
-
-    <div class="lost-copy">
-      <!-- a paper plane that looped off course -->
-      <svg class="lost-plane" viewBox="0 0 320 120" aria-hidden="true">
-        <path d="M8 96 C60 100 92 70 84 46 C76 22 44 34 56 58 C68 82 130 84 176 60 C206 44 230 34 262 36" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round"/>
-        <g transform="translate(262 36) rotate(-8)">
-          <path d="M0 -16 L48 0 L0 16 L10 0Z" fill="#FFFDF7" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/>
-          <path d="M10 0 L48 0 L6 9Z" fill="#E4E9F8" stroke="#2A2F3A" stroke-width="1.8" stroke-linejoin="round"/>
-        </g>
-      </svg>
-
-      <p class="mono kicker">Error 404 · page not found</p>
-      <h1 class="display">This page <em>wandered off</em>.</h1>
-      <p class="lede">The link may be old, or there might be a typo in the address. Everything else is right where I left it.</p>
-      <a class="pill big" href="index.html">Back to the office <span aria-hidden="true">↗</span></a>
-      <nav class="lost-links mono" aria-label="Or try">
-        <a href="about.html">About</a><a href="work.html">Work</a><a href="notes.html">Notes</a><a href="contact.html">Say hello</a>
-      </nav>
-    </div>
-
-    <svg class="land" viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <path d="M0 300 C200 270 420 262 640 280 C860 298 1100 250 1440 270 L1440 500 L0 500Z" fill="url(#gMount)" opacity=".8"/>
-      <g filter="url(#rough)">
-        <path id="hill-mid" d="M0 340 C260 310 480 330 700 360 C920 390 1180 310 1440 330 L1440 500 L0 500Z" fill="url(#gMid)" stroke="var(--rim)" stroke-width="1.5"/>
-        <g class="flowers" data-on="hill-mid" data-count="70" data-depth="22"></g>
-        <path id="hill-front" d="M0 470 C200 440 480 380 720 372 C960 365 1180 420 1440 460 L1440 500 L0 500Z" fill="url(#gFront)" stroke="var(--rim)" stroke-width="1.5"/>
-        <g class="flowers" data-on="hill-front" data-count="130" data-depth="70"></g>
-      </g>
-    </svg>
   </section>
 </main>

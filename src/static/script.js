@@ -1790,6 +1790,31 @@
     }
   }
 
+  /* ---------- 404: knock on the door of room 404 ---------- */
+  const door = document.querySelector('.door');
+  if (door) {
+    const replies = ['Knock knock… no answer.', 'Still nothing. Try once more?'];
+    const note = document.querySelector('.door-note-link');
+    const showNote = (on) => { note?.setAttribute('tabindex', on ? '0' : '-1'); note?.setAttribute('aria-hidden', on ? 'false' : 'true'); };
+    let knocks = 0;
+    door.addEventListener('click', () => {
+      if (door.classList.contains('open')) {
+        door.classList.remove('open'); knocks = 0; showNote(false);
+        door.setAttribute('aria-label', 'Knock on the door of room 404');
+        say('Door closed');
+        return;
+      }
+      door.classList.add('knocked');
+      door.classList.remove('knock'); void door.offsetWidth; door.classList.add('knock');
+      if (++knocks < 3) { say(replies[knocks - 1]); return; }
+      setTimeout(() => {
+        door.classList.add('open'); showNote(true);
+        door.setAttribute('aria-label', 'Close the door of room 404');
+        say('It creaks open… empty. There’s a note on the wall.');
+      }, reduceMotion ? 0 : 380);
+    });
+  }
+
   const yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();
 })();
